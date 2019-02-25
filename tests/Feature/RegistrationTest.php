@@ -5,10 +5,12 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Faker\Generator as Faker;
 
 class RegistrationTest extends TestCase
 {
-    use DatabaseMigrations;
+    use WithFaker;
+    //use DatabaseMigrations;
     /**
      * A basic test example.
      *
@@ -22,7 +24,12 @@ class RegistrationTest extends TestCase
 
     public function testValid()
     {
-        $response = $this->json('POST', '/register', ['name' => 'Sally','surname' => 'Smith','email' => 'sally.smith@gmail.com', 'password' => 'Sally123!', 'password_confirmation' => 'Sally123!']);
+
+        $name = $this->faker->firstName();
+        $surname = $this->faker->lastName();
+        $email = $this->faker->unique()->safeEmail();
+        $password='$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm';
+        $response = $this->json('POST', '/register', ['name' => $name,'surname' => $surname,'email' => $email, 'password' => $password, 'password_confirmation' => $password]);
         $response
             ->assertStatus(302);
     }
