@@ -1,19 +1,14 @@
 <?php
 
-Route::group([
 
-    'middleware' => 'api',
-    'prefix' => 'auth'
 
-], function () {
+Route::post('login', 'API\AuthController@login');
+Route::middleware('jwt.auth')->group(function(){
 
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::get('logout', 'API\AuthController@logout');
+    Route::get('profile', 'UserController@showProfile');
+    Route::patch('profile', 'UserController@editProfile');
+
+        Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');
 
 });
-
-//Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-//Route::post('login', 'Auth\LoginController@login');
-//Route::post('logout', 'Auth\LoginController@logout')->name('logout');
