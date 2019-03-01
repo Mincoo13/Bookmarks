@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
+use Illuminate\Support\Arr;
 
 
 class LoginTest extends TestCase
@@ -14,6 +15,8 @@ class LoginTest extends TestCase
      *
      * @return void
      */
+    public $token;
+
     public function testExample()
     {
         $this->assertTrue(true);
@@ -25,6 +28,7 @@ class LoginTest extends TestCase
         $response
             ->assertStatus(200);
     }
+
 
     public function testNotValid()
     {

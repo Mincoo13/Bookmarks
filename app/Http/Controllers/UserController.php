@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function showProfile(){
         $id = JWTAuth::user()->id;
-        $user = User::find($id)->name;
+        $user = User::find($id);
 
         return $user;
     }
@@ -19,18 +19,20 @@ class UserController extends Controller
         $id = JWTAuth::user()->id;
 
 
-        $user = User::find($id)->update([
+        User::find($id)->update([
             "name" => $request->name,
             "surname" => $request->surname
         ]);
-        return response()->json(["user" => $user]);
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     public function editProfileAdmin($id, Request $request){
-        $user = User::find($id)->update([
+        User::find($id)->update([
             "name" => $request->name,
             "surname" => $request->surname
         ]);
-        return response()->json(["user" => $user]);
+        $user = User::find($id);
+        return response()->json($user);
     }
 }

@@ -34,6 +34,7 @@ class RegistrationTest extends TestCase
             ->assertStatus(302);
     }
 
+
     public function testNotValid()
     {
         $response = $this->json('POST', '/register', ['name' => 'Sally','surname' => 'Smith','email' => 'sallygmail.com', 'password' => 'Sally123', 'password_confirmation' => 'Sally123']);
