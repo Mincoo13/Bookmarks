@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use JWTAuth;
 use Validator;
+use App\User;
 class AuthController extends Controller
 {
     /**
@@ -14,6 +15,14 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        $user = User::where('email', $request->email)->first();
+        if(!$user->isActive){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vas ucet je deaktivovany.',
+            ], 403);
+        }
+
         $credentials = $request->only('email', 'password');
         $rules = [
             'email' => 'required|email',

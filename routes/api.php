@@ -11,5 +11,9 @@ Route::middleware('jwt.auth')->group(function(){
     Route::patch('users/changepassword', 'UserController@changePassword');
         Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');
+        Route::patch('users/{id}/activate', 'UserController@activateUser')->middleware('admin');
+        Route::patch('users/{id}/deactivate', 'UserController@deactivateUser')->middleware('admin');
+
+
 
 });

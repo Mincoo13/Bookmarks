@@ -24,7 +24,7 @@ class LoginTest extends TestCase
 
     public function testValid()
     {
-        $response = $this->json('POST', '/api/login', ['email' => 'bla@bla.com', 'password' => 'Ahoj123!']);
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
         $response
             ->assertStatus(200);
     }
@@ -34,6 +34,6 @@ class LoginTest extends TestCase
     {
         $response = $this->json('POST', '/api/login', ['email' => 'bla@blaaa.com', 'password' => 'Ahoj1234!']);
         $response
-            ->assertStatus(401);
+            ->assertStatus(500);
     }
 }

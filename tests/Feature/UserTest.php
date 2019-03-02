@@ -24,9 +24,9 @@ class UserTest extends TestCase
     public function testValidProfile()
     {
 //        Uzivatel sa prihlasi, vygeneruje token, ktory potom posle na GET profile, ktory vrati JSON profilu pouzivatela.
-        $email = 'bla@bla.com';
+        $email = 'admin@admin.com';
         $password = 'Ahoj123!';
-        $id = '51';
+        $id = '1';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
@@ -40,12 +40,24 @@ class UserTest extends TestCase
         $response->assertJson(['id' => $id, 'email' => $email]);
     }
 
-    public function testNoTokenProfile()
+    public function testNoToken()
     {
 //        Pouzivatel sa prihlasi, vygeneruje sa token, avsak neposle sa dalej, preto sa pri zobrazeni profilu vrati chybova hlaska 401.
-        $response = $this->json('POST', '/api/login', ['email' => 'bla@bla.com', 'password' => 'Ahoj123!']);
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
         $response->assertStatus(200);
         $response = $this->json('GET', '/api/profile');
+        $response->assertStatus(401);
+        $response = $this->json('PATCH', '/api/profile',['name' => 'change', 'surname' => 'changed']);
+        $response->assertStatus(401);
+        $response = $this->json('PATCH', '/api/profile/1', ['name' => '1changed', 'surname' => '1changed']);
+        $response->assertStatus(401);
+        $response = $this->json('DELETE', '/api/users/3');
+        $response->assertStatus(401);
+        $response = $this->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Sally123!', 'newPassword' => 'Newpass123!', 'confirm' => 'Newpass123!']);
+        $response->assertStatus(401);
+        $response = $this->json('PATCH', '/api/users/4/deactivate');
+        $response->assertStatus(401);
+        $response = $this->json('PATCH', '/api/users/4/activate');
         $response->assertStatus(401);
     }
 
@@ -53,9 +65,9 @@ class UserTest extends TestCase
     {
 //        Pouzivatel sa prihlasi, vygeneruje sa token, ktory sa posle na PATCH profile, ktoremu sa poslu udaje na zmenu mena a priezviska
 //        Ak je vsetko spravne, vrati sa 200.
-        $email = 'bla@bla.com';
+        $email = 'admin@admin.com';
         $password = 'Ahoj123!';
-        $id = '51';
+        $id = '1';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
@@ -72,18 +84,18 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/profile', ['name' => 'mino', 'surname' => 'mino']);
+        ])->json('PATCH', '/api/profile', ['name' => 'Admin', 'surname' => 'Admin']);
         $response->assertStatus(200);
-        $response->assertJson(['id' => $id, 'email' => $email, 'name' => 'mino', 'surname' => 'mino']);
+        $response->assertJson(['id' => $id, 'email' => $email, 'name' => 'Admin', 'surname' => 'Admin']);
     }
 
     public function testInvalidEditProfile()
     {
 //        Pouzivatel sa prihlasi, vygeneruje sa token, ktory sa dalej posle na PATCH profile, avsak hodnoty mena a priezviska su NULL, co
 //        nesmie byt validne.
-        $email = 'bla@bla.com';
+        $email = 'admin@admin.com';
         $password = 'Ahoj123!';
-        $id = '51';
+        $id = '1';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
@@ -114,7 +126,7 @@ class UserTest extends TestCase
     {
 //        Prihlasenie admina a zmena udajov u pouzivatela pod ID 1.
 //        isAdmin = 1
-        $email = 'bla@bla.com';
+        $email = 'admin@admin.com';
         $password = 'Ahoj123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -123,16 +135,16 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/profile/1', ['name' => '1changed', 'surname' => '1changed']);
+        ])->json('PATCH', '/api/profile/3', ['name' => '3changed', 'surname' => '3changed']);
         $response->assertStatus(200);
-        $response->assertJson(['id' => '1', 'name' => '1changed', 'surname' => '1changed']);
+        $response->assertJson(['id' => '3', 'name' => '3changed', 'surname' => '3changed']);
     }
 
     public function testInvalidAdminEditProfile()
     {
 //        prihlasenie bezneho pouzivatela, ktory nema privilegia na zmenu udajov u ostatnych pouzivatelov.
 //        isAdmin = 0
-        $email = 'sally.smith@gmail.com';
+        $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -158,7 +170,7 @@ class UserTest extends TestCase
         $id = User::where('email',$email)->first()->id;
 
 //        Prihlasenie admina a zmazanie pouzivatela, ktory bol novo vytvoreny pri registracii.
-        $email = 'bla@bla.com';
+        $email = 'admin@admin.com';
         $password = 'Ahoj123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -174,7 +186,7 @@ class UserTest extends TestCase
     public function testInvalidUserDelete()
     {
 //        Prihlasenie bezneho pouzivatela a pokus o zmazanie pouzivatela s id 3.
-        $email = 'sally.smith@gmail.com';
+        $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -189,7 +201,7 @@ class UserTest extends TestCase
 
     public function testValidPasswordChange(){
 //        Prihlasenie pouzivatela
-        $email = 'sally.smith@gmail.com';
+        $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -213,7 +225,7 @@ class UserTest extends TestCase
     }
 
     public function testInvalidPasswordChange(){
-        $email = 'sally.smith@gmail.com';
+        $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
@@ -253,5 +265,57 @@ class UserTest extends TestCase
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => $password, 'confirm' => $password]);
         $response->assertStatus(200);
         $response->assertSee('Nove heslo nemoze byt rovnake ako stare heslo.');
+    }
+
+    public function testValidActivation(){
+//        Prihlasenie admina
+        $email = 'admin@admin.com';
+        $password = 'Ahoj123!';
+        $id = 2;
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+//        Deaktivacia pouzivatela s id 2
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('PATCH', '/api/users/2/deactivate');
+        $response->assertStatus(200);
+        $response->assertJson(['id' => $id, 'isActive' => 0]);
+
+//        Pokus deaktivovaneho pouzivatela o prihlasenie
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
+        $response->assertStatus(403);
+        $response->assertJson(['message' => 'Vas ucet je deaktivovany.']);
+
+//        Spatna aktivacia pouzivatela s id 2
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('PATCH', '/api/users/2/activate');
+        $response->assertStatus(200);
+        $response->assertJson(['id' => $id, 'isActive' => 1]);
+
+//        Pokus spatne aktivovaneho pouzivatela o prihlasenie
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
+        $response->assertStatus(200);
+    }
+
+    public function testInvalidActivation(){
+//        Pokus o deaktivaciu pri beznom pouzivatelovi
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('PATCH', '/api/users/4/deactivate');
+        $response->assertStatus(401);
     }
 }

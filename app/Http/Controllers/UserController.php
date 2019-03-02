@@ -61,7 +61,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return 'Nove heslo nesplna pozdiadavky.';
         }
-        
+
         if(!(Hash::check($oldPassword, $actualPassword))){
             return 'Aktualne heslo je nespravne.';
         }elseif ($newPassword != $confirm){
@@ -75,4 +75,23 @@ class UserController extends Controller
             return response()->json('Heslo bolo zmenene.');
         }
     }
+
+    public function activateUser($id){
+
+        User::find($id)->update([
+            "isActive" => 1,
+        ]);
+        $user = User::find($id);
+        return response()->json($user);
+    }
+
+    public function deactivateUser($id){
+
+        User::find($id)->update([
+            "isActive" => 0,
+        ]);
+        $user = User::find($id);
+        return response()->json($user);
+    }
+
 }
