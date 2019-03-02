@@ -65,7 +65,7 @@
                                     </span>
                                 @endif
                                 <p id="passwordHelpBlock" class="form-text text-muted">
-                                    Vaše heslo musí byť dlhé minimálne 6 znakov, musí obsahovať aspoň jedno číslo, jedno veľké písmeno a jeden špeciálny znak (napr. "?").
+                                    Vaše heslo musí byť dlhé minimálne 8 znakov, musí obsahovať aspoň jedno číslo, jedno veľké písmeno a jeden špeciálny znak (napr. "?").
                                 </p>
                             </div>
 
