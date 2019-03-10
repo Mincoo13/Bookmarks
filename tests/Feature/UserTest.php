@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -236,7 +237,7 @@ class UserTest extends TestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Nespravneheslo', 'newPassword' => 'Newpass123!', 'confirm' => 'Newpass123!']);
-        $response->assertStatus(200);
+        $response->assertStatus(500);
         $response->assertSee('Aktualne heslo je nespravne.');
 
 //        Nove heslo sa nezhoduje s potvrdzovacim heslom
@@ -245,7 +246,7 @@ class UserTest extends TestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass1234!', 'confirm' => 'Newpass123!']);
-        $response->assertStatus(200);
+        $response->assertStatus(500);
         $response->assertSee('Nove hesla sa nezhoduju.');
 
 //        Nove heslo nesplna poziadavky silneho hesla
@@ -254,8 +255,8 @@ class UserTest extends TestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass', 'confirm' => 'Newpass']);
-        $response->assertStatus(200);
-        $response->assertSee('Nove heslo nesplna pozdiadavky.');
+        $response->assertStatus(500);
+        $response->assertSee('Nove heslo nesplna poziadavky dostatocne silneho hesla.');
 
 //        Nove heslo je rovnake ako aktualne heslo
         $response = $this->withHeaders([
@@ -263,7 +264,7 @@ class UserTest extends TestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => $password, 'confirm' => $password]);
-        $response->assertStatus(200);
+        $response->assertStatus(500);
         $response->assertSee('Nove heslo nemoze byt rovnake ako stare heslo.');
     }
 
@@ -317,5 +318,40 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/4/deactivate');
         $response->assertStatus(401);
+    }
+
+    public function testValidForgottenPassword(){
+//      Odoslanie vyresetovaneho hesla
+        $email = 'sally.smith@example.com';
+        $response = $this->json('POST', 'api/forgotten-password', ['email' => $email]);
+        $response->assertStatus(200);
+        $password = $response->content();
+//      Prihlasenie pomocou noveho hesla
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+//      Nastavenie povodneho hesla
+        User::where('email',$email)->first()->update([
+            "password" => Hash::make("Sally123!")
+        ]);
+    }
+
+    public function testInvalidForgottenPassword(){
+//      Pokus o vyresetovanie hesla na neexistujuceho pouzivatela
+        $response = $this->json('POST', 'api/forgotten-password', ['email' => 'bad@email.com']);
+        $response->assertStatus(409);
+        $response->assertSee("Ziaden pouzivatel nie je zaregistrovany pod touto e-mailovou adresou.");
+
+//      Vygenerovanie noveho hesla pouzivatelom
+        $response = $this->json('POST', 'api/forgotten-password', ['email' => 'sally.smith@example.com']);
+        $response->assertStatus(200);
+
+//      Prihlasenie pomocou stareho hesla
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
+        $response->assertStatus(401);
+
+//      Nastavenie povodneho hesla
+        User::where('email','sally.smith@example.com')->first()->update([
+            "password" => Hash::make("Sally123!")
+        ]);
     }
 }

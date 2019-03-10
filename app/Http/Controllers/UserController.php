@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgottenPassword;
 use Illuminate\Http\Request;
 use App\User;
 use JWTAuth;
 use Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -41,7 +43,10 @@ class UserController extends Controller
     public function deleteUser($id){
         $user = User::find($id);
         $user->forceDelete();
-        return 'delete succesful';
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Zmazanie pouzivatela bolo uspesne.'
+        ],200);
     }
 
     public function changePassword(Request $request){
@@ -59,20 +64,32 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return 'Nove heslo nesplna pozdiadavky.';
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nove heslo nesplna poziadavky dostatocne silneho hesla.'
+            ],500);
         }
 
         if(!(Hash::check($oldPassword, $actualPassword))){
-            return 'Aktualne heslo je nespravne.';
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aktualne heslo je nespravne.'
+            ],500);
         }elseif ($newPassword != $confirm){
-            return 'Nove hesla sa nezhoduju.';
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nove hesla sa nezhoduju.'
+            ],500);
         }elseif (Hash::check($newPassword, $actualPassword)){
-            return 'Nove heslo nemoze byt rovnake ako stare heslo.';
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nove heslo nemoze byt rovnake ako stare heslo.'
+            ],500);
         }else{
             User::find($id)->update([
                 "password" => Hash::make($newPassword)
             ]);
-            return response()->json('Heslo bolo zmenene.');
+            return response()->json(['Heslo bolo zmenene.'],200);
         }
     }
 
@@ -92,6 +109,23 @@ class UserController extends Controller
         ]);
         $user = User::find($id);
         return response()->json($user);
+    }
+
+    public function resetPassword(Request $request){
+        $email = $request->email;
+        if(User::where('email',$email)->first() == null){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ziaden pouzivatel nie je zaregistrovany pod touto e-mailovou adresou.'
+            ], 409);
+        }
+        $newPassword = str_random(8);
+        $hashedPassword = Hash::make($newPassword);
+        User::where('email',$email)->first()->update([
+            "password" => $hashedPassword
+        ]);
+        Mail::to($email)->send(new ForgottenPassword($newPassword));
+        return $newPassword;
     }
 
 }

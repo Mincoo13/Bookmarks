@@ -11,6 +11,22 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    public function bookmarks(){
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function categories(){
+        return $this->hasMany(Category::class);
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function bookmarklists(){
+        return $this->hasMany(BookmarkList::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

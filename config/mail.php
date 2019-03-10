@@ -17,6 +17,48 @@ return [
     */
 
     'driver' => env('MAIL_DRIVER', 'smtp'),
+    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+    'port' => env('MAIL_PORT', 2525),
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'shared.bookmarks.app@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Shared Bookmarks'),
+    ],
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'username' => env('MAIL_USERNAME', 'ba10b8ec1fd255'),
+
+    'password' => env('MAIL_PASSWORD','00c09d9975e5ef'),
+    'sendmail' => '/usr/sbin/sendmail -bs',
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+    'log_channel' => env('MAIL_LOG_CHANNEL'),
+
+
+//    'driver' => env('MAIL_DRIVER', 'smtp'),
+//    'host' => env('MAIL_HOST', 'smtp.gmail.io'),
+//    'port' => env('MAIL_PORT', 587),
+//    'from' => [
+//        'address' => env('MAIL_FROM_ADDRESS', 'shared.bookmarks.app@gmail.com'),
+//        'name' => env('MAIL_FROM_NAME', 'Shared Bookmarks'),
+//    ],
+//    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+//    'username' => env('MAIL_USERNAME', 'shared.bookmarks.app@gmail.com'),
+//
+//    'password' => env('MAIL_PASSWORD','Shared1211'),
+//    'sendmail' => '/usr/sbin/sendmail -bs',
+//    'markdown' => [
+//        'theme' => 'default',
+//
+//        'paths' => [
+//            resource_path('views/vendor/mail'),
+//        ],
+//    ],
+//    'log_channel' => env('MAIL_LOG_CHANNEL'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +71,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +84,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -55,10 +97,7 @@ return [
     |
     */
 
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'mincoo13gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'Milos'),
-    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +110,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +123,7 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME', 'mincoo13@gmail.com'),
 
-    'password' => env('MAIL_PASSWORD','MyPassword'),
 
     /*
     |--------------------------------------------------------------------------
@@ -99,7 +136,7 @@ return [
     |
     */
 
-    'sendmail' => '/usr/sbin/sendmail -bs',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -112,13 +149,7 @@ return [
     |
     */
 
-    'markdown' => [
-        'theme' => 'default',
 
-        'paths' => [
-            resource_path('views/vendor/mail'),
-        ],
-    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -131,6 +162,6 @@ return [
     |
     */
 
-    'log_channel' => env('MAIL_LOG_CHANNEL'),
+
 
 ];

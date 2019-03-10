@@ -28,6 +28,6 @@ class UsersTableSeeder extends Seeder
             'isAdmin' => 0,
             'isActive' => 1,
         ]);
-        factory(App\User::class, 50)->create();
+        factory(App\User::class, 5)->create();
     }
 }
