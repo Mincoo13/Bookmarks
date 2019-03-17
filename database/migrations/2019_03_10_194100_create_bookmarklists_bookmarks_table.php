@@ -19,6 +19,7 @@ class CreateBookmarklistsBookmarksTable extends Migration
             $table->foreign('bookmark_id')->references('id')->on('bookmarks')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('bookmarklist_id');
             $table->foreign('bookmarklist_id')->references('id')->on('bookmarklists')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('order');
             $table->timestamps();
         });
     }

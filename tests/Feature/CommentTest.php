@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Category;
+use App\Comment;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CategoryTest extends TestCase
+class CommentTest extends TestCase
 {
     use WithFaker;
     /**
@@ -20,190 +20,181 @@ class CategoryTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testNoToken()
-    {
-//        Pouzivatel sa prihlasi, vygeneruje sa token, avsak neposle sa dalej, preto sa pri zobrazeni profilu vrati chybova hlaska 401.
-        $response = $this->json('POST', '/api/categories', ['name' => 'food']);
+    public function testNoToken(){
+        $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
+        $response->assertStatus(200);
+        $response = $this->json('POST', '/api/comments', ['bookmark_id' => 1, 'text' => 'text']);
         $response->assertStatus(401);
-        $response = $this->json('PATCH', '/api/categories/2', ['name' => 'food']);
+        $response = $this->json('PATCH', '/api/comments/1', ['text' => 'text']);
+        $response->assertStatus(401);
+        $response = $this->json('DELETE', '/api/comments/1');
         $response->assertStatus(401);
     }
 
-    public function testValidCreateCategory(){
-//        Vytvorenie kategorie
-        $name = $this->faker->word." ".$this->faker->word;
-
+    public function testValidCreateComment(){
+        $text = $this->faker->text;
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
+
+//        Komentovanie vlastnej zalozky
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/categories', ['name' => $name]);
+        ])->json('POST', '/api/comments', ['bookmark_id' => 1, 'text' => $text]);
         $response->assertStatus(200);
 
+//        Komentovanie cudzej zalozky
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/comments', ['bookmark_id' => 5, 'text' => $text]);
+        $response->assertStatus(200);
     }
 
-    public function testInvalidCreateCategory(){
-//        Pokus o upravu kategorie na nazov, pod ktorym uz ina kategoria existuje.
-        $name = "food";
+    public function testInvalidCreateComment(){
+        $text = $this->faker->text;
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
+
+//        Pokus o pridanie komentaru bez textu
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/categories', ['name' => $name]);
+        ])->json('POST', '/api/comments', ['bookmark_id' => 1]);
+        $response->assertStatus(409);
+
+//        Pokus o komentovanie neverejnej zalozky
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/comments', ['bookmark_id' => 6, 'text' => $text]);
+        $response->assertStatus(401);
+
+//        Pokus o komentovanie bez uvedenia zalozky
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/comments', ['text' => $text]);
         $response->assertStatus(409);
     }
 
-    public function testValidEditCategory(){
-//        Zmena nazvu kategorie
-        $name = "animal planet";
+    public function testValidEditComment(){
+        $text = $this->faker->text;
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/categories/2', ['name' => $name]);
-        $response->assertStatus(200);
 
-//        Spatna zmena na povodny nazov.
+//        Uprava komentaru
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/categories/2', ['name' => "animals"]);
+        ])->json('PATCH', '/api/comments/1', ['text' => $text]);
         $response->assertStatus(200);
     }
 
-    public function testInvalidEditCategory(){
-        $name = "nature";
+    public function testInvalidEditComment(){
+        $text = $this->faker->text;
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
-//        Pokus o zmenu na nazov, pod ktorym uz existuje kategoria.
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/categories/2', ['name' => $name]);
-        $response->assertStatus(409);
 
-//        Pokus o zmenu kategorie, ktora nepatri danemu pouzivatelovi.
+//        Pokus o upravu komentaru, ktory vytvoril iny pouzivatel
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/categories/4', ['name' => $name]);
+        ])->json('PATCH', '/api/comments/3', ['text' => $text]);
         $response->assertStatus(401);
 
-//        Pokus o zmenu neexistujucej kategorie.
+//        Pokus o upravu komentaru bez zadania textu
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/categories/9999', ['name' => $name]);
-        $response->assertStatus(404);
+        ])->json('PATCH', '/api/comments/1', ['text' => '']);
+        $response->assertStatus(409);
     }
 
-    public function testValidDeleteCategory(){
-        $email = 'sally.smith@example.com';
-        $password = 'Sally123!';
-        $name = 'test';
-        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
-        $response->assertStatus(200);
-        $token = $response->json()['data']['token'];
-
-//        Vytvorenie novej kategorie
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/categories', ['name' => $name]);
-        $response->assertStatus(200);
-        $id = Category::where('name', $name)->first()->id;
-
-//        Zmazanie danej kategorie
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('DELETE', '/api/categories/'.$id);
-        $response->assertStatus(200);
-    }
-
-    public function testInvalidDeleteCategory(){
+    public function testValidDeleteComment(){
+        $text = $this->faker->text;
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
 
-//        Pokus o zmazanie kategorie, ktora patri inemu pouzivatelovi
+//        Komentovanie vlastnej zalozky
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('DELETE', '/api/categories/4');
+        ])->json('POST', '/api/comments', ['bookmark_id' => 1, 'text' => $text]);
+        $response->assertStatus(200);
+        $comment = Comment::where('text', $text)->first();
+
+//        Zmazanie komentaru pod vlastnou zalozkou
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/comments/'.$comment->id);
+        $response->assertStatus(200);
+
+//        Komentovanie cudzej, verejnej zalozky
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/comments', ['bookmark_id' => 5, 'text' => $text]);
+        $response->assertStatus(200);
+        $comment = Comment::where('text', $text)->first();
+
+//        Zmazanie komentaru pod cudzou, verejnou zalozkou
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/comments/'.$comment->id);
+        $response->assertStatus(200);
+    }
+
+    public function testInvalidDeleteComment(){
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+//        Pokus o zmazanie neexistujuceho komentaru
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/comments/666');
+        $response->assertStatus(409);
+
+//        Pokus o zmazanie komentara, ktory vytvoril iny clovek pod svojou zalozkou
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/comments/3');
         $response->assertStatus(401);
-
-//        Pokus o zmazanie neexistujucej kategorie
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('DELETE', '/api/categories/999');
-        $response->assertStatus(409);
-
-//        Pokus o zmazanie kategorie, ktorej su priradene zalozky
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('DELETE', '/api/categories/2');
-        $response->assertStatus(409);
-    }
-
-    public function testValidShowAllCategories(){
-//        Zobrazenie vsetkych kategorii
-        $email = 'sally.smith@example.com';
-        $password = 'Sally123!';
-        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
-        $response->assertStatus(200);
-        $token = $response->json()['data']['token'];
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('GET', '/api/categories');
-        $response->assertStatus(200);
-        $response->assertJson([['id' => 1],['id' => 2],['id' => 3]]);
-    }
-
-    public function testValidShowCategory(){
-        $email = 'sally.smith@example.com';
-        $password = 'Sally123!';
-        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
-        $response->assertStatus(200);
-        $token = $response->json()['data']['token'];
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('GET', '/api/categories/1');
-        $response->assertStatus(200);
     }
 }

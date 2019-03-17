@@ -17,11 +17,13 @@ class CreateBookmarksTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('category_id');
+            $table->unsignedInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
-            $table->string('link');
+            $table->string('url');
+            $table->text('description')->nullable();
             $table->boolean('isRead');
+            $table->boolean('isVisible');
             $table->rememberToken();
             $table->timestamps();
         });

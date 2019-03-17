@@ -24,9 +24,11 @@ $factory->define(App\Bookmark::class, function (Faker $faker) {
     }
     return [
         'name' => $faker->word." ".$faker->word,
-        'link' => $faker->url,
+        'url' => $faker->url,
+        'description' => $faker->text,
         'user_id' => $user_id,
         'category_id' => array_random($ids),
         'isRead' => 0,
+        'isVisible' => random_int(0,1),
     ];
 });
