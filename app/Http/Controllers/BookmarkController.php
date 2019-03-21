@@ -200,6 +200,90 @@ class BookmarkController extends Controller
                 ],200);
             }
         }
+    }
 
+    public function deleteBookmark($id){
+        $user_id = JWTAuth::user()->id;
+        $bookmark = Bookmark::find($id);
+
+        if(empty($bookmark)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dana zalozka neexistuje.',
+            ],409);
+        }
+        elseif($user_id != $bookmark->user_id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na zmazanie tejto zalozky nemate pravo.',
+            ],401);
+        }
+        else{
+//            Vyberiem vsetky riadky v spojovacej tabulke, kde sa nachadza tento bookmark, teda vsetky zoznamy
+            $all_bookmarks = DB::table('bookmarklists_bookmarks')->where([
+                ['bookmark_id', '=', $bookmark->id],
+            ])->get();
+
+            //            Vytvorim pole, do ktoreho vlozim ich idcka
+                $array_lists_id = array();
+                foreach ($all_bookmarks as $one_list){
+                    array_push($array_lists_id,[$one_list->bookmarklist_id]);
+                }
+                if(empty($array_lists_id)){
+                    $bookmark->forceDelete();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Bookmark bol uspesne odstraneny.',
+                    ],200);
+                }
+                else{
+//            Opakujem tolkokrat, kolko zoznamov s danym bookmarkom existuje
+                foreach($array_lists_id as $list_id){
+//                Najdem poradie bookmarku v danom zozname
+                    $order = DB::table("bookmarklists_bookmarks")->where([
+                        ['bookmarklist_id', '=', $list_id],
+                        ['bookmark_id', '=', $id],
+                    ])->first()->order;
+
+//                Mazem bookmark zo zoznamu
+                    DB::table("bookmarklists_bookmarks")->where([
+                        ['bookmarklist_id', '=', $list_id],
+                        ['bookmark_id', '=', $id],
+                    ])->delete();
+
+//                Vyberiem vsetky zaznamy, ktore maju poradie vyssie ako zaznam s bookmarkom, ktory idem odstranit
+                    $all_bookmarks = DB::table('bookmarklists_bookmarks')->where([
+                        ['bookmarklist_id','=', $list_id],
+                        ['order', '>', $order],
+                    ])->get();
+//                 Ak take zaznamu neexistuju, t.j. mazany bookmark je posledny v poradi, tak neriesime zoradovanie
+                    if(empty($all_bookmarks)){
+                        $bookmark->forceDelete();
+                        continue;
+                    }
+                    else{
+                        //                Znovu vytvaram pole, pre zoradenie zvysnych bookmarkov v zozname
+                        $array = array();
+                        foreach ($all_bookmarks as $item_id){
+                            array_push($array,[$item_id->id]);
+                        }
+                        $i = 0;
+                        foreach ($all_bookmarks as $item){
+
+                            $new = $item->order - 1;
+                            DB::table('bookmarklists_bookmarks')->where('id', $array[$i])->update(['order' => $new]);
+                            $i++;
+                        }
+                    }
+//            Nakoniec samotny bookmark zmazem (zmazu sa aj vsetky komentare)
+
+                }
+                    $bookmark->forceDelete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Bookmark bol uspesne odstraneny.',
+                ],200);
+            }
+        }
     }
 }

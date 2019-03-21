@@ -7,5 +7,6 @@ $factory->define(App\BookmarkList::class, function (Faker $faker) {
     return [
         'name' => $faker->word." ".$faker->word,
         'user_id' => $user_id,
+        'isVisible' => random_int(0,1),
     ];
 });

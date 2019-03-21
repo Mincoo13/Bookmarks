@@ -20,10 +20,16 @@ Route::middleware('jwt.auth')->group(function(){
     Route::post('bookmarks','BookmarkController@createBookmark');
     Route::patch('bookmarks/{id}','BookmarkController@editBookmark');
     Route::patch('bookmarks/{id}/mark-read','BookmarkController@markReadFlag');
+    Route::delete('bookmarks/{id}','BookmarkController@deleteBookmark');
 
     Route::post('comments', 'CommentController@createComment');
     Route::patch('comments/{id}', 'CommentController@editComment');
     Route::delete('comments/{id}', 'CommentController@deleteComment');
+
+    Route::post('bookmark-lists', 'BookmarkListController@createBookmarkList');
+    Route::post('bookmark-lists/{id}', 'BookmarkListController@addBookmarkToList');
+    Route::patch('bookmark-lists/{id}/order', 'BookmarkListController@setBookmarkOrder');
+    Route::delete('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
 
     Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');

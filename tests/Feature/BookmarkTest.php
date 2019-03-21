@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Bookmark;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -201,6 +202,7 @@ class BookmarkTest extends TestCase
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
+
 //        Pokus o oznacenie cudzej zalozky
         $response = $this->withHeaders([
             'Accept' => 'application/json',
@@ -216,5 +218,53 @@ class BookmarkTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/bookmarks/666/mark-read');
         $response->assertStatus(409);
+    }
+
+    public function testValidDeleteBookmark(){
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+//        Najskor si vytvorim bookmark
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/bookmarks', ['name' => 'test_zmazanie', 'url' => 'zmazanie.com', 'description' => 'zmazanie', 'category_id' => 1, 'isVisible' => 1]);
+        $id = Bookmark::where('name','test_zmazanie')->first()->id;
+        $response->assertStatus(200);
+
+
+//        Zmazanie bookmarku
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/bookmarks/'.$id);
+        $response->assertStatus(200);
+    }
+
+    public function testInvalidDeleteBookmark(){
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/bookmarks/666');
+        $response->assertStatus(409);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('DELETE', '/api/bookmarks/5');
+        $response->assertStatus(401);
     }
 }

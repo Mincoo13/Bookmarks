@@ -37,6 +37,22 @@ class Bookmarks_BookmarkListsTableSeeder extends Seeder
             'bookmarklist_id' => 2,
             'order' => 2,
         ]);
+        DB::table('bookmarklists_bookmarks')->insert([
+            'bookmark_id' => 4,
+            'bookmarklist_id' => 1,
+            'order' => 4,
+        ]);
+        DB::table('bookmarklists_bookmarks')->insert([
+            'bookmark_id' => 6,
+            'bookmarklist_id' => 4,
+            'order' => 1,
+        ]);
+        DB::table('bookmarklists_bookmarks')->insert([
+            'bookmark_id' => 5,
+            'bookmarklist_id' => 4,
+            'order' => 2,
+        ]);
+
 //        factory(App\BookmarkList_Bookmark::class, 15)->create();
     }
 }

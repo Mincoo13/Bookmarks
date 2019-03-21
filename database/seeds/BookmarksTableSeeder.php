@@ -73,6 +73,16 @@ class BookmarksTableSeeder extends Seeder
             'isVisible' => false,
             'created_at' => Carbon::now(),
         ]);
+        DB::table('bookmarks')->insert([
+            'user_id' => 2,
+            'category_id' => 4,
+            'name' => 'test',
+            'url' => 'testtest.com',
+            'description' => 'Nullam vel mattis dolor.',
+            'isRead' => false,
+            'isVisible' => false,
+            'created_at' => Carbon::now(),
+        ]);
         factory(App\Bookmark::class, 150)->create();
     }
 }
