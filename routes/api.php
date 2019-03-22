@@ -21,6 +21,7 @@ Route::middleware('jwt.auth')->group(function(){
     Route::patch('bookmarks/{id}','BookmarkController@editBookmark');
     Route::patch('bookmarks/{id}/mark-read','BookmarkController@markReadFlag');
     Route::delete('bookmarks/{id}','BookmarkController@deleteBookmark');
+    Route::post('search-bookmarks','BookmarkController@searchBookmarks');
 
     Route::post('comments', 'CommentController@createComment');
     Route::patch('comments/{id}', 'CommentController@editComment');

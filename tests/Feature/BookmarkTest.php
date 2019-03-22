@@ -30,6 +30,10 @@ class BookmarkTest extends TestCase
         $response->assertStatus(401);
         $response = $this->json('PATCH', '/api/bookmarks/1/mark-read');
         $response->assertStatus(401);
+        $response = $this->json('POST', '/api/search-bookmarks',['text' => '.com', 'global' => 0, 'read'=> 1]);
+        $response->assertStatus(401);
+        $response = $this->json('DELETE', '/api/bookmarks/1');
+        $response->assertStatus(401);
 
     }
 
@@ -266,5 +270,77 @@ class BookmarkTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('DELETE', '/api/bookmarks/5');
         $response->assertStatus(401);
+    }
+
+    public function testValidSearchBookmakrs(){
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Materna', 'global' => 1, 'read'=> 1, 'category' => 'food']);
+        $response->assertStatus(200);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Facebook', 'global' => 0, 'read'=> 1, 'category' => 'animals']);
+        $response->assertStatus(200);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'dolor', 'global' => 1, 'read'=> 0]);
+        $response->assertStatus(200);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => '.com', 'global' => 0, 'read'=> 1]);
+        $response->assertStatus(200);
+    }
+
+    public function testInvalidSearchBookmarks(){
+        $email = 'sally.smith@example.com';
+        $password = 'Sally123!';
+        $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
+        $response->assertStatus(200);
+        $token = $response->json()['data']['token'];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'nahodny retazec znakov', 'global' => 1, 'read'=> 1]);
+        $response->assertStatus(409);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'nahodny retazec znakov', 'global' => 1, 'read'=> 0]);
+        $response->assertStatus(409);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Materna', 'global' => 1, 'read'=> 0, 'category' => 'nature']);
+        $response->assertStatus(409);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer' . $token,
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Google', 'global' => 0, 'read'=> 1, 'category' => 'animals']);
+        $response->assertStatus(409);
     }
 }

@@ -19,7 +19,7 @@ class BookmarksTableSeeder extends Seeder
             'name' => 'Materna',
             'url' => 'maternauni.slack.com',
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tellus dolor, tempor sit amet diam eget, aliquet aliquam lectus. Sed congue eros et lorem imperdiet, semper volutpat nulla rutrum.',
-            'isRead' => false,
+            'isRead' => true,
             'isVisible' => true,
             'created_at' => Carbon::now(),
         ]);
@@ -49,7 +49,7 @@ class BookmarksTableSeeder extends Seeder
             'name' => 'Facebook',
             'url' => 'facebook.com',
             'description' => 'Curabitur fringilla ipsum at condimentum bibendum. Aliquam massa leo, dapibus sit amet cursus id, cursus ac arcu. In hac habitasse platea dictumst.',
-            'isRead' => false,
+            'isRead' => true,
             'isVisible' => true,
             'created_at' => Carbon::now(),
         ]);

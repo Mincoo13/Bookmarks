@@ -28,7 +28,7 @@ $factory->define(App\Bookmark::class, function (Faker $faker) {
         'description' => $faker->text,
         'user_id' => $user_id,
         'category_id' => array_random($ids),
-        'isRead' => 0,
+        'isRead' => random_int(0,1),
         'isVisible' => random_int(0,1),
     ];
 });

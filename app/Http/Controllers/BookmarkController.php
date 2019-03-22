@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bookmark;
 use App\Category;
+use App\Comment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -275,14 +276,152 @@ class BookmarkController extends Controller
                             $i++;
                         }
                     }
-//            Nakoniec samotny bookmark zmazem (zmazu sa aj vsetky komentare)
-
                 }
+//                Nakoniec samotny bookmark zmazem (zmazu sa aj vsetky komentare)
                     $bookmark->forceDelete();
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bookmark bol uspesne odstraneny.',
                 ],200);
+            }
+        }
+    }
+
+    public function searchBookmarks(Request $request){
+        $user_id = JWTAuth::user()->id;
+        $text = $request->text;
+        $global = $request->global;
+        $read = $request->read;
+        $category = $request->category;
+
+        if($category != null){
+            $category_id = Category::where([
+                ['user_id','=',$user_id],
+                ['name','=',$category],
+            ])->first()->id;
+//            Kategoria neexistuje
+            if(empty($category_id)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Lutujeme, dana kategoria neexistuje.',
+                ],409);
+            }
+            else{
+//                Najdenie vsetkych bookmarkov pod danou kategoriou
+                $all_category = Bookmark::where([
+                    ['user_id','=',$user_id],
+                    ['category_id','=',$category_id]
+                ])->get();
+
+//                Ak sa pod kategoriou nenasla ziadna zalozka
+                if(empty($all_category)){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Lutujeme, pod danou kategoriou sa nenasli ziadne vysledky.',
+                    ],409);
+                }
+                elseif($read == true){
+//                    Vsetky zalozky pod danou kategoriou, ktore su oznacene za precitane
+                    $all_read = [];
+                    foreach ($all_category as $item_category){
+                        if($item_category->isRead == 1)
+                        $all_read[]= $item_category;
+                    }
+
+//                    Do vysledku ulozim vsetky zalozky, ktore obsahuju dany retazec
+                    $result = [];
+                    foreach ($all_read as $item_read){
+                        if(str_contains($item_read->name, $text) || str_contains($item_read->url, $text) || str_contains($item_read->description, $text)){
+                            $result[] = $item_read;
+                        }
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
+                else{
+                    foreach ($all_category as $item_category) {
+                        if (str_contains($item_category->name, $text) || str_contains($item_category->url, $text) || str_contains($item_category->description, $text)) {
+                            $result[] = $item_category;
+                        }
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
+            }
+        }
+        else{
+//            Vybrat zo vsetkych bookmarkov
+            if($global == true){
+                $all_global = Bookmark::where('isVisible', '=', true)->orWhere('user_id','=',$user_id)->get();
+
+                $result = [];
+                foreach ($all_global as $item_global){
+                    if(str_contains($item_global->name, $text) || str_contains($item_global->url, $text) || str_contains($item_global->description, $text))
+                        $result[]=$item_global;
+                }
+                if(empty($result)){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                    ],409);
+                }
+                else
+                    return $result;
+            }
+//            Vybrat z vlastnych
+            else{
+                $all_private = Bookmark::where('user_id', '=', $user_id)->get();
+
+//                Vybratie z vlastnych, precitanych
+                if($read == true){
+                    $all_read = [];
+                    foreach ($all_private as $item_private){
+                        if($item_private->isRead == 1)
+                            $all_read[]=$item_private;
+                    }
+
+                    $result = [];
+                    foreach ($all_read as $item_read){
+                        if(str_contains($item_read->name, $text) || str_contains($item_read->url, $text) || str_contains($item_read->description, $text))
+                            $result[]=$item_read;
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
+//                Z vlastnych neprecitanych
+                else{
+                    $result = [];
+                    foreach ($all_private as $item_private){
+                        if(str_contains($item_private->name, $text) || str_contains($item_private->url, $text) || str_contains($item_private->description, $text))
+                            $result[]=$item_private;
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
             }
         }
     }
