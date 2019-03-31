@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use JWTAuth;
 use Validator;
+use JWTFactory;
 use App\User;
 class AuthController extends Controller
 {
@@ -15,6 +16,10 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+
+        $myTTL = 525000; //minutes
+        JWTAuth::factory()->setTTL($myTTL);
+
         $user = User::where('email', $request->email)->first();
         if(!$user->isActive){
             return response()->json([
@@ -40,7 +45,7 @@ class AuthController extends Controller
             if (! $token = JWTAuth::attempt($credentials)) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'We can`t find an account with this credentials.'
+                    'message' => 'We can\'t find an account with this credentials.'
                 ], 401);
             }
         } catch (JWTException $e) {

@@ -12,6 +12,37 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    public function registerUser(Request $request){
+        $name = $request->name;
+        $surname = $request->surname;
+        $email = $request->email;
+        $password = $request->password;
+        $password_confirmation = $request->password_confirmation;
+
+        if($password != $password_confirmation){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hesla sa nezhoduju.'
+            ],409);
+        }
+
+        $this->validate(request(), [
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/'],
+        ]);
+
+        return User::create([
+            'name' => $name,
+            'surname' => $surname,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'isAdmin' => false,
+            'isActive' => true,
+        ]);
+    }
+
     public function showProfile(){
         $id = JWTAuth::user()->id;
         $user = User::find($id);
