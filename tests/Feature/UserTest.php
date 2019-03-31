@@ -105,7 +105,7 @@ class UserTest extends TestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/profile', ['name' => NULL, 'surname' => NULL]);
-        $response->assertStatus(500);
+        $response->assertStatus(409);
 
 //        Odhlasenie pouzivatela
         $response = $this->withHeaders([
@@ -165,9 +165,9 @@ class UserTest extends TestCase
         $surname = $this->faker->lastName();
         $email = $this->faker->unique()->safeEmail();
         $password='$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm';
-        $response = $this->json('POST', '/register', ['name' => $name,'surname' => $surname,'email' => $email, 'password' => $password, 'password_confirmation' => $password]);
+        $response = $this->json('POST', 'api/register-user', ['name' => $name,'surname' => $surname,'email' => $email, 'password' => $password, 'password_confirmation' => $password]);
         $response
-            ->assertStatus(302);
+            ->assertStatus(201);
         $id = User::where('email',$email)->first()->id;
 
 //        Prihlasenie admina a zmazanie pouzivatela, ktory bol novo vytvoreny pri registracii.
@@ -212,7 +212,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass123!', 'confirm' => 'Newpass123!']);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass123!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(200);
         $response->assertSee('Heslo bolo zmenene.');
 //        Spatna zmena na povodne heslo
@@ -220,7 +220,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Newpass123!', 'newPassword' => $password, 'confirm' => $password]);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Newpass123!', 'newPassword' => $password, 'confirmPassword' => $password]);
         $response->assertStatus(200);
         $response->assertSee('Heslo bolo zmenene.');
     }
@@ -236,7 +236,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Nespravneheslo', 'newPassword' => 'Newpass123!', 'confirm' => 'Newpass123!']);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Nespravneheslo', 'newPassword' => 'Newpass123!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(500);
         $response->assertSee('Aktualne heslo je nespravne.');
 
@@ -245,7 +245,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass1234!', 'confirm' => 'Newpass123!']);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass1234!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(500);
         $response->assertSee('Nove hesla sa nezhoduju.');
 
@@ -254,7 +254,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass', 'confirm' => 'Newpass']);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass', 'confirmPassword' => 'Newpass']);
         $response->assertStatus(500);
         $response->assertSee('Nove heslo nesplna poziadavky dostatocne silneho hesla.');
 
@@ -263,7 +263,7 @@ class UserTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => $password, 'confirm' => $password]);
+        ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => $password, 'confirmPassword' => $password]);
         $response->assertStatus(500);
         $response->assertSee('Nove heslo nemoze byt rovnake ako stare heslo.');
     }

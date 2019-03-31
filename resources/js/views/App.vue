@@ -5,7 +5,8 @@
         <p>
             <router-link :to="{ name: 'home' }">Home</router-link> |
             <router-link :to="{ name: 'hello' }">Hello World</router-link> |
-            <router-link :to="{ name: 'login' }">Login</router-link>
+            <router-link :to="{ name: 'login' }">Login</router-link> |
+            <router-link :to="{ name: 'profile' }">Profile</router-link>
         </p>
 
         <div class="container">

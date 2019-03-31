@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ForgottenPassword;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
 use JWTAuth;
@@ -53,13 +54,27 @@ class UserController extends Controller
     public function editProfile(Request $request){
         $id = JWTAuth::user()->id;
 
-
-        User::find($id)->update([
-            "name" => $request->name,
-            "surname" => $request->surname
-        ]);
-        $user = User::find($id);
-        return response()->json($user);
+        if(empty($request->name)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musite zadat meno.'
+            ],409);
+        }
+        elseif(empty($request->surname)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musite zadat priezvisko.'
+            ],409);
+        }
+        else{
+            User::find($id)->update([
+                "name" => $request->name,
+                "surname" => $request->surname,
+                "updated_at" => Carbon::now()
+            ]);
+            $user = User::find($id);
+            return response()->json($user);
+        }
     }
 
     public function editProfileAdmin($id, Request $request){
@@ -86,12 +101,24 @@ class UserController extends Controller
         $actualPassword = JWTAuth::user()->password;
         $oldPassword = $request->oldPassword;
         $newPassword = $request->newPassword;
-        $confirm = $request->confirm;
+        $confirmPassword = $request->confirmPassword;
 
+        if(!(Hash::check($oldPassword, $actualPassword))){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aktualne heslo je nespravne.'
+            ],500);
+        }
+        elseif(empty($newPassword)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na zmenu hesla je potrebne zadat nove heslo.'
+            ],500);
+        }
         $validator = Validator::make($request->all(), [
             'oldPassword' => 'required',
             'newPassword' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/',
-            'confirm' => 'required',
+            'confirmPassword' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -100,13 +127,7 @@ class UserController extends Controller
                 'message' => 'Nove heslo nesplna poziadavky dostatocne silneho hesla.'
             ],500);
         }
-
-        if(!(Hash::check($oldPassword, $actualPassword))){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Aktualne heslo je nespravne.'
-            ],500);
-        }elseif ($newPassword != $confirm){
+        elseif ($newPassword != $confirmPassword){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Nove hesla sa nezhoduju.'

@@ -36,11 +36,11 @@
     export default {
         data() {
             return {
-                name: this.name,
-                surname: this.surname,
-                email: this.email,
-                password: this.password,
-                password_confirmation: this.password_confirmation,
+                name: null,
+                surname: null,
+                email: null,
+                password: null,
+                password_confirmation: null,
                 message: null,
                 errors: []
             };
