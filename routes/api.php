@@ -33,7 +33,8 @@ Route::middleware('jwt.auth')->group(function(){
     Route::patch('bookmark-lists/{id}/order', 'BookmarkListController@setBookmarkOrder');
     Route::delete('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
 
-    Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
+        Route::get('users', 'UserController@getUsers')->middleware('admin');
+        Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');
         Route::patch('users/{id}/activate', 'UserController@activateUser')->middleware('admin');
         Route::patch('users/{id}/deactivate', 'UserController@deactivateUser')->middleware('admin');

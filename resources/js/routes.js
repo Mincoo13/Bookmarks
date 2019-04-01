@@ -6,6 +6,7 @@ import Register from './views/Register'
 import Profile from './views/Profile'
 import EditProfile from './views/EditProfile'
 import EditPassword from './views/EditPassword'
+import Users from './views/Users'
 
 
 
@@ -62,6 +63,14 @@ export const routes =[
             path: '/edit-password',
             name: 'edit-password',
             component: EditPassword,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/users',
+            name: 'users',
+            component: Users,
             meta: {
                 auth: true
             }
