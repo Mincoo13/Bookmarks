@@ -25,7 +25,8 @@
                 <td> {{ user.created_at }}</td>
                 <td>
                     <button >Zobrazit profil</button>
-                    <button >Deaktivovat</button>
+                    <button v-if="user.isActive" v-on:click="deactivate(user.id)">Deaktivovať</button>
+                    <button v-else="user.isActive" v-on:click="activate(user.id)">Aktivovať</button>
                     <button v-on:click="destroy(user.id)">Zmazat</button>
                 </td>
             </tr>
@@ -64,13 +65,44 @@
                         this.users = response.data;
                     });
             },
+            activate(id){
+                axios
+                    .patch("/users/"+id+"/activate",{
+                        headers: {Authorization: "Bearer " + this.auth.getToken()}
+                    })
+                    .then(response => {
+                        this.message = "Používateľ bol deaktivovaný.";
+                        this.all()
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
+            deactivate(id){
+                axios
+                    .patch("/users/"+id+"/deactivate",{
+                        headers: {Authorization: "Bearer " + this.auth.getToken()}
+                    })
+                    .then(response => {
+                        this.message = "Používateľ bol aktivovaný.";
+                            this.all()
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
             destroy(id){
                 axios
                     .delete("/users/"+id,{
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol odstránený."
+                        this.message = "Používateľ bol odstránený.";
+                        this.all()
                     })
                     .catch(error => {
                         console.log(error.response);

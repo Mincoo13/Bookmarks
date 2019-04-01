@@ -159,7 +159,14 @@ class UserController extends Controller
     }
 
     public function activateUser($id){
+        $adminId = JWTAuth::user()->id;
 
+        if($adminId == $id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nie je možné aktivovať sám seba.'
+            ], 401);
+        }
         User::find($id)->update([
             "isActive" => 1,
         ]);
@@ -168,7 +175,14 @@ class UserController extends Controller
     }
 
     public function deactivateUser($id){
+        $adminId = JWTAuth::user()->id;
 
+        if($adminId == $id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nie je možné deaktivovať sám seba.'
+            ], 401);
+        }
         User::find($id)->update([
             "isActive" => 0,
         ]);

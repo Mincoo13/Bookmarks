@@ -7,6 +7,7 @@ import Profile from './views/Profile'
 import EditProfile from './views/EditProfile'
 import EditPassword from './views/EditPassword'
 import Users from './views/Users'
+import ResetPassword from './views/ResetPassword'
 
 
 
@@ -75,6 +76,12 @@ export const routes =[
                 auth: true
             }
         },
-
-
+        {
+            path: '/reset-password',
+            name: 'reset-password',
+            component: ResetPassword,
+            meta: {
+                auth: false
+            }
+        },
     ];
