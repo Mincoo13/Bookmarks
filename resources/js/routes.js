@@ -8,6 +8,8 @@ import EditProfile from './views/EditProfile'
 import EditPassword from './views/EditPassword'
 import Users from './views/Users'
 import ResetPassword from './views/ResetPassword'
+import UsersProfile from './views/UsersProfile'
+
 
 
 
@@ -82,6 +84,14 @@ export const routes =[
             component: ResetPassword,
             meta: {
                 auth: false
+            }
+        },
+        {
+            path: '/users/:id',
+            name: 'users-profile',
+            component: UsersProfile,
+            meta: {
+                auth: true
             }
         },
     ];

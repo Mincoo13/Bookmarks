@@ -55,6 +55,12 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function showUser($id){
+        $user = User::find($id);
+
+        return $user;
+    }
+
     public function editProfile(Request $request){
         $id = JWTAuth::user()->id;
 

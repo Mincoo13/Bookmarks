@@ -1,5 +1,7 @@
 <template>
+
     <div>
+
         <h1>Shared Bookmarks</h1>
 
         <p>

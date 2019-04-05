@@ -12,6 +12,12 @@ use JWTAuth;
 
 class BookmarkController extends Controller
 {
+    public function getBookmarks(){
+        $user_id = JWTAuth::user()->id;
+        $bookmarks = Bookmark::where("user_id", $user_id)->get();
+        return $bookmarks;
+    }
+
     public function createBookmark(Request $request){
         $user_id = JWTAuth::user()->id;
         $url = $request->url;
@@ -19,13 +25,16 @@ class BookmarkController extends Controller
         $description = $request->description;
         $category_id = $request->category_id;
         $isVisible = $request->isVisible;
-        $category = Category::find($category_id);
+        $category_name = null;
         $exist = Bookmark::where([
             ['user_id', '=', $user_id],
             ['name', '=', $name]
         ])->first();
 
         if(!empty($category_id)){
+            $category = Category::find($category_id);
+
+            $category_name = $category->name;
             if(empty($category) && !empty($category_id)){
                 return response()->json([
                     'status' => 'error',
@@ -64,6 +73,7 @@ class BookmarkController extends Controller
             DB::table('bookmarks')->insert([
                 'user_id' => $user_id,
                 'category_id' => $category_id,
+                'category_name' => $category_name,
                 'name' => $name,
                 'url' => $url,
                 'description' => $description,
@@ -86,6 +96,7 @@ class BookmarkController extends Controller
         $category_id = $request->category_id;
         $isVisible = $request->isVisible;
         $category = Category::find($category_id);
+        $category_name = $category->name;
         $bookmark = Bookmark::find($id);
         $bookmarkWithName = Bookmark::where([
             ['user_id', '=', $user_id],
@@ -152,6 +163,7 @@ class BookmarkController extends Controller
                 $bookmark->name = $name;
                 $bookmark->description = $description;
                 $bookmark->category_id = $category_id;
+                $bookmark->category_name = $category_name;
                 $bookmark->isVisible = $isVisible;
                 $bookmark->updated_at = Carbon::now();
                 $bookmark->save();

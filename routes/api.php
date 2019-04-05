@@ -18,6 +18,7 @@ Route::middleware('jwt.auth')->group(function(){
     Route::get('categories', 'CategoryController@showAllCategories');
     Route::get('categories/{id}', 'CategoryController@showCategory');
 
+    Route::get('bookmarks','BookmarkController@getBookmarks');
     Route::post('bookmarks','BookmarkController@createBookmark');
     Route::patch('bookmarks/{id}','BookmarkController@editBookmark');
     Route::patch('bookmarks/{id}/mark-read','BookmarkController@markReadFlag');
@@ -34,6 +35,7 @@ Route::middleware('jwt.auth')->group(function(){
     Route::delete('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
 
         Route::get('users', 'UserController@getUsers')->middleware('admin');
+        Route::get('users/{id}', 'UserController@showUser')->middleware('admin');
         Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');
         Route::patch('users/{id}/activate', 'UserController@activateUser')->middleware('admin');

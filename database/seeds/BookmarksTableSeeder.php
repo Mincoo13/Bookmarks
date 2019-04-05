@@ -16,6 +16,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 2,
             'category_id' => 1,
+            'category_name' => 'food',
             'name' => 'Materna',
             'url' => 'maternauni.slack.com',
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tellus dolor, tempor sit amet diam eget, aliquet aliquam lectus. Sed congue eros et lorem imperdiet, semper volutpat nulla rutrum.',
@@ -26,6 +27,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 2,
             'category_id' => 2,
+            'category_name' => 'animals',
             'name' => 'Slack',
             'url' => 'slack.com',
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tellus dolor, tempor sit amet diam eget, aliquet aliquam lectus. Sed congue eros et lorem imperdiet, semper volutpat nulla rutrum.',
@@ -36,6 +38,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 2,
             'category_id' => 1,
+            'category_name' => 'food',
             'name' => 'Google',
             'url' => 'Google.com',
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tellus dolor, tempor sit amet diam eget, aliquet aliquam lectus. Sed congue eros et lorem imperdiet, semper volutpat nulla rutrum.',
@@ -46,6 +49,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 2,
             'category_id' => 2,
+            'category_name' => 'animals',
             'name' => 'Facebook',
             'url' => 'facebook.com',
             'description' => 'Curabitur fringilla ipsum at condimentum bibendum. Aliquam massa leo, dapibus sit amet cursus id, cursus ac arcu. In hac habitasse platea dictumst.',
@@ -56,6 +60,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 1,
             'category_id' => 4,
+            'category_name' => 'food',
             'name' => 'Materna',
             'url' => 'maternauni.slack.com',
             'description' => 'Nullam vel mattis dolor.',
@@ -66,6 +71,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 1,
             'category_id' => 4,
+            'category_name' => 'food',
             'name' => 'Google',
             'url' => 'google.com',
             'description' => 'Nullam vel mattis dolor.',
@@ -76,6 +82,7 @@ class BookmarksTableSeeder extends Seeder
         DB::table('bookmarks')->insert([
             'user_id' => 2,
             'category_id' => 4,
+            'category_name' => 'food',
             'name' => 'test',
             'url' => 'testtest.com',
             'description' => 'Nullam vel mattis dolor.',

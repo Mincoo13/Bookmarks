@@ -25,7 +25,9 @@
         methods: {
             reset() {
                 axios
-                    .post("/forgotten-password")
+                    .post("/forgotten-password",{
+                        email: this.email,
+                    })
                     .then(response => {
                         this.message = "Na e-mailovú adresu " + this.email + " bolo odoslané novo vygenerované heslo.";
                     })

@@ -11,7 +11,6 @@
                 <th>Priezvisko</th>
                 <th>Email</th>
                 <th>Aktivny</th>
-                <th>Vytvoreny</th>
                 <th>Akcie</th>
             </tr>
             </thead>
@@ -22,12 +21,11 @@
                 <td> {{ user.surname }}</td>
                 <td> {{ user.email }}</td>
                 <td> {{ user.isActive }}</td>
-                <td> {{ user.created_at }}</td>
                 <td>
-                    <button >Zobrazit profil</button>
+                    <button v-on:click="showProfile(user.id)">Zobrazit profil</button>
                     <button v-if="user.isActive" v-on:click="deactivate(user.id)">Deaktivovať</button>
                     <button v-else="user.isActive" v-on:click="activate(user.id)">Aktivovať</button>
-                    <button v-on:click="destroy(user.id)">Zmazat</button>
+                    <button v-on:click="destroy(user.id)">Zmazať</button>
                 </td>
             </tr>
             </tbody>
@@ -40,12 +38,12 @@
     export default {
         data() {
             return {
+                data: null,
                 users: this.users,
                 name: null,
                 surname: null,
                 email: null,
                 isActive: null,
-                created_at: null,
                 auth: auth,
                 message: null,
                 info: null,
@@ -68,10 +66,12 @@
             activate(id){
                 axios
                     .patch("/users/"+id+"/activate",{
+                        data: this.data},
+                        {
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol deaktivovaný.";
+                        this.message = "Používateľ bol aktivovaný.";
                         this.all()
                     })
                     .catch(error => {
@@ -83,10 +83,12 @@
             deactivate(id){
                 axios
                     .patch("/users/"+id+"/deactivate",{
+                        data: this.data},
+                        {
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol aktivovaný.";
+                        this.message = "Používateľ bol deaktivovaný.";
                             this.all()
                     })
                     .catch(error => {
@@ -103,6 +105,20 @@
                     .then(response => {
                         this.message = "Používateľ bol odstránený.";
                         this.all()
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
+            showProfile(id){
+                axios
+                    .get("/users/"+id,{
+                        headers: {Authorization: "Bearer " + this.auth.getToken()}
+                    })
+                    .then(response => {
+                        this.$router.push("/users/"+id);
                     })
                     .catch(error => {
                         console.log(error.response);

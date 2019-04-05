@@ -19,6 +19,7 @@ class CreateBookmarksTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
+            $table->text('category_name')->nullable();
             $table->string('name');
             $table->string('url');
             $table->text('description')->nullable();
