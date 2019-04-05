@@ -51,6 +51,16 @@ class UserController extends Controller
         return $user;
     }
 
+    public function getUsers(){
+        return User::all();
+    }
+
+    public function showUser($id){
+        $user = User::find($id);
+
+        return $user;
+    }
+
     public function editProfile(Request $request){
         $id = JWTAuth::user()->id;
 
@@ -87,12 +97,21 @@ class UserController extends Controller
     }
 
     public function deleteUser($id){
+        $adminId = JWTAuth::user()->id;
         $user = User::find($id);
-        $user->forceDelete();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Zmazanie pouzivatela bolo uspesne.'
-        ],200);
+        if($id == $adminId){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nie je možné odstrániť sám seba.'
+            ],401);
+        }
+        else{
+            $user->forceDelete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Zmazanie pouzivatela bolo uspesne.'
+            ],200);
+        }
     }
 
     public function changePassword(Request $request){
@@ -146,7 +165,14 @@ class UserController extends Controller
     }
 
     public function activateUser($id){
+        $adminId = JWTAuth::user()->id;
 
+        if($adminId == $id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nie je možné aktivovať sám seba.'
+            ], 401);
+        }
         User::find($id)->update([
             "isActive" => 1,
         ]);
@@ -155,7 +181,14 @@ class UserController extends Controller
     }
 
     public function deactivateUser($id){
+        $adminId = JWTAuth::user()->id;
 
+        if($adminId == $id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nie je možné deaktivovať sám seba.'
+            ], 401);
+        }
         User::find($id)->update([
             "isActive" => 0,
         ]);

@@ -24,7 +24,7 @@ class AuthController extends Controller
         if(!$user->isActive){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Vas ucet je deaktivovany.',
+                'message' => 'Váš účet je deaktivovaný.',
             ], 403);
         }
 

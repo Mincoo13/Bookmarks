@@ -289,7 +289,6 @@ class UserTest extends TestCase
 //        Pokus deaktivovaneho pouzivatela o prihlasenie
         $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
         $response->assertStatus(403);
-        $response->assertJson(['message' => 'Vas ucet je deaktivovany.']);
 
 //        Spatna aktivacia pouzivatela s id 2
         $response = $this->withHeaders([

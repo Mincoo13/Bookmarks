@@ -15,7 +15,7 @@
         },
         methods: {
             forgottenpassword(){
-                this.$router.push("/forgottenpassword");
+                this.$router.push("/reset-password");
             },
             register(){
                 this.$router.push("/register-user")

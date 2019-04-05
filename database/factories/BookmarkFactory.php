@@ -22,12 +22,15 @@ $factory->define(App\Bookmark::class, function (Faker $faker) {
         $id = $category->id;
         array_push($ids,$id);
     }
+    $category_id = array_random($ids);
+    $category_name = Category::find($category_id)->name;
     return [
         'name' => $faker->word." ".$faker->word,
         'url' => $faker->url,
         'description' => $faker->text,
         'user_id' => $user_id,
-        'category_id' => array_random($ids),
+        'category_id' => $category_id,
+        'category_name' => $category_name,
         'isRead' => random_int(0,1),
         'isVisible' => random_int(0,1),
     ];
