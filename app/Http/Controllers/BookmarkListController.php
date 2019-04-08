@@ -284,4 +284,74 @@ class BookmarkListController extends Controller
             }
         }
     }
+
+    public function deleteBookmarkList($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+
+        if($user_id != $bookmarkList->user_id && $user->isAdmin != 1){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na zmazanie tohto zoznamu nemate pravo.',
+            ],401);
+        }
+        else{
+            $bookmarkList->forceDelete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Zoznam bol uspesne zmazany.',
+            ],200);
+        }
+    }
+
+    public function getBookmarkLists(){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkLists = BookmarkList::where('user_id', $user_id)->get();
+        $array = array();
+        foreach($bookmarkLists as $list){
+            $count = DB::table('bookmarklists_bookmarks')->where('bookmarklist_id',$list->id)->get()->count();
+            $list->count = $count;
+            array_push($array, $list);
+        }
+        return $array;
+    }
+
+    public function showBookmarkList($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+        if($user_id != $bookmarkList->user_id && $bookmarkList->isVisible == 0 && $user->isAdmin == 0){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento zoznam nie je verejný.',
+            ],401);
+        }
+        else
+            return $bookmarkList;
+    }
+
+    public function getContent($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+        $pivot_items = DB::table('bookmarklists_bookmarks')->where('bookmarklist_id',$id)->get();
+
+        if($user_id != $bookmarkList->user_id && $bookmarkList->isVisible == 0 && $user->isAdmin == 0){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento zoznam nie je verejný.',
+            ],401);
+        }
+        else{
+            $bookmarks = array();
+            foreach ($pivot_items as $item){
+                $bookmark = Bookmark::find($item->bookmark_id);
+                $bookmark->order = $item->order;
+                array_push($bookmarks, $bookmark);
+            }
+        }
+        return $bookmarks;
+    }
 }

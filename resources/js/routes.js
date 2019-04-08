@@ -9,7 +9,13 @@ import EditPassword from './views/EditPassword'
 import Users from './views/Users'
 import ResetPassword from './views/ResetPassword'
 import UsersProfile from './views/UsersProfile'
-
+import SearchBookmarks from './views/SearchBookmarks'
+import Categories from './views/Categories'
+import Bookmark from './components/Bookmark'
+import EditBookmark from './components/EditBookmark'
+import BookmarkLists from './views/BookmarkLists'
+import BookmarkListsDetail from './views/BookmarkListsDetail'
+import BookmarkListEdit from './views/BookmarkListEdit'
 
 
 
@@ -90,6 +96,62 @@ export const routes =[
             path: '/users/:id',
             name: 'users-profile',
             component: UsersProfile,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/search-bookmarks',
+            name: 'search-bookmarks',
+            component: SearchBookmarks,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/bookmark/:id',
+            name: 'bookmark',
+            component: Bookmark,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/bookmark/:id/edit',
+            name: 'edit-bookmark',
+            component: EditBookmark,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/categories',
+            name: 'categories',
+            component: Categories,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/bookmark-lists',
+            name: 'bookmark-lists',
+            component: BookmarkLists,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/bookmark-lists/:id',
+            name: 'bookmark-lists-detail',
+            component: BookmarkListsDetail,
+            meta: {
+                auth: true
+            }
+        },
+        {
+            path: '/bookmark-lists/:id/edit',
+            name: 'bookmark-lists-edit',
+            component: BookmarkListEdit,
             meta: {
                 auth: true
             }

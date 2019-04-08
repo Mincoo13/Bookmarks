@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Bookmark;
 use App\Category;
 use App\Comment;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,10 +13,51 @@ use JWTAuth;
 
 class BookmarkController extends Controller
 {
-    public function getBookmarks(){
+    public function getBookmarks(Request $request){
         $user_id = JWTAuth::user()->id;
-        $bookmarks = Bookmark::where("user_id", $user_id)->get();
-        return $bookmarks;
+        $category_id = $request->category_id;
+        if(empty($category_id)){
+            $bookmarks = Bookmark::where("user_id", $user_id)->get();
+            return $bookmarks;
+        }
+        else{
+            $category = Category::find($category_id);
+            if($category->user_id != $user_id){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Pod touto kategóriou nemôžeme nájsť žiadne výsledky, pretože patrí inému používateľovi.'
+                ],409);
+            }
+            else{
+                $bookmarks = Bookmark::where([
+                    ["category_id",'=',$category_id],
+                    ["user_id","=",$user_id]
+                ])->get();
+                return $bookmarks;
+            }
+        }
+    }
+
+    public function getUserName($id){
+        $user_id = Bookmark::find($id)->user_id;
+        $user_name = User::find($user_id)->name;
+        $user_surname = User::find($user_id)->surname;
+        $fullname = $user_name." ".$user_surname;
+        return $fullname;
+    }
+
+    public function showBookmark($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmark = Bookmark::find($id);
+        if($bookmark->user_id != $user_id && $bookmark->isVisible == 0 && $user->isAdmin == 0){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na zobrazenie tejto záložky nemáte právo.'
+            ],401);
+        }
+        else
+        return $bookmark;
     }
 
     public function createBookmark(Request $request){
@@ -89,14 +131,19 @@ class BookmarkController extends Controller
     }
 
     public function editBookmark($id, Request $request){
-        $user_id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
+        $user_id = $user->id;
         $name = $request->name;
         $url = $request->url;
         $description = $request->description;
         $category_id = $request->category_id;
         $isVisible = $request->isVisible;
         $category = Category::find($category_id);
+
+        if(!empty($category))
         $category_name = $category->name;
+        else
+            $category_name = null;
         $bookmark = Bookmark::find($id);
         $bookmarkWithName = Bookmark::where([
             ['user_id', '=', $user_id],
@@ -110,7 +157,7 @@ class BookmarkController extends Controller
             ],409);
         }
         else{
-            if($bookmark->user_id != $user_id){
+            if(($bookmark->user_id != $user_id) && ($user->isAdmin == 0)){
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Na upravu tejto zalozky nemate opravnenie.',
@@ -123,7 +170,7 @@ class BookmarkController extends Controller
                         'message' => 'Kategoria neexistuje.'
                     ],409);
                 }
-                elseif($category->user_id != $user_id){
+                elseif(($category->user_id != $user_id) && ($user->isAdmin == 0)){
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Na priradenie tejto kategorie nemate pravo.'
@@ -179,7 +226,8 @@ class BookmarkController extends Controller
     }
 
     public function markReadFlag($id){
-        $user_id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
+        $user_id = $user->id;
         $bookmark = Bookmark::find($id);
 
         if(empty($bookmark)){
@@ -190,7 +238,7 @@ class BookmarkController extends Controller
         }
         else{
             $flag = $bookmark->isRead;
-            if($bookmark->user_id != $user_id){
+            if(($bookmark->user_id != $user_id) && ($user->isAdmin == 0)){
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Na zmenu oznacenia tejto zalozky nemate opravnenie.',
@@ -216,7 +264,8 @@ class BookmarkController extends Controller
     }
 
     public function deleteBookmark($id){
-        $user_id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
+        $user_id = $user->id;
         $bookmark = Bookmark::find($id);
 
         if(empty($bookmark)){
@@ -225,7 +274,7 @@ class BookmarkController extends Controller
                 'message' => 'Dana zalozka neexistuje.',
             ],409);
         }
-        elseif($user_id != $bookmark->user_id){
+        elseif(($user_id != $bookmark->user_id) && ($user->isAdmin == 0)){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Na zmazanie tejto zalozky nemate pravo.',
@@ -328,11 +377,11 @@ class BookmarkController extends Controller
 //                Ak sa pod kategoriou nenasla ziadna zalozka
                 if(empty($all_category)){
                     return response()->json([
-                        'status' => 'error',
+                        'status' => 'success',
                         'message' => 'Lutujeme, pod danou kategoriou sa nenasli ziadne vysledky.',
                     ],409);
                 }
-                elseif($read == true){
+                elseif($read == 1){
 //                    Vsetky zalozky pod danou kategoriou, ktore su oznacene za precitane
                     $all_read = [];
                     foreach ($all_category as $item_category){
@@ -349,7 +398,31 @@ class BookmarkController extends Controller
                     }
                     if(empty($result)){
                         return response()->json([
-                            'status' => 'error',
+                            'status' => 'success',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
+                elseif($read == 2){
+//                    Vsetky zalozky pod danou kategoriou, ktore su oznacene za neprecitane
+                    $all_unread = [];
+                    foreach ($all_category as $item_category){
+                        if($item_category->isRead == 0)
+                            $all_unread[]= $item_category;
+                    }
+
+//                    Do vysledku ulozim vsetky zalozky, ktore obsahuju dany retazec
+                    $result = [];
+                    foreach ($all_unread as $item_unread){
+                        if(str_contains($item_unread->name, $text) || str_contains($item_unread->url, $text) || str_contains($item_unread->description, $text)){
+                            $result[] = $item_unread;
+                        }
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'success',
                             'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
                         ],409);
                     }
@@ -397,7 +470,7 @@ class BookmarkController extends Controller
                 $all_private = Bookmark::where('user_id', '=', $user_id)->get();
 
 //                Vybratie z vlastnych, precitanych
-                if($read == true){
+                if($read == 1){
                     $all_read = [];
                     foreach ($all_private as $item_private){
                         if($item_private->isRead == 1)
@@ -418,7 +491,29 @@ class BookmarkController extends Controller
                     else
                         return $result;
                 }
-//                Z vlastnych neprecitanych
+                elseif ($read == 2){
+
+                    $all_unread = [];
+                    foreach ($all_private as $item_private){
+                        if($item_private->isRead == 0)
+                            $all_unread[]=$item_private;
+                    }
+
+                    $result = [];
+                    foreach ($all_unread as $item_unread){
+                        if(str_contains($item_unread->name, $text) || str_contains($item_unread->url, $text) || str_contains($item_unread->description, $text))
+                            $result[]=$item_unread;
+                    }
+                    if(empty($result)){
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        ],409);
+                    }
+                    else
+                        return $result;
+                }
+//                Nezalezi na precitanosti
                 else{
                     $result = [];
                     foreach ($all_private as $item_private){

@@ -38,33 +38,46 @@
             <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
             <button type="submit">Vytvoriť</button>
         </form>
-        <h2>Záložky</h2>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Záložka</th>
-                <th>Popis</th>
-                <th>Prečítaná</th>
-                <th>Kategória</th>
-                <th>Akcie</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="bookmark in bookmarks" ref="datatable" >
-                <td><a target="_blank" :href="bookmark.url">{{ bookmark.name }}</a> </td>
-                <td> {{ bookmark.description }}</td>
-                <td> {{ bookmark.isRead }}</td>
-                <td > {{ bookmark.category_name }}</td>
-                <td>
-                    <!--<button v-on:click="showProfile(user.id)">Zobrazit profil</button>-->
-                    <!--<button v-if="user.isActive" v-on:click="deactivate(user.id)">Deaktivovať</button>-->
-                    <!--<button v-else="user.isActive" v-on:click="activate(user.id)">Aktivovať</button>-->
-                    <!--<button v-on:click="destroy(user.id)">Zmazať</button>-->
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
+        <h2>Záložky</h2>
+        <form>
+            <label for="category_table">Vyberte kategóriu:</label>
+            <br>
+            <select v-model="category_select" @change="selectCategory($event)">
+                <option :value=null>--Všetky--</option>
+                <option v-for="category in categories" v-bind:value=category.id >
+                    {{ category.name }}
+                </option>
+            </select>
+        </form>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Záložka</th>
+                        <th>Popis</th>
+                        <th>Prečítaná</th>
+                        <th>Kategória</th>
+                        <th>Akcie</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="bookmark in bookmarks" ref="datatable" >
+                        <td><a target="_blank" :href="bookmark.url">{{ bookmark.name }}</a> </td>
+                        <td> {{ bookmark.description }}</td>
+                        <td>
+                            <input v-if="bookmark.isRead" type="checkbox" checked v-on:click="markRead(bookmark.id)">
+                            <input v-else type="checkbox" v-on:click="markRead(bookmark.id)">
+                        </td>
+                        <td > {{ bookmark.category_name }}</td>
+                        <td>
+                            <router-link :to="'bookmark/' + bookmark.id " tag="button">Podrobnosti</router-link>
+                            <button v-on:click="deleteBookmark(bookmark.id)">Zmazať</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
     </div>
 </template>
 
@@ -82,8 +95,10 @@
                 category_id: null,
                 category_name: null,
                 category_table: null,
+                category_select: null,
                 isVisible: true,
                 isRead: null,
+                key: "",
                 auth: auth,
                 message: null,
                 info: null,
@@ -97,9 +112,12 @@
         methods: {
             allBookmarks() {
                 axios
-                    .get("/bookmarks", {
-                        headers: {Authorization: "Bearer " + this.auth.getToken()}
-                    })
+                    .post("/get-bookmarks", {
+                        category_id: this.category_select
+                        },
+                    {
+                    headers: {Authorization: "Bearer " + this.auth.getToken()}
+                })
                     .then(response => {
                         this.bookmarks = response.data;
 
@@ -160,8 +178,49 @@
                         this.message = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
-            }
+            },
+            selectCategory(event){
+                if(event.target.value == null){
+                    this.allBookmarks();
+                    this.category_select = null;
+                    return;
+                }
+                this.allBookmarks();
+                this.category_select = event.target.value;
+                console.log(this.category_select);
 
+            },
+            markRead(id){
+                axios
+                    .patch("bookmarks/"+id+"/mark-read",{
+                            data: this.data},
+                        {
+                        headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.category_table = response.data ;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
+            deleteBookmark(id){
+                axios
+                    .delete('bookmarks/'+id,
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.allBookmarks();
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            }
         }
     }
 </script>
