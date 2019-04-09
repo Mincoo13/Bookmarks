@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import {routes} from './routes.js'
 
+import Sortable from 'vue-sortable'
+
+Vue.use(Sortable);
 Vue.use(VueRouter);
 
 import App from './views/App'

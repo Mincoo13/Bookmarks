@@ -15,9 +15,6 @@ import Bookmark from './components/Bookmark'
 import EditBookmark from './components/EditBookmark'
 import BookmarkLists from './views/BookmarkLists'
 import BookmarkListsDetail from './views/BookmarkListsDetail'
-import BookmarkListEdit from './views/BookmarkListEdit'
-
-
 
 export const routes =[
         {
@@ -144,14 +141,6 @@ export const routes =[
             path: '/bookmark-lists/:id',
             name: 'bookmark-lists-detail',
             component: BookmarkListsDetail,
-            meta: {
-                auth: true
-            }
-        },
-        {
-            path: '/bookmark-lists/:id/edit',
-            name: 'bookmark-lists-edit',
-            component: BookmarkListEdit,
             meta: {
                 auth: true
             }

@@ -17,4 +17,17 @@ class BookmarkList extends Model
     {
         return $this->belongsToMany(Bookmark::class);
     }
+
+    protected $fillable = [
+        'name', 'isVisible', 'user_id',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'remember_token',
+    ];
 }

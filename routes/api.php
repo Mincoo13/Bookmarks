@@ -38,7 +38,8 @@ Route::middleware('jwt.auth')->group(function(){
     Route::post('bookmark-lists', 'BookmarkListController@createBookmarkList');
     Route::post('bookmark-lists/{id}', 'BookmarkListController@addBookmarkToList');
     Route::patch('bookmark-lists/{id}/order', 'BookmarkListController@setBookmarkOrder');
-    Route::delete('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
+    Route::patch('bookmark-lists/{id}/edit', 'BookmarkListController@editBookmarkList');
+    Route::patch('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
     Route::delete('bookmark-lists/{id}/delete', 'BookmarkListController@deleteBookmarkList');
     Route::get('bookmark-lists/{id}/content', 'BookmarkListController@getContent');
 
