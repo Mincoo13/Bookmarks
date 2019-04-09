@@ -6,16 +6,18 @@
 
         <p>
             <router-link :to="{ name: 'home' }">Home</router-link> |
-            <router-link :to="{ name: 'hello' }">Hello World</router-link> |
             <router-link :to="{ name: 'login' }">Login</router-link> |
-            <router-link :to="{ name: 'profile' }">Profile</router-link> |
-            <router-link :to="{ name: 'users' }">Users</router-link>
+            <router-link :to="{ name: 'profile' }">Profil</router-link> |
+            <router-link :to="{ name: 'categories' }">Kategórie</router-link> |
+            <router-link :to="{ name: 'bookmark-lists' }">Zoznamy</router-link> |
+            <router-link v-if="isAdmin == 1" :to="{ name: 'users' }">Users</router-link> |
+    <router-link :to="{ name: 'search-bookmarks' }">Vyhľadať záložky</router-link> |
+            <button type="button" @click="logout()" v-if="auth.check()">Odhlásiť sa</button>
         </p>
 
         <div class="container">
             <router-view></router-view>
         </div>
-        <button type="button" @click="logout()" v-if="auth.check()">Odhlásiť sa</button>
     </div>
 </template>
 <script>
@@ -23,8 +25,13 @@
     export default {
         data() {
             return {
+                isAdmin: null,
+                userId: null,
                 auth: auth
             };
+        },
+        mounted() {
+          this.getUserData();
         },
         methods: {
             logout() {
@@ -39,7 +46,23 @@
                     .catch(error => {
                         console.log(error.response.data);
                     });
-            }
+            },
+            getUserData(){
+                axios
+                    .get("/profile",
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.isAdmin = response.data.isAdmin;
+                        this.userId = response.data.id;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
         }
     };
 </script>

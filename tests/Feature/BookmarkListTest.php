@@ -29,7 +29,7 @@ class BookmarkListTest extends TestCase
         $response->assertStatus(401);
         $response = $this->json('PATCH', '/api/bookmark-lists/1/order', ['bookmark_id' => 1, 'order' => 4]);
         $response->assertStatus(401);
-        $response = $this->json('DELETE', '/api/bookmark-lists/1', ['bookmark_id' => 3]);
+        $response = $this->json('PATCH', '/api/bookmark-lists/1', ['bookmark_id' => 3]);
         $response->assertStatus(401);
     }
 
@@ -249,7 +249,7 @@ class BookmarkListTest extends TestCase
            'Accept' => 'application/json',
            'Content-Type' => 'application/json',
            'Authorization' => 'Bearer' . $token,
-       ])->json('DELETE', '/api/bookmark-lists/1', ['bookmark_id' => 1]);
+       ])->json('PATCH', '/api/bookmark-lists/1', ['bookmark_id' => 1]);
        $response->assertStatus(200);
 
 //       Spatne pridanie bookmarku do zoznamu
@@ -273,7 +273,7 @@ class BookmarkListTest extends TestCase
            'Accept' => 'application/json',
            'Content-Type' => 'application/json',
            'Authorization' => 'Bearer' . $token,
-       ])->json('DELETE', '/api/bookmark-lists/4', ['bookmark_id' => 6]);
+       ])->json('PATCH', '/api/bookmark-lists/4', ['bookmark_id' => 6]);
        $response->assertStatus(401);
 
 //       Zmazanie zalozky, ktora sa nenachadza v zozname
@@ -281,7 +281,7 @@ class BookmarkListTest extends TestCase
            'Accept' => 'application/json',
            'Content-Type' => 'application/json',
            'Authorization' => 'Bearer' . $token,
-       ])->json('DELETE', '/api/bookmark-lists/1', ['bookmark_id' => 6]);
+       ])->json('PATCH', '/api/bookmark-lists/1', ['bookmark_id' => 6]);
        $response->assertStatus(409);
    }
 }

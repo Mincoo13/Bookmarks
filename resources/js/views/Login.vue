@@ -21,6 +21,5 @@
                 this.$router.push("/register-user")
             }
         }
-
     };
 </script>

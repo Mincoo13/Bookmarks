@@ -18,21 +18,30 @@ Route::middleware('jwt.auth')->group(function(){
     Route::get('categories', 'CategoryController@showAllCategories');
     Route::get('categories/{id}', 'CategoryController@showCategory');
 
-    Route::get('bookmarks','BookmarkController@getBookmarks');
+    Route::post('get-bookmarks','BookmarkController@getBookmarks');
+    Route::get('bookmark/{id}','BookmarkController@showBookmark');
     Route::post('bookmarks','BookmarkController@createBookmark');
     Route::patch('bookmarks/{id}','BookmarkController@editBookmark');
     Route::patch('bookmarks/{id}/mark-read','BookmarkController@markReadFlag');
     Route::delete('bookmarks/{id}','BookmarkController@deleteBookmark');
     Route::post('search-bookmarks','BookmarkController@searchBookmarks');
+    Route::get('bookmarks/{id}/user', 'BookmarkController@getUserName');
 
     Route::post('comments', 'CommentController@createComment');
+    Route::get('comments/{id}/user', 'CommentController@getUserName');
+    Route::get('comments/{id}', 'CommentController@getComments');
     Route::patch('comments/{id}', 'CommentController@editComment');
     Route::delete('comments/{id}', 'CommentController@deleteComment');
 
+    Route::get('bookmark-lists', 'BookmarkListController@getBookmarkLists');
+    Route::get('bookmark-lists/{id}', 'BookmarkListController@showBookmarkList');
     Route::post('bookmark-lists', 'BookmarkListController@createBookmarkList');
     Route::post('bookmark-lists/{id}', 'BookmarkListController@addBookmarkToList');
     Route::patch('bookmark-lists/{id}/order', 'BookmarkListController@setBookmarkOrder');
-    Route::delete('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
+    Route::patch('bookmark-lists/{id}/edit', 'BookmarkListController@editBookmarkList');
+    Route::patch('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
+    Route::delete('bookmark-lists/{id}/delete', 'BookmarkListController@deleteBookmarkList');
+    Route::get('bookmark-lists/{id}/content', 'BookmarkListController@getContent');
 
         Route::get('users', 'UserController@getUsers')->middleware('admin');
         Route::get('users/{id}', 'UserController@showUser')->middleware('admin');

@@ -284,4 +284,114 @@ class BookmarkListController extends Controller
             }
         }
     }
+
+    public function deleteBookmarkList($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+
+        if($user_id != $bookmarkList->user_id && $user->isAdmin != 1){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na zmazanie tohto zoznamu nemate pravo.',
+            ],401);
+        }
+        else{
+            $bookmarkList->forceDelete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Zoznam bol uspesne zmazany.',
+            ],200);
+        }
+    }
+
+    public function editBookmarkList($id, Request $request){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarklist = BookmarkList::find($id);
+        $isVisible = $request->isVisible;
+        $name = $request->name;
+        $exist = BookmarkList::where([
+            ['user_id','=',$user_id],
+            ['name','=',$name],
+        ])->first();
+        if($user_id != $bookmarklist->user_id && $user->isAdmin != 1){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Na úpravu tohto zoznamu nemáte právo.'.$user_id." ".$bookmarklist->user_id,
+            ],401);
+        }else{
+            if(empty($name)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Názov nemôže byť prázdny.',
+                ],409);
+            }
+            elseif(!empty($exist)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Zoznam s týmto názvom už existuje.',
+                ],409);
+            }
+            else{
+                $bookmarklist->update([
+                    "name" => $name,
+                    "isVisible" => $isVisible,
+                    "updated_at" => Carbon::now(),
+                ]);
+                return $bookmarklist;
+            }
+        }
+    }
+
+    public function getBookmarkLists(){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkLists = BookmarkList::where('user_id', $user_id)->get();
+        $array = array();
+        foreach($bookmarkLists as $list){
+            $count = DB::table('bookmarklists_bookmarks')->where('bookmarklist_id',$list->id)->get()->count();
+            $list->count = $count;
+            array_push($array, $list);
+        }
+        return $array;
+    }
+
+    public function showBookmarkList($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+        if($user_id != $bookmarkList->user_id && $bookmarkList->isVisible == 0 && $user->isAdmin == 0){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento zoznam nie je verejný.',
+            ],401);
+        }
+        else
+            return $bookmarkList;
+    }
+
+    public function getContent($id){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $bookmarkList = BookmarkList::find($id);
+        $pivot_items = DB::table('bookmarklists_bookmarks')->where('bookmarklist_id',$id)->get();
+        $sorted = $pivot_items->sortBy('order');
+
+        if($user_id != $bookmarkList->user_id && $bookmarkList->isVisible == 0 && $user->isAdmin == 0){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento zoznam nie je verejný.',
+            ],401);
+        }
+        else{
+            $bookmarks = array();
+            foreach ($sorted as $item){
+                $bookmark = Bookmark::find($item->bookmark_id);
+                $bookmark->order = $item->order;
+                array_push($bookmarks, $bookmark);
+            }
+        }
+        return $bookmarks;
+    }
 }

@@ -42,6 +42,7 @@ class CategoryController extends Controller
             ['user_id', '=', $user_id],
             ['name', '=', $name]
         ])->first();
+        $bookmarks = Bookmark::where('category_id',$id)->get();
         $category = Category::find($id);
         if($category == []){
             return response()->json([
@@ -62,6 +63,10 @@ class CategoryController extends Controller
             ],409);
         }
         else{
+            foreach($bookmarks as $bookmark){
+                $bookmark->category_name = $name;
+                $bookmark->save();
+            }
             $category->update([
                 "name" => $name,
             ]);

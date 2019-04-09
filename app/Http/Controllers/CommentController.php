@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bookmark;
 use App\Comment;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +56,26 @@ class CommentController extends Controller
         }
     }
 
+    public function getComments($id){
+        $comments = Comment::where('bookmark_id', $id)->get();
+        foreach($comments as $comment){
+            $user = User::find($comment->user_id);
+            $name = $user->name;
+            $surname = $user->surname;
+            $fullname = $name." ".$surname;
+            $comment->fullname = $fullname;
+        }
+        return $comments;
+    }
+
+    public function getUserName($id){
+        $user_id = Comment::find($id)->user_id;
+        $user_name = User::find($user_id)->name;
+        $user_surname = User::find($user_id)->surname;
+        $fullname = $user_name." ".$user_surname;
+        return $fullname;
+    }
+
     public function editComment($id, Request $request){
         $user_id = JWTAuth::user()->id;
         $text = $request->text;
@@ -85,7 +106,8 @@ class CommentController extends Controller
     }
 
     public function deleteComment($id){
-        $user_id = JWTAuth::user()->id;
+        $user = JWTAuth::user();
+        $user_id = $user->id;
         $comment = Comment::find($id);
 
         if($comment == NULL){
@@ -97,7 +119,7 @@ class CommentController extends Controller
         else{
             $bookmark_id = $comment->bookmark_id;
             $bookmark = Bookmark::find($bookmark_id);
-            if($user_id != $bookmark->user_id && $user_id != $comment->user_id){
+            if($user_id != $bookmark->user_id && $user_id != $comment->user_id && $user->isAdmin != 1){
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Na zmazanie tohto komentaru nemate pravo.',
