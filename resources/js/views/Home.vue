@@ -51,8 +51,8 @@
                 </option>
             </select>
         </form>
-
-                <table>
+        <div >
+                <table id="mytable" class="display">
                     <thead>
                     <tr>
                         <th>Záložka</th>
@@ -78,10 +78,12 @@
                     </tr>
                     </tbody>
                 </table>
+        </div>
     </div>
 </template>
 
 <script>
+
     import auth from "../auth/index.js";
     export default {
         data() {
@@ -99,15 +101,31 @@
                 isVisible: true,
                 isRead: null,
                 key: "",
+                table_id: null,
                 auth: auth,
                 message: null,
                 info: null,
                 errors: []
             };
         },
+
         mounted(){
             this.allCategories();
             this.allBookmarks();
+            setTimeout(function(){
+                $(document).ready(function() {
+                    $('#mytable').DataTable( {
+                        data: this.bookmarks,
+                        columns: [
+                            { title: "Názov" },
+                            { title: "Popis" },
+                            { title: "Verejná" },
+                            { title: "Kategória" },
+                            { title: "Akcie" },
+                        ]
+                    } );
+                } );
+            }, 1000);
         },
         methods: {
             allBookmarks() {
@@ -120,6 +138,7 @@
                 })
                     .then(response => {
                         this.bookmarks = response.data;
+                        this.table_id = "load";
 
                     })
                     .catch(error => {
@@ -127,6 +146,20 @@
                         this.message = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
+            },
+            table(){
+                $(document).ready(function() {
+                    $('#mytable').DataTable( {
+                        data: this.bookmarks,
+                        columns: [
+                            { title: "Name" },
+                            { title: "Position" },
+                            { title: "Office" },
+                            { title: "Extn." },
+                            { title: "Start date" },
+                        ]
+                    } );
+                } );
             },
             allCategories(){
                 axios

@@ -44,9 +44,14 @@ class BookmarkListController extends Controller
                 'isVisible' => $isVisible,
                 'created_at' => Carbon::now(),
             ]);
+
+            $bookmarklist = BookmarkList::where([
+                ['user_id','=',$user_id],
+                ['name','=',$name],
+            ])->first();
+
             return response()->json([
-                'status' => 'success',
-                'message' => 'Zoznam bol uspesne vytvoreny.',
+                $bookmarklist
             ],200);
         }
     }
