@@ -86,26 +86,26 @@ class BookmarkController extends Controller
             elseif($category->user_id != $user_id){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Na priradenie tejto kategorie nemate pravo.'
+                    'message' => 'Na priradenie tejto kategórie nemáte právo.'
                 ],401);
             }
         }
         if(!empty($exist)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zalozka s tymto nazvom uz existuje.'
+                'message' => 'Záložka s týmto názvom už existuje.'
             ],409);
         }
         elseif(empty($url)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zalozka musi mat uvedenu URL adresu.'
+                'message' => 'Záložka musí mať uvedenú URL adresu.'
             ],409);
         }
         elseif(empty($name)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zalozka musi mat uvedeny nazov.'
+                'message' => 'Záložka musí mať uvedený názov.'
             ],409);
         }
         else{
@@ -125,7 +125,7 @@ class BookmarkController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Zalozka bola uspesne vytvorena.',
+                'message' => 'Záložka bola úspešne vytvorená.',
             ],200);
         }
     }
@@ -153,46 +153,46 @@ class BookmarkController extends Controller
         if(empty($bookmark)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zalozka neexistuje.',
+                'message' => 'Záložka neexistuje.',
             ],409);
         }
         else{
             if(($bookmark->user_id != $user_id) && ($user->isAdmin == 0)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Na upravu tejto zalozky nemate opravnenie.',
+                    'message' => 'Na úúravu tejto záložky nemáte oprávnenie.',
                 ],401);
             }
             if(!empty($category_id)){
                 if(empty($category) && !empty($category_id)){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Kategoria neexistuje.'
+                        'message' => 'Kategória neexistuje.'
                     ],409);
                 }
                 elseif(($category->user_id != $user_id) && ($user->isAdmin == 0)){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Na priradenie tejto kategorie nemate pravo.'
+                        'message' => 'Na priradenie tejto kategórie nemáte právo.'
                     ],401);
                 }
             }
             if(!empty($bookmarkWithName) && ($bookmark->name != $name)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Zalozka s tymto nazvom uz existuje.',
+                    'message' => 'Záložka s týmto názvom už existuje.',
                 ],409);
             }
             elseif(empty($url)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Zalozka musi mat uvedenu URL adresu.'
+                    'message' => 'Záložka musí mať uvedenú URL adresu.'
                 ],409);
             }
             elseif(empty($name)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Zalozka musi mat uvedeny nazov.'
+                    'message' => 'Záložka musí mať uvedený názov.'
                 ],409);
             }
             else{
@@ -217,7 +217,7 @@ class BookmarkController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Zalozka bola uspesne zmenena.'
+                    'message' => 'Záložka bola úspešne zmenená.'
                 ],200);
             }
 //
@@ -233,7 +233,7 @@ class BookmarkController extends Controller
         if(empty($bookmark)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dana zalozka neexistuje.',
+                'message' => 'Daná záložka neexistuje.',
             ],409);
         }
         else{
@@ -241,7 +241,7 @@ class BookmarkController extends Controller
             if(($bookmark->user_id != $user_id) && ($user->isAdmin == 0)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Na zmenu oznacenia tejto zalozky nemate opravnenie.',
+                    'message' => 'Na zmenu označenia tejto záložky nemáte oprávnenie.',
                 ],401);
             }
             elseif ($flag == false){
@@ -249,7 +249,7 @@ class BookmarkController extends Controller
                 $bookmark->save();
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Zalozka bola uspesne oznacena za precitanu',
+                    'message' => 'Záložka bola označená za prečítanú.',
                 ],200);
             }
             else{
@@ -257,7 +257,7 @@ class BookmarkController extends Controller
                 $bookmark->save();
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Zalozka bola uspesne oznacena za neprecitanu',
+                    'message' => 'Záložka bola označená za neprečítanú.',
                 ],200);
             }
         }
@@ -271,13 +271,13 @@ class BookmarkController extends Controller
         if(empty($bookmark)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dana zalozka neexistuje.',
+                'message' => 'Daná záložka neexistuje.',
             ],409);
         }
         elseif(($user_id != $bookmark->user_id) && ($user->isAdmin == 0)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmazanie tejto zalozky nemate pravo.',
+                'message' => 'Na zmazanie tejto záložky nemáte právo.',
             ],401);
         }
         else{
@@ -295,7 +295,7 @@ class BookmarkController extends Controller
                     $bookmark->forceDelete();
                     return response()->json([
                         'status' => 'success',
-                        'message' => 'Bookmark bol uspesne odstraneny.',
+                        'message' => 'Záložka bola odstránená.',
                     ],200);
                 }
                 else{
@@ -342,7 +342,7 @@ class BookmarkController extends Controller
                     $bookmark->forceDelete();
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Bookmark bol uspesne odstraneny.',
+                    'message' => 'Záložka bola odstránená.',
                 ],200);
             }
         }
@@ -364,7 +364,7 @@ class BookmarkController extends Controller
             if(empty($category_id)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Lutujeme, dana kategoria neexistuje.',
+                    'message' => 'Daná kategória neexistuje.',
                 ],409);
             }
             else{
@@ -378,7 +378,7 @@ class BookmarkController extends Controller
                 if(empty($all_category)){
                     return response()->json([
                         'status' => 'success',
-                        'message' => 'Lutujeme, pod danou kategoriou sa nenasli ziadne vysledky.',
+                        'message' => 'Pod danou kategóriou sa nenašli žiadne výsledky.',
                     ],409);
                 }
                 elseif($read == 1){
@@ -399,7 +399,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'success',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else
@@ -423,7 +423,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'success',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else
@@ -438,7 +438,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else
@@ -459,7 +459,7 @@ class BookmarkController extends Controller
                 if(empty($result)){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                        'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                     ],409);
                 }
                 else
@@ -485,7 +485,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else
@@ -507,7 +507,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else
@@ -523,7 +523,7 @@ class BookmarkController extends Controller
                     if(empty($result)){
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Lutujeme, poziadavkam nevyhovuju ziadne vysledky.',
+                            'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
                         ],409);
                     }
                     else

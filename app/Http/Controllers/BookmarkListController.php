@@ -25,13 +25,13 @@ class BookmarkListController extends Controller
         if(!empty($exist)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zoznam s tymto nazvom uz existuje.'
+                'message' => 'Zoznam s týmto názvom už existuje.'
             ],409);
         }
         elseif(empty($name)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Zoznam musi mat nazov.'
+                'message' => 'Zoznam musí mať názov.'
             ],409);
         }
         else{
@@ -69,14 +69,14 @@ class BookmarkListController extends Controller
         if(empty($bookmarkList)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dany zoznam neexistuje.',
+                'message' => 'Daný zoznam neexistuje.',
             ],409);
         }
         else{
             if(empty($bookmark)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Zalozka, ktoru chcete pridat do zoznamu, neexistuje.',
+                    'message' => 'Záložka, ktorú chete pridať do zoznamu, neexistuje.',
                 ],409);
             }
             else{
@@ -87,19 +87,19 @@ class BookmarkListController extends Controller
                 if($bookmarkList->user_id != $user_id){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Na pridanie zalozky do tohto zoznamu nemate povolenie.',
+                        'message' => 'Na pridanie záložky do tohto zoznamu nemáte povolenie.',
                     ],401);
                 }
                 elseif($bookmark->user_id != $user_id){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Na pridanie tejto zalozky do zoznamu nemate povolenie.',
+                        'message' => 'Na pridanie tejto záložky do zoznamu nemáte povolenie.',
                     ],401);
                 }
                 elseif (!empty($exist)){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Dana zalozka sa v tomto zozname uz nachadza.',
+                        'message' => 'Dana záložka sa v tomto zozname už nachádza.',
                     ],409);
                 }
                 else{
@@ -115,7 +115,7 @@ class BookmarkListController extends Controller
                     }
                     return response()->json([
                         'status' => 'success',
-                        'message' => 'Zalozka bola do zoznamu uspesne pridana.',
+                        'message' => 'Záložka bola pridaná do zoznamu.',
                     ],200);
                 }
             }
@@ -138,14 +138,14 @@ class BookmarkListController extends Controller
         if(empty($bookmarkList)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dany zoznam neexistuje.',
+                'message' => 'Daný zoznam neexistuje.',
             ],409);
         }
         else{
             if(empty($bookmark)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Dana zalozka sa v zozname nenachadza.',
+                    'message' => 'Daná záložka sa v zozname nenachádza.',
                 ],409);
             }
             else{
@@ -153,13 +153,13 @@ class BookmarkListController extends Controller
                 if($bookmarkList->user_id != $user_id){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Na zmenu poradia v tomto zozname nemate povolenie.',
+                        'message' => 'Na zmenu poradia v tomto zozname nemáte povolenie.',
                     ],401);
                 }
                 elseif ($new_order < 1 || $new_order > $count){
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Zadali ste neexistujuce poradie.',
+                        'message' => 'Zadali ste neexistujúce poradie.',
                     ],409);
                 }
                 else{
@@ -195,7 +195,7 @@ class BookmarkListController extends Controller
                         ])->update(['order' => $new_order]);
                         return response()->json([
                             'status' => 'success',
-                            'message' => 'Poradie bolo uspesne aktualizovane.',
+                            'message' => 'Poradie bolo úspešne aktualizované.',
                         ],200);
                     }
                     else{
@@ -222,7 +222,7 @@ class BookmarkListController extends Controller
                         ])->update(['order' => $new_order]);
                         return response()->json([
                             'status' => 'success',
-                            'message' => 'Poradie bolo uspesne aktualizovane.',
+                            'message' => 'Poradie bolo úspešne aktualizované.',
                         ],200);
                     }
                 }
@@ -244,13 +244,13 @@ class BookmarkListController extends Controller
         if($bookmarkList->user_id != $user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmazanie z tohto zoznamu nemate pravo.',
+                'message' => 'Na zmazanie z tohto zoznamu nemáte právo.',
             ],401);
         }
         elseif (empty($bookmark)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Bookmark sa v zozname nenachadza.',
+                'message' => 'Záložka sa v zozname nenachádza.',
             ],409);
         }
         else{
@@ -267,7 +267,7 @@ class BookmarkListController extends Controller
             if(empty($all)){
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Bookmark bol uspesne odstraneny zo zoznamu.',
+                    'message' => 'Záložka bola odstránená zo zoznamu.',
                 ],200);
             }
             else{
@@ -284,7 +284,7 @@ class BookmarkListController extends Controller
                 }
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Bookmark bol uspesne odstraneny zo zoznamu.',
+                    'message' => 'Záložka bola odstránená zo zoznamu.',
                 ],200);
             }
         }
@@ -298,14 +298,14 @@ class BookmarkListController extends Controller
         if($user_id != $bookmarkList->user_id && $user->isAdmin != 1){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmazanie tohto zoznamu nemate pravo.',
+                'message' => 'Na zmazanie tohto zoznamu nemáte právo.',
             ],401);
         }
         else{
             $bookmarkList->forceDelete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Zoznam bol uspesne zmazany.',
+                'message' => 'Zoznam bol zmazaný.',
             ],200);
         }
     }

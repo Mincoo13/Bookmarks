@@ -21,7 +21,7 @@ class CategoryController extends Controller
         if($exist != []){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategoria s tymto nazvom uz existuje. '.$exist
+                'message' => 'Kategória s týmto názvom už existuje. '.$exist
             ],409);
         }else{
             DB::table('categories')->insert([
@@ -30,7 +30,7 @@ class CategoryController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Kategoria bola uspesne vytvorena.'
+                'message' => 'Kategória bola úspešne vytvorená.'
             ],200);
         }
     }
@@ -47,19 +47,19 @@ class CategoryController extends Controller
         if($category == []){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategoria neexistuje.'
+                'message' => 'Kategória neexistuje.'
             ],404);
         }
         else if($category->user_id != $user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmenu tejto kategorie nemate pravo. '
+                'message' => 'Na zmenu tejto kategórie nemáte právo. '
             ],401);
         }
         else if($exist != []){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategoria s danym nazvom uz existuje.'
+                'message' => 'Kategória s daným názvom už existuje.'
             ],409);
         }
         else{
@@ -72,7 +72,7 @@ class CategoryController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Kategoria bola uspesne zmenena.'
+                'message' => 'Kategória bola úspešne zmenená.'
             ],200);
         }
     }
@@ -85,26 +85,26 @@ class CategoryController extends Controller
         if(empty($category)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nie je mozne vymazat neexistujucu kategoriu.'
+                'message' => 'Nie je možné vymazať neexistujúcu kategóriu.'
             ],409);
         }
         else if($category->user_id != $user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmazanie tejto kategorie nemate pravo'
+                'message' => 'Na zmazanie tejto kategórie nemáte právo'
             ],401);
         }
         else if(!empty($bookmarks)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nie je mozne vymazat kategoriu, ktorej su priradene existujuce zalozky. '
+                'message' => 'Nie je možné vymazať kategóriu, ktorej sú priradené existujúce záložky. '
             ], 409);
         }
         else{
             $category->forceDelete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Zmazanie kategorie bolo uspesne.'
+                'message' => 'Kategória bola zmazaná..'
             ],200);
         }
     }
@@ -127,13 +127,13 @@ class CategoryController extends Controller
         if(empty($category)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nie je mozne zobrazit neexistujucu kategoriu.'
+                'message' => 'Nie je možné zobraziť neexistujúcu kategóriu.'
             ],409);
         }
         else if($category->user_id != $user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zobrazenie tejto kategorie nemate pravo'
+                'message' => 'Na zobrazenie tejto kategórie nemáte právo'
             ],401);
         }
         else{

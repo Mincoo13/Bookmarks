@@ -19,11 +19,42 @@ class UserController extends Controller
         $email = $request->email;
         $password = $request->password;
         $password_confirmation = $request->password_confirmation;
+        $exist = User::where('email',$email)->first();
 
+        if(empty($name)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musíte zadať meno.'
+            ],409);
+        }
+        elseif (empty($surname)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musíte zadať priezvisko.'
+            ],409);
+        }
+        elseif (empty($email)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musíte zadať e-mailovú adresu.'
+            ],409);
+        }
+        elseif(!empty($exist)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Používateľ pod touto e-mailovou adresou už existuje.'
+            ],409);
+        }
+        if(empty($password) || empty($password_confirmation)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nezadali ste heslo.'
+            ],409);
+        }
         if($password != $password_confirmation){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Hesla sa nezhoduju.'
+                'message' => 'Heslá sa nezhodujú.'
             ],409);
         }
 
@@ -67,13 +98,13 @@ class UserController extends Controller
         if(empty($request->name)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Musite zadat meno.'
+                'message' => 'Musíte zadať meno.'
             ],409);
         }
         elseif(empty($request->surname)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Musite zadat priezvisko.'
+                'message' => 'Musíte zadať priezvisko.'
             ],409);
         }
         else{
@@ -109,7 +140,7 @@ class UserController extends Controller
             $user->forceDelete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Zmazanie pouzivatela bolo uspesne.'
+                'message' => 'Zmazanie používateľa bolo úspešné.'
             ],200);
         }
     }
@@ -125,13 +156,13 @@ class UserController extends Controller
         if(!(Hash::check($oldPassword, $actualPassword))){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Aktualne heslo je nespravne.'
+                'message' => 'Aktuálne heslo je nesprávne.'
             ],500);
         }
         elseif(empty($newPassword)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na zmenu hesla je potrebne zadat nove heslo.'
+                'message' => 'Na zmenu hesla je potrebné zadať nové heslo.'
             ],500);
         }
         $validator = Validator::make($request->all(), [
@@ -143,7 +174,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nove heslo nesplna poziadavky dostatocne silneho hesla.'
+                'message' => 'Nové heslo nie je dostatočne silné.'
             ],500);
         }
         elseif ($newPassword != $confirmPassword){
@@ -154,13 +185,13 @@ class UserController extends Controller
         }elseif (Hash::check($newPassword, $actualPassword)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nove heslo nemoze byt rovnake ako stare heslo.'
+                'message' => 'Nové heslo nemôže buť rovnaké ako staré heslo.'
             ],500);
         }else{
             User::find($id)->update([
                 "password" => Hash::make($newPassword)
             ]);
-            return response()->json(['Heslo bolo zmenene.'],200);
+            return response()->json(['Heslo bolo zmenené.'],200);
         }
     }
 
@@ -201,7 +232,7 @@ class UserController extends Controller
         if(User::where('email',$email)->first() == null){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Ziaden pouzivatel nie je zaregistrovany pod touto e-mailovou adresou.'
+                'message' => 'Žiaden používateľ nie je zaregistrovaný pod touto e-mailovou adresou.'
             ], 409);
         }
         $newPassword = str_random(8);
