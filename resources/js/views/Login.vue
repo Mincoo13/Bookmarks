@@ -23,6 +23,7 @@
                     <p v-if="errors.email_reg">{{ errors.email_reg[0] }}</p>
                     <br>
                     <label for="password">Heslo:</label>
+                    <p>Heslo musí obsahovať minimálne 8 znakov, jedno veľké písmeno, jednu číslicu a jeden špeciálny znak. </p>
                     <br>
                     <input type="password" v-model="password_reg">
                     <p v-if="errors.password_reg">{{ errors.password_reg[0] }}</p>

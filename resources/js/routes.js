@@ -1,5 +1,4 @@
 
-import Hello from './views/Hello'
 import Home from './views/Home'
 import Login from './views/Login'
 import Profile from './views/Profile'
@@ -22,14 +21,6 @@ export const routes =[
             component: Home,
             meta: {
                 auth: true
-            }
-        },
-        {
-            path: '/hello',
-            name: 'hello',
-            component: Hello,
-            meta: {
-                auth: false
             }
         },
         {

@@ -38,8 +38,26 @@ html {
   cursor: pointer !important;
 }
 
+.comment:hover{
+  cursor: pointer;
+  color: #6c227f !important;
+}
+
+.multiselect__option--highlight{
+  background: #9c27b0 !important;
+}
+
+.multiselect__option--highlight:after{
+  background: #9c27b0 !important;
+
+}
+
 @-ms-viewport {
   width: device-width;
+}
+
+#bookmarkForm{
+  display: none;
 }
 
 article,

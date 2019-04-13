@@ -1,83 +1,144 @@
 <template>
 
     <div>
+
         <h1>Moje záložky</h1>
 
         <h2>Pridať záložku</h2>
-        <form @submit.prevent="createBookmark()">
-            <div v-if="message">
-                <p>{{ message }}</p>
+        <button id="btn-bookmark" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">add</i><div class="ripple-container"></div></button>
+
+        <div class="card" id="bookmarkForm">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">Pridaj novú záložku</h4>
+                <!--<p class="card-category"></p>-->
             </div>
-            <label for="name">Názov:</label>
-            <br>
-            <input type="text" v-model="name">
-            <p v-if="errors.name">{{ errors.name[0] }}</p>
-            <br>
-            <label for="surname">Url:</label>
-            <br>
-            <input type="text" v-model="url">
-            <p v-if="errors.url">{{ errors.url[0] }}</p>
-            <br>
-            <label for="description">Popis:</label>
-            <br>
-            <textarea v-model="description" ></textarea>
-            <p v-if="errors.description">{{ errors.description[0] }}</p>
-            <br>
-            <label for="category">Vyberte kategóriu:</label>
-            <br>
-            <select v-model="category_id" >
-                <option value=null>--Žiadna--</option>
-                    <option v-for="category in categories" v-bind:value=category.id >
-                        {{ category.name }}
-                    </option>
-            </select>
-            <br>
-            <label for="isVisible">Verejná:</label>
-            <input type="checkbox" v-model="isVisible" checked>
-            <br>
-            <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
-            <button type="submit">Vytvoriť</button>
-        </form>
+            <div class="card-body">
+                <form @submit.prevent="createBookmark()">
+                    <div v-if="message">
+                        <p class="text-danger">{{ message }}</p>
+                    </div>
+                    <div v-else-if="message_success">
+                        <p class="text-success">{{ message_success }}</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group bmd-form-group">
+                                <label class="bmd-label-floating"  for="name">Názov:</label>
+                                <input type="text" v-model="name" class="form-control">
+                                <p v-if="errors.name">{{ errors.name[0] }}</p>
+
+                            </div>
+                            <div class="form-group bmd-form-group">
+                                <label class="bmd-label-floating" for="surname">Url:</label>
+                                <input type="text" v-model="url" class="form-control">
+                                <p v-if="errors.url">{{ errors.url[0] }}</p>
+
+                            </div>
+                            <div class="form-group bmd-form-group">
+
+                                <div>
+                                    <label class="typo__label">Vybert kategóriu:</label>
+                                    <multiselect v-model="selected" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
+                                        <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
+                                    </multiselect>
+                                    <pre class="language-json"><code>{{ categories.name  }}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <div class="form-group bmd-form-group">
+                                    <label class="bmd-label-floating"  for="description">Popis</label>
+                                    <textarea v-model="description" class="form-control" rows="5"></textarea>
+                                    <p v-if="errors.description">{{ errors.description[0] }}</p>
+
+                                </div>
+                            </div>
+                            <div class="">
+                                <label class="bmd-label-floating"  for="isVisible">Nastaviť záložku ako viditeľnú pre ostatných:</label>
+                                <br>
+                                <toggle-button  color="#9c27b0" v-model="isVisible"/>
+                                <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary pull-right">Vytvoriť<div class="ripple-container"></div></button>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
 
 
-        <h2>Záložky</h2>
-        <form>
-            <label for="category_table">Vyberte kategóriu:</label>
-            <br>
-            <select v-model="category_select" @change="selectCategory($event)">
-                <option :value=null>--Všetky--</option>
-                <option v-for="category in categories" v-bind:value=category.id >
-                    {{ category.name }}
-                </option>
-            </select>
-        </form>
-        <div >
-                <table id="mytable" class="display">
-                    <thead>
-                    <tr>
-                        <th>Záložka</th>
-                        <th>Popis</th>
-                        <th>Prečítaná</th>
-                        <th>Kategória</th>
-                        <th>Akcie</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="bookmark in bookmarks" ref="datatable" >
-                        <td><a target="_blank" :href="bookmark.url">{{ bookmark.name }}</a> </td>
-                        <td> {{ bookmark.description }}</td>
-                        <td>
-                            <input v-if="bookmark.isRead" type="checkbox" checked v-on:click="markRead(bookmark.id)">
-                            <input v-else type="checkbox" v-on:click="markRead(bookmark.id)">
-                        </td>
-                        <td > {{ bookmark.category_name }}</td>
-                        <td>
-                            <router-link :to="'bookmark/' + bookmark.id " tag="button">Podrobnosti</router-link>
-                            <button v-on:click="deleteBookmark(bookmark.id)">Zmazať</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="col-md-12">
+            <form>
+                <label for="category_table">Vyberte kategóriu:</label>
+                <br>
+                <multiselect style="z-index: 5 !important" v-model="category_select" @deselect="selectCategory" @select="selectCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
+                    <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
+                </multiselect>
+            </form>
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Moje záložky</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" >
+                            <thead class=" text-primary">
+                            <th>Názov</th>
+                            <th>Popis</th>
+                            <th>Prečítaná</th>
+                            <th>Kategória</th>
+                            <th>Akcie</th>
+                            </thead>
+                            <tbody>
+                            <tr v-for="bookmark in bookmarks" ref="datatable" >
+                                <td><a target="_blank" :href="bookmark.url"><b>{{ bookmark.name }}</b></a> </td>
+                                <td>
+                                    <div>{{ bookmark.description }} </div>
+                                </td>
+                                <td>
+                                    <div v-if="bookmark.isRead" class="form-check" style="text-align: center">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)">
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div v-else class="form-check" style="text-align: center">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)">
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td > {{ bookmark.category_name }}</td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-5" style="width: auto !important">
+                                            <router-link :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
+                                        </div>
+                                        <div class="col-5">
+                                            <button v-on:click="deleteBookmark(bookmark.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -85,12 +146,18 @@
 <script>
 
     import auth from "../auth/index.js";
+    import Multiselect from 'vue-multiselect';
+
     export default {
+        components:{
+            Multiselect,
+        },
         data() {
             return {
                 data: null,
-                bookmarks: this.bookmarks,
-                categories: this.categories,
+                bookmarks: [],
+                categories: [],
+                value: null,
                 url: null,
                 name: null,
                 description: null,
@@ -102,8 +169,10 @@
                 isRead: null,
                 key: "",
                 table_id: null,
+                selected: null,
                 auth: auth,
                 message: null,
+                message_success: null,
                 info: null,
                 errors: []
             };
@@ -115,6 +184,18 @@
             setTimeout(function(){
                 $(document).ready(function() {
                     $('#mytable').DataTable( {
+                        "language": {
+                            "lengthMenu": "_MENU_ zobrazených výsledkov",
+                            "zeroRecords": "Neexistujú žiadne výsledky.",
+                            "info": "_PAGE_ z _PAGES_",
+                            "infoEmpty": "Žiadne výsledky",
+                            "infoFiltered": "",
+                            "search": "Zadaj výraz pre vyhľadávanie:",
+                            "oPaginate": {
+                                "sPrevious": "Späť", // This is the link to the previous page
+                                "sNext": "Ďalej", // This is the link to the next page
+                            }
+                        },
                         data: this.bookmarks,
                         columns: [
                             { title: "Názov" },
@@ -128,6 +209,12 @@
             }, 1000);
         },
         methods: {
+            showForm(){
+
+                    $('#bookmarkForm').animate({height: "toggle", opacity: "toggle"}, "fast");
+                    document.getElementById("btn-bookmark").style="display: none" ;
+
+            },
             allBookmarks() {
                 axios
                     .post("/get-bookmarks", {
@@ -137,7 +224,18 @@
                     headers: {Authorization: "Bearer " + this.auth.getToken()}
                 })
                     .then(response => {
+                        var i;
+                        var desc;
                         this.bookmarks = response.data;
+                        for(i in this.bookmarks){
+                            desc = this.bookmarks[i].description;
+                            if(desc.length > 100){
+                                this.bookmarks[i].description = desc.substring(0, 70) + '...';
+                            }
+
+
+                        }
+
                         this.table_id = "load";
 
                     })
@@ -151,13 +249,7 @@
                 $(document).ready(function() {
                     $('#mytable').DataTable( {
                         data: this.bookmarks,
-                        columns: [
-                            { title: "Name" },
-                            { title: "Position" },
-                            { title: "Office" },
-                            { title: "Extn." },
-                            { title: "Start date" },
-                        ]
+
                     } );
                 } );
             },
@@ -176,6 +268,15 @@
                     });
             },
             createBookmark(){
+                var cat_id;
+                if(this.selected == null){
+                    console.log(this.selected);
+                    cat_id = null;
+                }
+                else{
+                    console.log(this.selected);
+                    cat_id = this.selected.id;
+                }
                 axios
                     .post('/bookmarks',{
                         name: this.name,
@@ -183,13 +284,13 @@
                         description: this.description,
                         isVisible: this.isVisible,
                         isRead: this.isRead,
-                        category_id: this.category_id,
+                        category_id: cat_id,
                         },
                         {
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
-                        this.message = "Záložka bola úspešne vytvorená.";
+                        this.message_success = "Záložka bola úspešne vytvorená.";
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -212,15 +313,16 @@
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
-            selectCategory(event){
-                if(event.target.value == null){
-                    this.allBookmarks();
+            selectCategory(value){
+                console.log(value);
+                console.log(value.id);
+                if(value == null){
                     this.category_select = null;
+                    this.allBookmarks();
                     return;
                 }
+                this.category_select = value.id;
                 this.allBookmarks();
-                this.category_select = event.target.value;
-                console.log(this.category_select);
 
             },
             markRead(id){

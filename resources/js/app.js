@@ -3,7 +3,10 @@ import VueRouter from 'vue-router'
 import {routes} from './routes.js'
 
 import Sortable from 'vue-sortable'
+import ToggleButton from 'vue-js-toggle-button'
 
+
+Vue.use(ToggleButton);
 Vue.use(Sortable);
 Vue.use(VueRouter);
 

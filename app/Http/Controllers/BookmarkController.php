@@ -96,16 +96,16 @@ class BookmarkController extends Controller
                 'message' => 'Záložka s týmto názvom už existuje.'
             ],409);
         }
-        elseif(empty($url)){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Záložka musí mať uvedenú URL adresu.'
-            ],409);
-        }
         elseif(empty($name)){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Záložka musí mať uvedený názov.'
+            ],409);
+        }
+        elseif(empty($url)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Záložka musí mať uvedenú URL adresu.'
             ],409);
         }
         else{
@@ -138,6 +138,7 @@ class BookmarkController extends Controller
         $description = $request->description;
         $category_id = $request->category_id;
         $isVisible = $request->isVisible;
+        $isRead = $request->isRead;
         $category = Category::find($category_id);
 
         if(!empty($category))
@@ -212,6 +213,7 @@ class BookmarkController extends Controller
                 $bookmark->category_id = $category_id;
                 $bookmark->category_name = $category_name;
                 $bookmark->isVisible = $isVisible;
+                $bookmark->isRead = $isRead;
                 $bookmark->updated_at = Carbon::now();
                 $bookmark->save();
 

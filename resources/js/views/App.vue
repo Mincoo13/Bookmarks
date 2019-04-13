@@ -2,7 +2,7 @@
 
     <div>
     <div class="wrapper" v-if="auth.check()">
-        <div class="sidebar" data-color="azure" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+        <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
             <!--
               Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -35,7 +35,7 @@
                     </li>
                     <li id="categories" class="nav-item " @click="active()">
                         <router-link class="nav-link" tag="a" :to="{ name: 'categories' }">
-                            <i class="material-icons">bubble_chart</i>
+                            <i class="material-icons">category</i>
                             <p>Kategórie</p>
                         </router-link>
                     </li>
