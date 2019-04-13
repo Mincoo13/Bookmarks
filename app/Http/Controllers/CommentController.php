@@ -21,25 +21,25 @@ class CommentController extends Controller
         if(empty($bookmark)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dana zalozka neexistuje.',
+                'message' => 'Daná záložka neexistuje.',
             ],409);
         }
         elseif($bookmark->isVisible == 0 && $bookmark->user_id != $user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na komentovanie tejto zalozky nemate pravo.',
+                'message' => 'Na komentovanie tejto záložky nemáte právo.',
             ],401);
         }
         elseif (empty($text)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Komentar nemoze byt prazdny.',
+                'message' => 'Komentár nemôže byť prázdny.',
             ],409);
         }
         elseif (empty($bookmark_id)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Komentar musi byt priradeny k zalozke.',
+                'message' => 'Komentar musí byť priradený k záložke.',
             ],409);
         }
         else{
@@ -51,7 +51,7 @@ class CommentController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Komentar bol pridany.',
+                'message' => 'Komentár bol pridaný.',
             ],200);
         }
     }
@@ -84,13 +84,13 @@ class CommentController extends Controller
         if($user_id != $comment->user_id){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Na upravu tohto komentaru nemate povolenie.',
+                'message' => 'Na úpravu tohto komentáru nemáte povolenie.',
             ],401);
         }
         elseif (empty($text)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Komentar nemoze byt prazdny.',
+                'message' => 'Komentár nemôže buyť prázdny.',
             ],409);
         }
         else{
@@ -100,7 +100,7 @@ class CommentController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Komentar bol uspesne upraveny.',
+                'message' => 'Komentár bol upravený.',
             ],200);
         }
     }
@@ -113,7 +113,7 @@ class CommentController extends Controller
         if($comment == NULL){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dany komentar neexistuje.',
+                'message' => 'Daný komentár neexistuje.',
             ],409);
         }
         else{
@@ -122,14 +122,14 @@ class CommentController extends Controller
             if($user_id != $bookmark->user_id && $user_id != $comment->user_id && $user->isAdmin != 1){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Na zmazanie tohto komentaru nemate pravo.',
+                    'message' => 'Na zmazanie tohto komentáru nemáte právo.',
                 ],401);
             }
             else{
                 $comment->forceDelete();
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Komentar bol uspesne zmazany.',
+                    'message' => 'Komentár bol odstránený.',
                 ],200);
             }
         }

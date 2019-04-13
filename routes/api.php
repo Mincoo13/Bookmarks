@@ -1,7 +1,5 @@
 <?php
 
-
-
 Route::post('login', 'API\AuthController@login');
 Route::post('forgotten-password', 'UserController@resetPassword');
 Route::post('register-user', 'UserController@registerUser');
@@ -35,7 +33,7 @@ Route::middleware('jwt.auth')->group(function(){
 
     Route::get('bookmark-lists', 'BookmarkListController@getBookmarkLists');
     Route::get('bookmark-lists/{id}', 'BookmarkListController@showBookmarkList');
-    Route::post('bookmark-lists', 'BookmarkListController@createBookmarkList');
+    Route::post('bookmark-lists/create', 'BookmarkListController@createBookmarkList');
     Route::post('bookmark-lists/{id}', 'BookmarkListController@addBookmarkToList');
     Route::patch('bookmark-lists/{id}/order', 'BookmarkListController@setBookmarkOrder');
     Route::patch('bookmark-lists/{id}/edit', 'BookmarkListController@editBookmarkList');

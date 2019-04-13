@@ -23,7 +23,7 @@ class BookmarkListTest extends TestCase
     public function testNoToken(){
         $response = $this->json('POST', '/api/login', ['email' => 'sally.smith@example.com', 'password' => 'Sally123!']);
         $response->assertStatus(200);
-        $response = $this->json('POST', '/api/bookmark-lists', ['name' => 'text']);
+        $response = $this->json('POST', '/api/bookmark-lists/create', ['name' => 'text']);
         $response->assertStatus(401);
         $response = $this->json('POST', '/api/bookmark-lists/1', ['name' => 'text']);
         $response->assertStatus(401);
@@ -46,7 +46,7 @@ class BookmarkListTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/bookmark-lists', ['name' => $name, 'isVisible' => 1]);
+        ])->json('POST', '/api/bookmark-lists/create', ['name' => $name, 'isVisible' => 1]);
         $response->assertStatus(200);
 
 //        Vytvorenie zoznamu bez urcenia viditelnosti
@@ -55,7 +55,7 @@ class BookmarkListTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/bookmark-lists', ['name' => $name]);
+        ])->json('POST', '/api/bookmark-lists/create', ['name' => $name]);
         $response->assertStatus(200);
     }
 
@@ -71,7 +71,7 @@ class BookmarkListTest extends TestCase
            'Accept' => 'application/json',
            'Content-Type' => 'application/json',
            'Authorization' => 'Bearer' . $token,
-       ])->json('POST', '/api/bookmark-lists', ['name' => 'School', 'isVisible' => 1]);
+       ])->json('POST', '/api/bookmark-lists/create', ['name' => 'School', 'isVisible' => 1]);
        $response->assertStatus(409);
 
 //       Pokus o pridanie zoznamu bez nazvu
@@ -79,7 +79,7 @@ class BookmarkListTest extends TestCase
            'Accept' => 'application/json',
            'Content-Type' => 'application/json',
            'Authorization' => 'Bearer' . $token,
-       ])->json('POST', '/api/bookmark-lists', ['isVisible' => 1]);
+       ])->json('POST', '/api/bookmark-lists/create', ['isVisible' => 1]);
        $response->assertStatus(409);
    }
 

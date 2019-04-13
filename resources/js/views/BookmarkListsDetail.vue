@@ -15,8 +15,14 @@
             <button type="submit">Upraviť</button>
         </form>
 
+        <h2>Pridať nové záložky do zoznamu</h2>
         <form @submit.prevent="addBookmark(id)">
-
+            <div>
+                <multiselect v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
+                    <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
+                </multiselect>
+            </div>
+            <button type="submit">Pridať</button>
         </form>
         <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
         <div v-for="bookmark in bookmarksNew" >
@@ -34,25 +40,30 @@
 <script>
     import draggable from 'vuedraggable';
     import auth from "../auth/index.js";
+    import Multiselect from 'vue-multiselect';
 
     export default {
         components: {
-            draggable
+            draggable,
+            Multiselect,
         },
         data(){
             return{
                 auth: auth,
                 bookmarksNew: [],
                 bookmarks: [],
+                allBookmarks: [],
                 bookmarklist: [],
                 name: null,
                 isVisible: null,
                 id: null,
                 message: "",
+                selected: [],
             }
         },
         mounted(){
             this.getId();
+            this.getAllBookmarks();
             this.getBookmarkList(this.id);
             this.getBookmarks(this.id);
         },
@@ -101,6 +112,24 @@
             sortArrays(arrays) {
                 this.bookmarksNew = _.orderBy(arrays, 'order', 'asc');
             },
+            getAllBookmarks(){
+                axios
+                    .post('/get-bookmarks',
+                        {
+                            category_id: null,
+                        },
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.allBookmarks = response.data;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
             getBookmarks(id){
                 axios
                     .get('bookmark-lists/'+id+'/content',
@@ -139,7 +168,27 @@
                     });
             },
             addBookmark(){
-
+                var item = null;
+                for(item in this.selected){
+                    console.log(this.id+" "+this.selected[item].id);
+                    axios
+                        .post('bookmark-lists/'+this.id,
+                            {
+                                bookmark_id: this.selected[item].id,
+                            },
+                            {
+                                headers: {Authorization: "Bearer " + this.auth.getToken()}
+                            })
+                        .then(response => {
+                            this.message = "Záložky boli pridané do zoznamu.";
+                            this.getBookmarks(this.id);
+                        })
+                        .catch(error => {
+                            console.log(error.response);
+                            this.message = error.response.data.message;
+                            this.errors = error.response.data.errors ? error.response.data.errors : [];
+                        });
+                }
             },
             editBookmarkList(id){
                 console.log(this.isVisible+" "+this.name);

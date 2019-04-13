@@ -1,78 +1,127 @@
 <template>
     <div>
-        <b>{{ fullnameBookmark }}</b>
-        <br>
-        Nazov:
-        {{ bookmark.name }}
-        <br>
-        URL:
-        {{ bookmark.url }}
-        <br>
-        Popis:
-        {{ bookmark.description }}
-        <br>
-        Precitana:
-        <div v-if="bookmark.isRead == true ">
-            Ano
-        </div>
-        <div v-else>
-            Nie
-        </div>
-        <br>
-        Verejna:
-        <div v-if="bookmark.isVisible == true ">
-            Ano
-        </div>
-        <div v-else>
-            Nie
-        </div>
-        <br>
-        Kategoria:
-        <div v-if="bookmark.category_name == null">
-            Ziadna
-        </div>
-        <div v-else>
-            {{ bookmark.category_name }}
-        </div>
-        Vytvorena:
-        {{ bookmark.created_at }}
-        <br>
-        <router-link :to="'/bookmark/'+id+'/edit'" v-if="isAdmin == 1 || bookmark.user_id == userId" tag="button">Upraviť záložku</router-link>
-
-        <h2>Pridať nový komentár</h2>
-        <form @submit.prevent="addComment()">
-            <textarea v-model="text"></textarea>
-            <br>
-            <button type="submit">Pridať</button>
-        </form>
-        <br>
-        <h2>Komentare</h2>
-        <div v-for="comment in comments"  >
-            <b>{{ comment.fullname }}</b> |
-            {{ comment.user_id }}
-            {{ comment.created_at }}
-            <a style="text-decoration: underline" v-if="((comment.fullname == userFullname || isAdmin == 1) && (currentComment!=comment.text || !expand))" v-on:click="(expand = true) && (currentComment = comment.text) && (textComment = comment.text)">Upraviť</a>
-            <a style="text-decoration: underline" v-if="((comment.fullname == userFullname || isAdmin == 1 || userFullname == fullnameBookmark) && currentComment == comment.text) && expand" v-on:click="expand = !expand">Skryť</a>
-
-            <a style="text-decoration: underline" v-if="(comment.fullname == userFullname || isAdmin == 1 || userFullname == fullnameBookmark)" v-on:click="deleteComment(comment.id)">Zmazať</a>
-
-            <br>
-            <div v-if="expand == true && currentComment == comment.text">
-                <form @submit.prevent="editComment(comment.id)">
-                    <textarea v-model="textComment"></textarea>
-                    <button type="submit">Upraviť</button>
-                </form>
+        <div class="row">
+            <div class="col-md-3">
             </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h3 class="card-title">{{ bookmark.name }}</h3>
+                            <p class="card-category">{{ fullnameBookmark }}</p>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row col-md-12">
+                                    <div class="form-group">
+                                        <b>URL:</b><br><a :href="bookmark.url" target="_blank">{{ bookmark.url }}</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <b>Popis:</b><br>{{ bookmark.description }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
 
-            <br>
-            {{ comment.text }}
-            <hr>
+                                            <div v-if="bookmark.isRead == true "><b>Prečítaná:  </b>áno</div>
+                                            <div v-else><b>Prečítaná:   </b>nie</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
 
+                                            <div v-if="bookmark.isVisible == true "><b>Verejná:  </b>áno</div>
+                                            <div v-else><b>Verejná:    </b>nie</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+
+                                            <div v-if="bookmark.category_name == null"><b>Kategória:  </b><p class="text-gray">Žiadna</p></div>
+                                            <div v-else><b>Kategória:  </b>{{ bookmark.category_name }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+
+                                            <b>Vytvorená:   </b>{{ bookmark.created_at }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                                <router-link :to="'/bookmark/'+id+'/edit'" v-if="isAdmin == 1 || bookmark.user_id == userId" tag="button" class="btn btn-primary pull-right">Upraviť záložku</router-link>
+                                <!--<button  class="btn btn-primary pull-right">Update Profile</button>-->
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header card-header-text">
+                            <h3 class="card-title">Komentáre ku záložke</h3>
+                        </div>
+                        <div class="card-body">
+                            <form @submit.prevent="addComment()">
+                                <div class="form-group">
+                                    <div class="form-group bmd-form-group">
+                                        <h4>Pridať nový komentár</h4>
+                                        <textarea  class="form-control" v-model="text"></textarea>
+                                        <button type="submit" class="btn btn-primary btn-sm pull-right">Pridať</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br>
+                            <br>
+                            <div v-for="comment in comments">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span><b>{{ comment.fullname }}</b> |</span>
+                                        <span v-if="comment.updated_at == null">{{ comment.created_at }}</span>
+                                        <span v-else >{{ comment.updated_at }}</span>
+
+                                        <a class="text-primary comment" style="text-decoration: underline" v-if="((comment.fullname == userFullname || isAdmin == 1) && (currentComment!=comment.text || !expand))" v-on:click="(expand = true) && (currentComment = comment.text) && (textComment = comment.text)">Upraviť</a>
+                                        <a class="text-primary comment" style="text-decoration: underline" v-if="((comment.fullname == userFullname || isAdmin == 1 || userFullname == fullnameBookmark) && currentComment == comment.text) && expand" v-on:click="expand = !expand">Skryť</a>
+
+                                        <a class="text-primary comment" style="text-decoration: underline" v-if="(comment.fullname == userFullname || isAdmin == 1 || userFullname == fullnameBookmark)" v-on:click="deleteComment(comment.id)">Zmazať</a>
+
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <div v-if="expand == true && currentComment == comment.text">
+                                    <form @submit.prevent="editComment(comment.id)">
+                                        <div class="form-group">
+                                            <div class="form-group bmd-form-group">
+                                                <textarea  class="form-control" v-model="textComment"></textarea>
+                                                <button type="submit" class="btn btn-primary btn-sm pull-right">Upraviť</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div v-else>
+                                    {{ comment.text }}
+                                    <br>
+                                </div>
+
+                                <hr>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 </template>
 
 <script>
+    function teste() {
+        console.log("babla");
+    }
     import auth from "../auth/index.js";
     export default {
         data() {
@@ -101,6 +150,9 @@
             this.getComments();
         },
         methods: {
+            test(){
+              console.log("test");
+            },
             showBookmark() {
                 axios
                     .get("bookmark/"+this.id, {

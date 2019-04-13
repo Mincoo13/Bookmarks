@@ -45,14 +45,14 @@ class AuthController extends Controller
             if (! $token = JWTAuth::attempt($credentials)) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'We can\'t find an account with this credentials.'
+                    'message' => 'Zadali ste nesprávne údaje.'
                 ], 401);
             }
         } catch (JWTException $e) {
             // Something went wrong with JWT Auth.
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to login, please try again.'
+                'message' => 'Pokus o prihlásenie zlyhal. Skúste to, prosím, znovu.'
             ], 500);
         }
         // All good so return the token
@@ -78,13 +78,13 @@ class AuthController extends Controller
             JWTAuth::invalidate($token);
             return response()->json([
                 'status' => 'success',
-                'message'=> "User successfully logged out."
+                'message'=> "Používateľ bol odhlásený."
             ]);
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to logout, please try again.'
+                'message' => 'Problém pri odhlásení používateľa. Skúste to, prosím, ešte raz.'
             ], 500);
         }
     }
