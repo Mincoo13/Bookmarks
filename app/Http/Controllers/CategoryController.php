@@ -18,10 +18,16 @@ class CategoryController extends Controller
             ['user_id', '=', $user_id],
             ['name', '=', $name]
         ])->first();
-        if($exist != []){
+        if(empty($name)){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Kategória s týmto názvom už existuje. '.$exist
+                'message' => 'Musíte zadať meno kategórie.'
+            ],409);
+        }
+        elseif($exist != []){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kategória s názvom '.$name.' už existuje.'
             ],409);
         }else{
             DB::table('categories')->insert([

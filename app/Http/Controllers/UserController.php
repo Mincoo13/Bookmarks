@@ -119,6 +119,18 @@ class UserController extends Controller
     }
 
     public function editProfileAdmin($id, Request $request){
+        if(empty($request->name)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musíte zadať meno.'
+            ],409);
+        }
+        elseif (empty($request->surname)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Musíte zadať priezvisko.'
+            ],409);
+        }
         User::find($id)->update([
             "name" => $request->name,
             "surname" => $request->surname

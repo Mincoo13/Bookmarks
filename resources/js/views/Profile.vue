@@ -1,18 +1,50 @@
 <template>
     <div>
-        Meno:
-        {{ name }}
-        <br>
-        Priezvisko:
-        {{ surname }}
-        <br>
-        E-mail:
-        {{ email }}
-        <br>
-        Ucet bol vytvoreny dna {{ created_at }}
-        <br>
-        <button type="button" @click="edit()" >Upravit profil</button>
-        <button type="button" @click="password()" >Zmenit heslo</button>
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h3 class="card-title">Môj profil</h3>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b>Meno:</b><br>{{ name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b>Priezvisko:</b><br>{{ surname }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b>E-mail:</b><br>{{ email }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b>Profil založený dňa:</b><br>{{ created_at }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>-->
+                            <button  type="button" @click="edit()" class="btn btn-primary pull-right">Upraviť profil</button>
+                            <button type="button" class="btn btn-primary pull-right" @click="password()" >Zmeniť heslo</button>
+
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

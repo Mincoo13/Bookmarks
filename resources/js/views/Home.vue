@@ -1,85 +1,95 @@
 <template>
 
     <div>
+        <div class="row">
+            <div class="col-md-2">
 
-        <h1>Moje záložky</h1>
-
-        <h2>Pridať záložku</h2>
-        <button id="btn-bookmark" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">add</i><div class="ripple-container"></div></button>
-
-        <div class="card" id="bookmarkForm">
-            <div class="card-header card-header-primary">
-                <h4 class="card-title">Pridaj novú záložku</h4>
-                <!--<p class="card-category"></p>-->
             </div>
-            <div class="card-body">
-                <form @submit.prevent="createBookmark()">
-                    <div v-if="message">
-                        <p class="text-danger">{{ message }}</p>
+            <div class="col-md-8">
+                <h2>Pridať záložku</h2>
+                <button id="btn-bookmark" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">add</i><div class="ripple-container"></div></button>
+
+                <div class="card" id="bookmarkForm">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Pridaj novú záložku</h4>
+                        <!--<p class="card-category"></p>-->
                     </div>
-                    <div v-else-if="message_success">
-                        <p class="text-success">{{ message_success }}</p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="form-group bmd-form-group">
-                                <label class="bmd-label-floating"  for="name">Názov:</label>
-                                <input type="text" v-model="name" class="form-control">
-                                <p v-if="errors.name">{{ errors.name[0] }}</p>
-
+                    <div class="card-body">
+                        <form @submit.prevent="createBookmark()">
+                            <div v-if="message">
+                                <p class="text-danger">{{ message }}</p>
                             </div>
-                            <div class="form-group bmd-form-group">
-                                <label class="bmd-label-floating" for="surname">Url:</label>
-                                <input type="text" v-model="url" class="form-control">
-                                <p v-if="errors.url">{{ errors.url[0] }}</p>
-
+                            <div v-else-if="message_success">
+                                <p class="text-success">{{ message_success }}</p>
                             </div>
-                            <div class="form-group bmd-form-group">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group bmd-form-group">
+                                        <label class="bmd-label-floating"  for="name">Názov:</label>
+                                        <input type="text" v-model="name" class="form-control">
+                                        <p v-if="errors.name">{{ errors.name[0] }}</p>
 
-                                <div>
-                                    <label class="typo__label">Vybert kategóriu:</label>
-                                    <multiselect v-model="selected" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
-                                        <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
-                                    </multiselect>
-                                    <pre class="language-json"><code>{{ categories.name  }}</code></pre>
+                                    </div>
+                                    <div class="form-group bmd-form-group">
+                                        <label class="bmd-label-floating" for="surname">Url:</label>
+                                        <input type="text" v-model="url" class="form-control">
+                                        <p v-if="errors.url">{{ errors.url[0] }}</p>
+
+                                    </div>
+                                    <div class="form-group bmd-form-group">
+
+                                        <div>
+                                            <label class="typo__label">Vybert kategóriu:</label>
+                                            <multiselect v-model="selected" deselect-label="Odstrániť"  track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
+                                                <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
+                                            </multiselect>
+                                            <pre class="language-json"><code>{{ categories.name  }}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="form-group bmd-form-group">
+                                            <label class="bmd-label-floating"  for="description">Popis</label>
+                                            <textarea v-model="description" class="form-control" rows="5"></textarea>
+                                            <p v-if="errors.description">{{ errors.description[0] }}</p>
+
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <label class="bmd-label-floating"  for="isVisible">Nastaviť záložku ako viditeľnú pre ostatných:</label>
+                                        <br>
+                                        <toggle-button :value="isVisible" color="#9c27b0" v-model="isVisible"/>
+                                        <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <div class="form-group bmd-form-group">
-                                    <label class="bmd-label-floating"  for="description">Popis</label>
-                                    <textarea v-model="description" class="form-control" rows="5"></textarea>
-                                    <p v-if="errors.description">{{ errors.description[0] }}</p>
 
-                                </div>
-                            </div>
-                            <div class="">
-                                <label class="bmd-label-floating"  for="isVisible">Nastaviť záložku ako viditeľnú pre ostatných:</label>
-                                <br>
-                                <toggle-button  color="#9c27b0" v-model="isVisible"/>
-                                <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
-                            </div>
-
-                        </div>
+                            <button type="submit" class="btn btn-primary pull-right">Vytvoriť<div class="ripple-container"></div></button>
+                            <div class="clearfix"></div>
+                        </form>
                     </div>
-
-                    <button type="submit" class="btn btn-primary pull-right">Vytvoriť<div class="ripple-container"></div></button>
-                    <div class="clearfix"></div>
-                </form>
+                </div>
             </div>
+
         </div>
+
         <br>
         <br>
         <br>
         <br>
 
+        <div class="row">
+        <div class="col-md-2">
 
-        <div class="col-md-12">
+        </div>
+
+        <div class="col-md-8">
             <form>
                 <label for="category_table">Vyberte kategóriu:</label>
                 <br>
-                <multiselect style="z-index: 5 !important" v-model="category_select" @deselect="selectCategory" @select="selectCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
+                <multiselect style="z-index: 5 !important" v-model="category_select" @remove="nullCategory" @select="selectCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Vyberte" :options="categories" :searchable="false" :allow-empty="true">
                     <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                 </multiselect>
             </form>
@@ -124,14 +134,8 @@
                                 </td>
                                 <td > {{ bookmark.category_name }}</td>
                                 <td>
-                                    <div class="row">
-                                        <div class="col-5" style="width: auto !important">
-                                            <router-link :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
-                                        </div>
-                                        <div class="col-5">
-                                            <button v-on:click="deleteBookmark(bookmark.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>
-                                        </div>
-                                    </div>
+                                    <router-link :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
+                                    <button v-on:click="deleteBookmark(bookmark.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -139,6 +143,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </template>
@@ -181,34 +186,9 @@
         mounted(){
             this.allCategories();
             this.allBookmarks();
-            setTimeout(function(){
-                $(document).ready(function() {
-                    $('#mytable').DataTable( {
-                        "language": {
-                            "lengthMenu": "_MENU_ zobrazených výsledkov",
-                            "zeroRecords": "Neexistujú žiadne výsledky.",
-                            "info": "_PAGE_ z _PAGES_",
-                            "infoEmpty": "Žiadne výsledky",
-                            "infoFiltered": "",
-                            "search": "Zadaj výraz pre vyhľadávanie:",
-                            "oPaginate": {
-                                "sPrevious": "Späť", // This is the link to the previous page
-                                "sNext": "Ďalej", // This is the link to the next page
-                            }
-                        },
-                        data: this.bookmarks,
-                        columns: [
-                            { title: "Názov" },
-                            { title: "Popis" },
-                            { title: "Verejná" },
-                            { title: "Kategória" },
-                            { title: "Akcie" },
-                        ]
-                    } );
-                } );
-            }, 1000);
         },
         methods: {
+
             showForm(){
 
                     $('#bookmarkForm').animate({height: "toggle", opacity: "toggle"}, "fast");
@@ -232,8 +212,6 @@
                             if(desc.length > 100){
                                 this.bookmarks[i].description = desc.substring(0, 70) + '...';
                             }
-
-
                         }
 
                         this.table_id = "load";
@@ -244,14 +222,6 @@
                         this.message = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
-            },
-            table(){
-                $(document).ready(function() {
-                    $('#mytable').DataTable( {
-                        data: this.bookmarks,
-
-                    } );
-                } );
             },
             allCategories(){
                 axios
@@ -270,11 +240,9 @@
             createBookmark(){
                 var cat_id;
                 if(this.selected == null){
-                    console.log(this.selected);
                     cat_id = null;
                 }
                 else{
-                    console.log(this.selected);
                     cat_id = this.selected.id;
                 }
                 axios
@@ -313,9 +281,11 @@
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
+            nullCategory(value){
+                this.category_select = null;
+                this.allBookmarks();
+            },
             selectCategory(value){
-                console.log(value);
-                console.log(value.id);
                 if(value == null){
                     this.category_select = null;
                     this.allBookmarks();

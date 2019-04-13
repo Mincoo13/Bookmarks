@@ -112,6 +112,7 @@
         },
         mounted() {
           this.getUserData();
+          this.active();
         },
         methods: {
             active(){

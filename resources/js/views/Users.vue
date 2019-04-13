@@ -1,35 +1,65 @@
 <template>
     <div>
-        <div v-if="message">
-            <p>{{ message }}</p>
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">Moje záložky</h4>
+            </div>
+            <div class="card-body">
+                <div v-if="message">
+                    <p class="text-danger">{{ message }}</p>
+                </div>
+                <div v-else-if="message_success">
+                    <p class="text-success">{{ message_success }}</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table" >
+                        <thead class=" text-primary">
+                        <th>ID</th>
+                        <th>Meno</th>
+                        <th>Priezvisko</th>
+                        <th>E-mail</th>
+                        <th>Aktívny</th>
+                        <th>Akcie</th>
+                        </thead>
+                        <tbody>
+                        <tr v-for="user in users" ref="datatable" >
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.surname }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <div v-if="user.isActive" class="form-check" >
+                                        <i class="material-icons text-success">check</i>
+
+                                </div>
+
+                                <div v-else class="form-check" >
+                                        <i class="material-icons text-danger">close</i>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="row">
+                                    <!--<div class="col-5" style="width: auto !important">-->
+                                        <!--<router-link :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-5">-->
+                                        <!--<button v-on:click="deleteBookmark(bookmark.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>-->
+                                    <!--</div>-->
+                                    <router-link :to="'users/' + user.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
+
+                                    <button class="btn btn-sm btn-warning" v-if="user.isActive" v-on:click="deactivate(user.id)">Deaktivovať</button>
+                                    <button class="btn btn-sm btn-warning" v-else="user.isActive" v-on:click="activate(user.id)">Aktivovať</button>
+                                        <button v-on:click="destroy(user.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>
+
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Meno</th>
-                <th>Priezvisko</th>
-                <th>Email</th>
-                <th>Aktivny</th>
-                <th>Akcie</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="user in users" ref="datatable">
-                <td> {{ user.id }}</td>
-                <td> {{ user.name }}</td>
-                <td> {{ user.surname }}</td>
-                <td> {{ user.email }}</td>
-                <td> {{ user.isActive }}</td>
-                <td>
-                    <button v-on:click="showProfile(user.id)">Zobrazit profil</button>
-                    <button v-if="user.isActive" v-on:click="deactivate(user.id)">Deaktivovať</button>
-                    <button v-else="user.isActive" v-on:click="activate(user.id)">Aktivovať</button>
-                    <button v-on:click="destroy(user.id)">Zmazať</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 </template>
 
@@ -45,7 +75,8 @@
                 email: null,
                 isActive: null,
                 auth: auth,
-                message: null,
+                message: "",
+                message_success: "",
                 info: null,
                 errors: []
             };
@@ -71,7 +102,7 @@
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol aktivovaný.";
+                        this.message_success = "Používateľ bol aktivovaný.";
                         this.all()
                     })
                     .catch(error => {
@@ -88,7 +119,7 @@
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol deaktivovaný.";
+                        this.message_success = "Používateľ bol deaktivovaný.";
                             this.all()
                     })
                     .catch(error => {
@@ -103,7 +134,7 @@
                         headers: {Authorization: "Bearer " + this.auth.getToken()}
                     })
                     .then(response => {
-                        this.message = "Používateľ bol odstránený.";
+                        this.message_success = "Používateľ bol odstránený.";
                         this.all()
                     })
                     .catch(error => {
@@ -112,20 +143,6 @@
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
-            showProfile(id){
-                axios
-                    .get("/users/"+id,{
-                        headers: {Authorization: "Bearer " + this.auth.getToken()}
-                    })
-                    .then(response => {
-                        this.$router.push("/users/"+id);
-                    })
-                    .catch(error => {
-                        console.log(error.response);
-                        this.message = error.response.data.message;
-                        this.errors = error.response.data.errors ? error.response.data.errors : [];
-                    });
-            }
         }
     }
 </script>

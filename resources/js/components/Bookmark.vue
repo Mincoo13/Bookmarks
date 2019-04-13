@@ -41,7 +41,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
 
-                                            <div v-if="bookmark.category_name == null"><b>Kategória:  </b><p class="text-gray">Žiadna</p></div>
+                                            <div v-if="bookmark.category_name == null"><b>Kategória:  </b><span class="text-gray">Žiadna</span></div>
                                             <div v-else><b>Kategória:  </b>{{ bookmark.category_name }}</div>
                                         </div>
                                     </div>
@@ -119,9 +119,6 @@
 </template>
 
 <script>
-    function teste() {
-        console.log("babla");
-    }
     import auth from "../auth/index.js";
     export default {
         data() {
@@ -142,17 +139,19 @@
                 editText: "",
             };
         },
+        created(){
+            window.scrollTo(0, 0);
+        },
         mounted(){
+
             this.getUserData();
             this.getId();
             this.getUserBookmark(this.id);
             this.showBookmark();
             this.getComments();
+
         },
         methods: {
-            test(){
-              console.log("test");
-            },
             showBookmark() {
                 axios
                     .get("bookmark/"+this.id, {

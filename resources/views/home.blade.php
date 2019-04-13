@@ -49,6 +49,12 @@
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="assets/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
 <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+{{--<script>--}}
+    {{--router.beforeEach(function (transition) {--}}
+        {{--window.scrollTo(0, 0)--}}
+        {{--transition.next()--}}
+    {{--})--}}
+{{--</script>--}}
 
 
 </body>

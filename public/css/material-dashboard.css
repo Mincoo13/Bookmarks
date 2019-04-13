@@ -3938,7 +3938,7 @@ tbody.collapse.show {
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label::before {
-  background-color: #2196f3;
+  background-color: #952daf !important;
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label::after {

@@ -1,29 +1,80 @@
 <template>
     <div>
-        <h1>Pridať kategóriu</h1>
-        <form @submit.prevent="addCategory()">
-            <input v-model="name">
-            <button type="submit">Vytvoriť</button>
-        </form>
-        <h1>Moje kategórie</h1>
-        <div v-for="category in categories">
-            <p>{{ category.name }}</p>
-            <div v-if="message && currentCategory == category.name">
-                <br>
-                <p>{{ message }}</p>
-            </div>
-            <button v-if="!expand || currentCategory != category.name" v-on:click="(expand = true) && (currentCategory = category.name) && (categoryName = category.name)">Upraviť</button>
-            <button v-if="expand == true && currentCategory == category.name" v-on:click="(expand = !expand) && (currentCategory = null)">Skryť</button>
-            <button v-on:click="(currentCategory = category.name) && deleteCategory(category.id)">Zmazať</button>
+        <div class="row">
+            <div class="col-md-3">
 
-
-            <div v-if="expand && currentCategory == category.name">
-                <form @submit.prevent="editCategory(category.id)">
-                    <input v-model="categoryName">
-                    <button type="submit">Upraviť</button>
-                </form>
             </div>
-            <hr>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h3 class="card-title">Vytvoriť novú kategóriu</h3>
+                    </div>
+                    <div class="card-body">
+                        <div v-if="message_create_error">
+                            <p class="text-danger">{{ message_create_error }}</p>
+                        </div>
+                        <div v-else-if="message_create_success">
+                            <p class="text-success">{{ message_create_success }}</p>
+                        </div>
+                            <form @submit.prevent="addCategory()">
+                                <div class="row">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating"  for="name">Názov novej kategórie</label>
+                                        <input type="text" class="form-control" v-model="name">
+
+                                    </div>
+                                </div>
+                                </div>
+                                <button  type="submit"  class="btn btn-primary pull-right">Vytvoriť</button>
+                            </form>
+                            <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-text">
+                        <h3 class="card-title">Moje kategórie</h3>
+                    </div>
+                    <div class="card-body">
+                        <div v-for="category in categories">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div v-if="message_error">
+                                        <p class="text-danger">{{ message_error }}</p>
+                                    </div>
+                                    <div v-else-if="message_success">
+                                        <p class="text-success">{{ message_success }}</p>
+                                    </div>
+                                    <h4>{{ category.name }}</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button  class="btn btn-sm btn-danger pull-right" v-on:click="(currentCategory = category.name) && deleteCategory(category.id)"><i class="material-icons">delete_outline</i></button>
+                                            <button class="btn btn-sm btn-primary pull-right" v-if="!expand || currentCategory != category.name" v-on:click="(expand = true) && (currentCategory = category.name) && (categoryName = category.name)"><i class="material-icons">edit</i></button>
+                                            <button  class="btn btn-sm btn-primary pull-right" v-if="expand == true && currentCategory == category.name" v-on:click="(expand = !expand) && (currentCategory = null)">Skryť</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div v-if="expand && currentCategory == category.name">
+                                                <form @submit.prevent="editCategory(category.id)">
+                                                    <div class="form-group">
+                                                        <input class="form-control" v-model="categoryName">
+                                                    </div>
+                                                    <button class="btn btn-sm btn-primary pull-right" type="submit">Upraviť</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <hr>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -41,7 +92,10 @@
                 categories: [],
                 expand: false,
                 currentCategory: null,
-                message: "",
+                message_create_error: "",
+                message_create_success: "",
+                message_error: "",
+                message_success: "",
             };
         },
         mounted(){
@@ -58,11 +112,13 @@
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
-                        this.message = "Kategória bola vytvorená.";
+                        this.message_create_error= "";
+                        this.message_create_success = "Kategória bola vytvorená.";
                     })
                     .catch(error => {
                         console.log(error.response);
-                        this.message = error.response.data.message;
+                        this.message_create_success = "";
+                        this.message_create_error = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
@@ -91,12 +147,14 @@
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
-                        this.message = "Kategória bola upravená.";
+                        this.message_error = "";
+                        this.message_success = "Kategória bola upravená.";
                         this.allCategories();
                     })
                     .catch(error => {
                         console.log(error.response);
-                        this.message = error.response.data.message;
+                        this.message_success = "";
+                        this.message_error = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
