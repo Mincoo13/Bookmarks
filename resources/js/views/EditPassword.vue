@@ -1,26 +1,58 @@
 <template>
     <div>
-        <form @submit.prevent="edit()">
-            <div v-if="message">
-                <p>{{ message }}</p>
+        <div class="row">
+            <div class="col-md-3">
             </div>
-            <label for="oldPassword">Aktualne heslo:</label>
-            <br>
-            <input type="password" v-model="oldPassword" >
-            <p v-if="errors.oldPassword">{{ errors.oldPassword[0] }}</p>
-            <br>
-            <label for="newPassword">Nove heslo:</label>
-            <br>
-            <input type="password" v-model="newPassword" >
-            <p v-if="errors.newPassword">{{ errors.newPassword[0] }}</p>
-            <br>
-            <label for="confirmPassword">Zopakujte nove heslo:</label>
-            <br>
-            <input type="password" v-model="confirmPassword">
-            <p v-if="errors.confirmPassword">{{ errors.confirmPassword[0] }}</p>
-            <br>
-            <button type="submit">Zmenit heslo</button>
-        </form>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h3 class="card-title">Zmeniť heslo</h3>
+                    </div>
+                    <div class="card-body">
+                        <form @submit.prevent="edit()">
+                            <div v-if="message">
+                                <p class="text-danger">{{ message }}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="oldPassword">Aktuálne heslo:</label>
+                                        <input class="form-control" type="password" v-model="oldPassword">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="newPassword">Nové heslo:</label>
+                                        <input class="form-control" type="password" v-model="newPassword">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="confirmPassword">Zopakujte nové heslo:</label>
+                                        <input class="form-control" type="password" v-model="confirmPassword">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                            <button  type="submit"  class="btn btn-primary pull-right">Zmeniť</button>
+
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

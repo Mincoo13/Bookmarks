@@ -1,39 +1,116 @@
 <template>
     <div>
+        <div class="row">
+            <div class="col-md-2">
 
-        <h1>{{ bookmarklist.name }}</h1>
-        <p>{{ bookmarklist.created_at }}</p>
-
-        <form @submit.prevent="editBookmarkList(id)">
-            <div v-if="message">
-                <p>{{ message }}</p>
             </div>
-            <input type="text" v-model="name">
-            <input v-if="isVisible != 1" type="checkbox" v-model="isVisible">
-            <input v-else type="checkbox" checked v-model="isVisible">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">{{ bookmarklist.name }}</h4>
+                        <!--<p class="card-category"></p>-->
+                    </div>
+                    <div class="card-body">
+                        <h3>Upraviť zoznam</h3>
+                        <div v-if="message_edit_error">
+                            <p class="text-danger">{{ message_edit_error }}</p>
+                        </div>
+                        <div v-else-if="message_edit_success">
+                            <p class="text-success">{{ message_edit_success}}</p>
+                        </div>
+                        <form @submit.prevent="editBookmarkList(id)">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static">Upraviť názov</label>
+                                        <input class="form-control" type="text" v-model="name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                            <label class="bmd-label-floating">Nastaviť ako viditeľný:</label>
+                                            <toggle-button :sync="true" color="#9c27b0" v-model="isVisible" true-value=1 false-value=0 />
+                                    </div>
+                                    <button class="btn btn-primary pull-right" type="submit">Upraviť</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <!--<input v-if="isVisible != 1" type="checkbox" v-model="isVisible">-->
+                            <!--<input v-else type="checkbox" checked v-model="isVisible">-->
+                        </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Pridať nové záložky do zoznamu</h3>
+                                <div v-if="message_add_error">
+                                    <p class="text-danger">{{ message_add_error }}</p>
+                                </div>
+                                <div v-else-if="message_add_success">
+                                    <p class="text-success">{{ message_add_success}}</p>
+                                </div>
+                                <form @submit.prevent="addBookmark(id)">
+                                    <div>
+                                        <multiselect style="z-index: 50 !important" v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
+                                            <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
+                                        </multiselect>
+                                    </div>
+                                    <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                                    <button class="btn btn-primary pull-right" type="submit">Pridať</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <button type="submit">Upraviť</button>
-        </form>
+                <div class="card">
+                    <div class="card-header card-header-text">
+                        <h4 class="card-title">Prečítanosť</h4>
+                        <div class="progress md-progress" style="height: 20px">
+                            <div class="progress-bar" role="progressbar" :style="'width:'+ progress +'%; height: 20px'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+                        </div>
+                        <!--<p class="card-category"></p>-->
+                    </div>
 
-        <h2>Pridať nové záložky do zoznamu</h2>
-        <form @submit.prevent="addBookmark(id)">
-            <div>
-                <multiselect v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
-                    <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
-                </multiselect>
+                    <div class="card-body">
+                        <p>tip: Kliknutím a presunutím záložky môžete meniť jednotlivé poradia v zozname</p>
+                        <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
+                            <div v-for="bookmark in bookmarksNew" >
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h3><a :href="bookmark.url" target="_blank">{{ bookmark.name }}</a></h3>
+
+                                        <div v-if="bookmark.isRead" class="form-check" >
+                                            <label class="form-check-label">
+                                                Prečítaná
+                                                <input class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)">
+                                                <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                            </label>
+                                        </div>
+
+                                        <div v-else class="form-check" >
+                                            <label class="form-check-label">
+                                                Neprečítaná
+                                                <input class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)">
+                                                <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-danger btn-sm pull-right" @click="deleteBookmark(id, bookmark.id)"><i class="material-icons">delete_outline</i></button>
+                                        <router-link class="btn btn-info btn-sm pull-right" tag="button" :to="{ path:'/bookmark/'+bookmark.id }"><i class="material-icons">trending_flat</i></router-link>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </draggable>
+                    </div>
+                </div>
             </div>
-            <button type="submit">Pridať</button>
-        </form>
-        <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
-        <div v-for="bookmark in bookmarksNew" >
-            <a :href="bookmark.url" target="_blank">{{ bookmark.name }}</a>
-            <br>
-            {{ bookmark.order }}
-            <router-link tag="button" :to="{ path:'/bookmark/'+bookmark.id }">Podrobnosti</router-link>
-            <button @click="deleteBookmark(id, bookmark.id)">Odstrániť</button>
-            <hr>
         </div>
-        </draggable>
+
     </div>
 </template>
 
@@ -55,17 +132,22 @@
                 allBookmarks: [],
                 bookmarklist: [],
                 name: null,
-                isVisible: null,
+                isVisible: this.isVisible,
                 id: null,
-                message: "",
+                progress: 0,
+                message_edit_error: "",
+                message_edit_success: "",
+                message_add_error: "",
+                message_add_success: "",
                 selected: [],
             }
         },
         mounted(){
             this.getId();
-            this.getAllBookmarks();
             this.getBookmarkList(this.id);
+            this.getAllBookmarks();
             this.getBookmarks(this.id);
+            console.log(this.isVisible);
         },
         computed: {
             sorted: function() {
@@ -87,6 +169,22 @@
                     return 1;
                 return 0;
             },
+            markRead(id){
+                axios
+                    .patch("bookmarks/"+id+"/mark-read",{
+                            data: this.data},
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.getBookmarks(this.id);
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
+            },
             getBookmarkList(id){
                 axios
                     .get('/bookmark-lists/'+id,
@@ -96,7 +194,9 @@
                     .then(response => {
                         this.bookmarklist = response.data;
                         this.name = response.data.name;
-                        this.isVisible = response.data.isVisible;
+                        if(response.data.isVisible == 1)this.isVisible = true;
+                        else this.isVisible = false;
+                        console.log(this.isVisible);
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -139,8 +239,16 @@
                     .then(response => {
                         this.bookmarks = response.data;
                         this.bookmarksNew = this.bookmarks;
-                        // console.log(this.bookmarksNew);
-                        // this.sortArrays(this.bookmarksNew);
+                        var i;
+                        var read = 0;
+                        var bookmarks = this.bookmarks;
+                        var count = bookmarks.length;
+                        for(i in bookmarks){
+                            if(bookmarks[i].isRead == 1) {
+                                read++;
+                            }
+                        }
+                        this.progress = (read/count)*100;
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -170,7 +278,6 @@
             addBookmark(){
                 var item = null;
                 for(item in this.selected){
-                    console.log(this.id+" "+this.selected[item].id);
                     axios
                         .post('bookmark-lists/'+this.id,
                             {
@@ -180,18 +287,19 @@
                                 headers: {Authorization: "Bearer " + this.auth.getToken()}
                             })
                         .then(response => {
-                            this.message = "Záložky boli pridané do zoznamu.";
+                            this.message_add_error = "";
+                            this.message_add_success = "Záložky boli pridané do zoznamu.";
                             this.getBookmarks(this.id);
                         })
                         .catch(error => {
                             console.log(error.response);
-                            this.message = error.response.data.message;
+                            this.message_add_success = "";
+                            this.message_add_error = error.response.data.message;
                             this.errors = error.response.data.errors ? error.response.data.errors : [];
                         });
                 }
             },
             editBookmarkList(id){
-                console.log(this.isVisible+" "+this.name);
                 axios
                     .patch('bookmark-lists/'+id+'/edit',
                         {
@@ -202,19 +310,20 @@
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
-                        this.message = "Zoznam bol upravený.";
+                        this.message_edit_success = "Zoznam bol upravený.";
+                        this.message_edit_error = "";
                         this.getBookmarkList(id);
                     })
                     .catch(error => {
                         console.log(error.response);
-                        this.message = error.response.data.message;
+                        this.message_edit_error = error.response.data.message;
+                        this.message_edit_success = "";
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
             update(){
                 this.bookmarks.map((bookmark, index) => {
                     bookmark.order = index + 1;
-                    console.log(bookmark.name+" "+bookmark.order);
                     axios
                         .patch('/bookmark-lists/'+this.id+'/order',
                             {

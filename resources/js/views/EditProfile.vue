@@ -1,21 +1,42 @@
 <template>
     <div>
-        <form @submit.prevent="edit()">
-            <div v-if="message">
-                <p>{{ message }}</p>
+        <div class="row">
+            <div class="col-md-3">
             </div>
-            <label for="name">Meno:</label>
-            <br>
-            <input type="text" v-model="name" >
-            <p v-if="errors.name">{{ errors.name[0] }}</p>
-            <br>
-            <label for="surname">Priezvisko:</label>
-            <br>
-            <input type="text" v-model="surname" >
-            <p v-if="errors.surname">{{ errors.surname[0] }}</p>
-            <br>
-            <button type="submit">Upravit </button>
-        </form>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h3 class="card-title">Upraviť profil</h3>
+                    </div>
+                    <div class="card-body">
+                        <form @submit.prevent="edit()">
+                            <div v-if="message">
+                                <p class="text-danger">{{ message }}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="name">Meno</label>
+                                        <input class="form-control" type="text" v-model="name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="surname">Priezvisko:</label>
+                                        <input class="form-control" type="text" v-model="surname">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                            <button  type="submit"  class="btn btn-primary pull-right">Upraviť</button>
+
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

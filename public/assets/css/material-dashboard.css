@@ -60,6 +60,10 @@ html {
   display: none;
 }
 
+#list-form{
+  display: none;
+}
+
 article,
 aside,
 dialog,
@@ -3960,7 +3964,7 @@ tbody.collapse.show {
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label::before {
-  background-color: #2196f3;
+  background-color: #9c27b0;
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label::after {
@@ -3968,7 +3972,7 @@ tbody.collapse.show {
 }
 
 .custom-radio .custom-control-input:disabled:checked~.custom-control-label::before {
-  background-color: rgba(33, 150, 243, 0.5);
+  background-color: #747172;
 }
 
 .custom-select {
@@ -5127,7 +5131,7 @@ tbody.collapse.show {
   justify-content: center;
   color: #ffffff;
   text-align: center;
-  background-color: #2196f3;
+  background-color: #942bad;
   transition: width 0.6s ease;
 }
 

@@ -1884,10 +1884,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-function teste() {
-  console.log("babla");
-}
-
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1908,6 +1904,9 @@ function teste() {
       editText: ""
     };
   },
+  created: function created() {
+    window.scrollTo(0, 0);
+  },
   mounted: function mounted() {
     this.getUserData();
     this.getId();
@@ -1916,9 +1915,6 @@ function teste() {
     this.getComments();
   },
   methods: {
-    test: function test() {
-      console.log("test");
-    },
     showBookmark: function showBookmark() {
       var _this = this;
 
@@ -2454,6 +2450,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getUserData();
+    this.active();
   },
   methods: {
     active: function active() {
@@ -2598,6 +2595,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2607,11 +2659,13 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       auth: _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-      isVisible: null,
+      isVisible: true,
       name: null,
       bookmarklists: [],
       bookmarks: [],
       selected: [],
+      message: "",
+      message_success: "",
       item: null,
       id: null
     };
@@ -2621,23 +2675,49 @@ __webpack_require__.r(__webpack_exports__);
     this.getBookmarks();
   },
   methods: {
-    getBookmarkLists: function getBookmarkLists() {
+    showForm: function showForm() {
+      $('#list-form').animate({
+        height: "toggle",
+        opacity: "toggle"
+      }, "fast");
+      document.getElementById("btn-list").style = "display: none";
+    },
+    deleteList: function deleteList(id) {
       var _this = this;
 
-      axios.get('/bookmark-lists', {
+      axios.delete('bookmark-lists/' + id + '/delete', {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this.bookmarklists = response.data;
+        _this.message = "Zoznam bol odstránený.";
+
+        _this.getBookmarkLists();
+
+        _this.getBookmarks();
       }).catch(function (error) {
         console.log(error.response);
         _this.message = error.response.data.message;
         _this.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    getBookmarks: function getBookmarks() {
+    getBookmarkLists: function getBookmarkLists() {
       var _this2 = this;
+
+      axios.get('/bookmark-lists', {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        _this2.bookmarklists = response.data;
+      }).catch(function (error) {
+        console.log(error.response);
+        _this2.message = error.response.data.message;
+        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    getBookmarks: function getBookmarks() {
+      var _this3 = this;
 
       axios.post('/get-bookmarks', {
         category_id: null
@@ -2646,15 +2726,15 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this2.bookmarks = response.data;
+        _this3.bookmarks = response.data;
       }).catch(function (error) {
         console.log(error.response);
-        _this2.message = error.response.data.message;
-        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this3.message = error.response.data.message;
+        _this3.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     createList: function createList() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.post('/bookmark-lists/create', {
         name: this.name,
@@ -2664,29 +2744,33 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this3.id = response.data[0].id;
+        _this4.getBookmarkLists();
+
+        _this4.getBookmarks();
+
+        _this4.id = response.data[0].id;
+        _this4.message_success = "Zoznam bol vytvorený";
+        _this4.message = "";
         var item = null;
 
-        for (item in _this3.selected) {
-          console.log(_this3.id + " " + _this3.selected[item].id);
+        for (item in _this4.selected) {
           axios.post('bookmark-lists/' + response.data[0].id, {
-            bookmark_id: _this3.selected[item].id
+            bookmark_id: _this4.selected[item].id
           }, {
             headers: {
-              Authorization: "Bearer " + _this3.auth.getToken()
+              Authorization: "Bearer " + _this4.auth.getToken()
             }
-          }).then(function (response) {
-            console.log(_this3.selected[item].id);
-          }).catch(function (error) {
+          }).then(function (response) {}).catch(function (error) {
             console.log(error.response);
-            _this3.message = error.response.data.message;
-            _this3.errors = error.response.data.errors ? error.response.data.errors : [];
+            _this4.message_success = "";
+            _this4.message = error.response.data.message;
+            _this4.errors = error.response.data.errors ? error.response.data.errors : [];
           });
         }
       }).catch(function (error) {
         console.log(error.response);
-        _this3.message = error.response.data.message;
-        _this3.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this4.message = error.response.data.message;
+        _this4.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     }
   }
@@ -2747,6 +2831,83 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2763,17 +2924,22 @@ __webpack_require__.r(__webpack_exports__);
       allBookmarks: [],
       bookmarklist: [],
       name: null,
-      isVisible: null,
+      isVisible: this.isVisible,
       id: null,
-      message: "",
+      progress: 0,
+      message_edit_error: "",
+      message_edit_success: "",
+      message_add_error: "",
+      message_add_success: "",
       selected: []
     };
   },
   mounted: function mounted() {
     this.getId();
-    this.getAllBookmarks();
     this.getBookmarkList(this.id);
+    this.getAllBookmarks();
     this.getBookmarks(this.id);
+    console.log(this.isVisible);
   },
   computed: {
     sorted: function sorted() {
@@ -2792,21 +2958,39 @@ __webpack_require__.r(__webpack_exports__);
       if (a.order > b.order) return 1;
       return 0;
     },
-    getBookmarkList: function getBookmarkList(id) {
+    markRead: function markRead(id) {
       var _this = this;
+
+      axios.patch("bookmarks/" + id + "/mark-read", {
+        data: this.data
+      }, {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        _this.getBookmarks(_this.id);
+      }).catch(function (error) {
+        console.log(error.response);
+        _this.message = error.response.data.message;
+        _this.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    getBookmarkList: function getBookmarkList(id) {
+      var _this2 = this;
 
       axios.get('/bookmark-lists/' + id, {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this.bookmarklist = response.data;
-        _this.name = response.data.name;
-        _this.isVisible = response.data.isVisible;
+        _this2.bookmarklist = response.data;
+        _this2.name = response.data.name;
+        if (response.data.isVisible == 1) _this2.isVisible = true;else _this2.isVisible = false;
+        console.log(_this2.isVisible);
       }).catch(function (error) {
         console.log(error.response);
-        _this.message = error.response.data.message;
-        _this.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this2.message = error.response.data.message;
+        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     getId: function getId() {
@@ -2818,7 +3002,7 @@ __webpack_require__.r(__webpack_exports__);
       this.bookmarksNew = _.orderBy(arrays, 'order', 'asc');
     },
     getAllBookmarks: function getAllBookmarks() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.post('/get-bookmarks', {
         category_id: null
@@ -2827,32 +3011,43 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this2.allBookmarks = response.data;
-      }).catch(function (error) {
-        console.log(error.response);
-        _this2.message = error.response.data.message;
-        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
-      });
-    },
-    getBookmarks: function getBookmarks(id) {
-      var _this3 = this;
-
-      axios.get('bookmark-lists/' + id + '/content', {
-        headers: {
-          Authorization: "Bearer " + this.auth.getToken()
-        }
-      }).then(function (response) {
-        _this3.bookmarks = response.data;
-        _this3.bookmarksNew = _this3.bookmarks; // console.log(this.bookmarksNew);
-        // this.sortArrays(this.bookmarksNew);
+        _this3.allBookmarks = response.data;
       }).catch(function (error) {
         console.log(error.response);
         _this3.message = error.response.data.message;
         _this3.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    deleteBookmark: function deleteBookmark(id, bookmark_id) {
+    getBookmarks: function getBookmarks(id) {
       var _this4 = this;
+
+      axios.get('bookmark-lists/' + id + '/content', {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        _this4.bookmarks = response.data;
+        _this4.bookmarksNew = _this4.bookmarks;
+        var i;
+        var read = 0;
+        var bookmarks = _this4.bookmarks;
+        var count = bookmarks.length;
+
+        for (i in bookmarks) {
+          if (bookmarks[i].isRead == 1) {
+            read++;
+          }
+        }
+
+        _this4.progress = read / count * 100;
+      }).catch(function (error) {
+        console.log(error.response);
+        _this4.message = error.response.data.message;
+        _this4.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    deleteBookmark: function deleteBookmark(id, bookmark_id) {
+      var _this5 = this;
 
       axios.patch('bookmark-lists/' + id, {
         bookmark_id: bookmark_id
@@ -2861,22 +3056,21 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this4.message = "Položka bola zo zoznamu odstránená.";
+        _this5.message = "Položka bola zo zoznamu odstránená.";
 
-        _this4.getBookmarks(id);
+        _this5.getBookmarks(id);
       }).catch(function (error) {
         console.log(error.response);
-        _this4.message = error.response.data.message;
-        _this4.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this5.message = error.response.data.message;
+        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     addBookmark: function addBookmark() {
-      var _this5 = this;
+      var _this6 = this;
 
       var item = null;
 
       for (item in this.selected) {
-        console.log(this.id + " " + this.selected[item].id);
         axios.post('bookmark-lists/' + this.id, {
           bookmark_id: this.selected[item].id
         }, {
@@ -2884,20 +3078,21 @@ __webpack_require__.r(__webpack_exports__);
             Authorization: "Bearer " + this.auth.getToken()
           }
         }).then(function (response) {
-          _this5.message = "Záložky boli pridané do zoznamu.";
+          _this6.message_add_error = "";
+          _this6.message_add_success = "Záložky boli pridané do zoznamu.";
 
-          _this5.getBookmarks(_this5.id);
+          _this6.getBookmarks(_this6.id);
         }).catch(function (error) {
           console.log(error.response);
-          _this5.message = error.response.data.message;
-          _this5.errors = error.response.data.errors ? error.response.data.errors : [];
+          _this6.message_add_success = "";
+          _this6.message_add_error = error.response.data.message;
+          _this6.errors = error.response.data.errors ? error.response.data.errors : [];
         });
       }
     },
     editBookmarkList: function editBookmarkList(id) {
-      var _this6 = this;
+      var _this7 = this;
 
-      console.log(this.isVisible + " " + this.name);
       axios.patch('bookmark-lists/' + id + '/edit', {
         name: this.name,
         isVisible: this.isVisible
@@ -2906,27 +3101,28 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this6.message = "Zoznam bol upravený.";
+        _this7.message_edit_success = "Zoznam bol upravený.";
+        _this7.message_edit_error = "";
 
-        _this6.getBookmarkList(id);
+        _this7.getBookmarkList(id);
       }).catch(function (error) {
         console.log(error.response);
-        _this6.message = error.response.data.message;
-        _this6.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this7.message_edit_error = error.response.data.message;
+        _this7.message_edit_success = "";
+        _this7.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     update: function update() {
-      var _this7 = this;
+      var _this8 = this;
 
       this.bookmarks.map(function (bookmark, index) {
         bookmark.order = index + 1;
-        console.log(bookmark.name + " " + bookmark.order);
-        axios.patch('/bookmark-lists/' + _this7.id + '/order', {
+        axios.patch('/bookmark-lists/' + _this8.id + '/order', {
           order: bookmark.order,
           bookmark_id: bookmark.id
         }, {
           headers: {
-            Authorization: "Bearer " + _this7.auth.getToken()
+            Authorization: "Bearer " + _this8.auth.getToken()
           }
         });
       });
@@ -2976,6 +3172,57 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2988,7 +3235,10 @@ __webpack_require__.r(__webpack_exports__);
       categories: [],
       expand: false,
       currentCategory: null,
-      message: ""
+      message_create_error: "",
+      message_create_success: "",
+      message_error: "",
+      message_success: ""
     };
   },
   mounted: function mounted() {
@@ -3005,10 +3255,12 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this.message = "Kategória bola vytvorená.";
+        _this.message_create_error = "";
+        _this.message_create_success = "Kategória bola vytvorená.";
       }).catch(function (error) {
         console.log(error.response);
-        _this.message = error.response.data.message;
+        _this.message_create_success = "";
+        _this.message_create_error = error.response.data.message;
         _this.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
@@ -3037,12 +3289,14 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this3.message = "Kategória bola upravená.";
+        _this3.message_error = "";
+        _this3.message_success = "Kategória bola upravená.";
 
         _this3.allCategories();
       }).catch(function (error) {
         console.log(error.response);
-        _this3.message = error.response.data.message;
+        _this3.message_success = "";
+        _this3.message_error = error.response.data.message;
         _this3.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
@@ -3078,6 +3332,38 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../auth/index.js */ "./resources/js/auth/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3152,6 +3438,27 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../auth/index.js */ "./resources/js/auth/index.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3379,6 +3686,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3413,38 +3725,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.allCategories();
     this.allBookmarks();
-    setTimeout(function () {
-      $(document).ready(function () {
-        $('#mytable').DataTable({
-          "language": {
-            "lengthMenu": "_MENU_ zobrazených výsledkov",
-            "zeroRecords": "Neexistujú žiadne výsledky.",
-            "info": "_PAGE_ z _PAGES_",
-            "infoEmpty": "Žiadne výsledky",
-            "infoFiltered": "",
-            "search": "Zadaj výraz pre vyhľadávanie:",
-            "oPaginate": {
-              "sPrevious": "Späť",
-              // This is the link to the previous page
-              "sNext": "Ďalej" // This is the link to the next page
-
-            }
-          },
-          data: this.bookmarks,
-          columns: [{
-            title: "Názov"
-          }, {
-            title: "Popis"
-          }, {
-            title: "Verejná"
-          }, {
-            title: "Kategória"
-          }, {
-            title: "Akcie"
-          }]
-        });
-      });
-    }, 1000);
   },
   methods: {
     showForm: function showForm() {
@@ -3483,13 +3763,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    table: function table() {
-      $(document).ready(function () {
-        $('#mytable').DataTable({
-          data: this.bookmarks
-        });
-      });
-    },
     allCategories: function allCategories() {
       var _this2 = this;
 
@@ -3511,10 +3784,8 @@ __webpack_require__.r(__webpack_exports__);
       var cat_id;
 
       if (this.selected == null) {
-        console.log(this.selected);
         cat_id = null;
       } else {
-        console.log(this.selected);
         cat_id = this.selected.id;
       }
 
@@ -3552,10 +3823,11 @@ __webpack_require__.r(__webpack_exports__);
         _this4.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
+    nullCategory: function nullCategory(value) {
+      this.category_select = null;
+      this.allBookmarks();
+    },
     selectCategory: function selectCategory(value) {
-      console.log(value);
-      console.log(value.id);
-
       if (value == null) {
         this.category_select = null;
         this.allBookmarks();
@@ -3843,6 +4115,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3941,6 +4245,82 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../auth/index.js */ "./resources/js/auth/index.js");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4023,20 +4403,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_1___default.a
+  },
   data: function data() {
     return {
       data: null,
       text: null,
-      global: false,
+      global: true,
       read: "all",
       bookmarks: this.bookmarks,
-      categories: this.categories,
+      categories: [],
       url: null,
       name: null,
       description: null,
       category_id: null,
       category_name: "",
+      selected: null,
       category_table: null,
       category_select: null,
       isVisible: true,
@@ -4054,6 +4439,19 @@ __webpack_require__.r(__webpack_exports__);
     this.allCategories();
   },
   methods: {
+    nullCategory: function nullCategory() {
+      this.selected = ''; // this.category_name.name = null;
+    },
+    // selectCategory(value){
+    //     console.log(value);
+    //     console.log(value.name);
+    //     if(value == null){
+    //         this.category_name.name = null;
+    //         return;
+    //     }
+    //     this.category_name.name = value.id;
+    //
+    // },
     allCategories: function allCategories() {
       var _this = this;
 
@@ -4072,9 +4470,21 @@ __webpack_require__.r(__webpack_exports__);
     searchBookmarks: function searchBookmarks() {
       var _this2 = this;
 
+      // console.log(this.selected);
+      // console.log(this.text);
+      // console.log(this.global);
+      // console.log(this.read);
+      var category;
+
+      if (this.selected == null) {
+        category = null;
+      } else {
+        category = this.selected.name;
+      }
+
       axios.post("search-bookmarks", {
         text: this.text,
-        category: this.category_name,
+        category: category,
         global: this.global,
         read: this.read
       }, {
@@ -4176,6 +4586,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4187,7 +4627,8 @@ __webpack_require__.r(__webpack_exports__);
       email: null,
       isActive: null,
       auth: _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-      message: null,
+      message: "",
+      message_success: "",
       info: null,
       errors: []
     };
@@ -4217,7 +4658,7 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this2.message = "Používateľ bol aktivovaný.";
+        _this2.message_success = "Používateľ bol aktivovaný.";
 
         _this2.all();
       }).catch(function (error) {
@@ -4236,7 +4677,7 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this3.message = "Používateľ bol deaktivovaný.";
+        _this3.message_success = "Používateľ bol deaktivovaný.";
 
         _this3.all();
       }).catch(function (error) {
@@ -4253,28 +4694,13 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this4.message = "Používateľ bol odstránený.";
+        _this4.message_success = "Používateľ bol odstránený.";
 
         _this4.all();
       }).catch(function (error) {
         console.log(error.response);
         _this4.message = error.response.data.message;
         _this4.errors = error.response.data.errors ? error.response.data.errors : [];
-      });
-    },
-    showProfile: function showProfile(id) {
-      var _this5 = this;
-
-      axios.get("/users/" + id, {
-        headers: {
-          Authorization: "Bearer " + this.auth.getToken()
-        }
-      }).then(function (response) {
-        _this5.$router.push("/users/" + id);
-      }).catch(function (error) {
-        console.log(error.response);
-        _this5.message = error.response.data.message;
-        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     }
   }
@@ -4318,6 +4744,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4329,7 +4790,8 @@ __webpack_require__.r(__webpack_exports__);
       created_at: null,
       auth: _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
       currentUrl: null,
-      message: null,
+      message: "",
+      message_success: "",
       info: null,
       errors: []
     };
@@ -4363,9 +4825,11 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this2.message = "Používateľ bol upravený.";
+        _this2.message_success = "Používateľ bol upravený.";
+        _this2.message = "";
       }).catch(function (error) {
         console.log(error.response);
+        _this2.message_success = "";
         _this2.message = error.response.data.message;
         _this2.errors = error.response.data.errors ? error.response.data.errors : [];
       });
@@ -8283,7 +8747,7 @@ var render = function() {
                       _vm.bookmark.category_name == null
                         ? _c("div", [
                             _c("b", [_vm._v("Kategória:  ")]),
-                            _c("p", { staticClass: "text-gray" }, [
+                            _c("span", { staticClass: "text-gray" }, [
                               _vm._v("Žiadna")
                             ])
                           ])
@@ -9471,173 +9935,321 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v("\n       Vytvoriť nový zoznam\n    ")]),
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-2" }),
       _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.createList()
-            }
-          }
-        },
-        [
-          _c(
-            "div",
-            [
-              _c("label", { staticClass: "typo__label" }, [
-                _vm._v("Simple select / dropdown")
-              ]),
-              _vm._v(" "),
-              _c("multiselect", {
-                attrs: {
-                  options: _vm.bookmarks,
-                  multiple: true,
-                  "close-on-select": false,
-                  "clear-on-select": false,
-                  "preserve-search": true,
-                  placeholder: "Vyberte",
-                  label: "name",
-                  "track-by": "name",
-                  "preselect-first": true
-                },
-                scopedSlots: _vm._u([
-                  {
-                    key: "selection",
-                    fn: function(ref) {
-                      var values = ref.values
-                      var search = ref.search
-                      var isOpen = ref.isOpen
-                      return [
-                        values.length && !isOpen
-                          ? _c("span", { staticClass: "multiselect__single" }, [
-                              _vm._v(
-                                _vm._s(values.length) + " záložiek zvolených"
-                              )
-                            ])
-                          : _vm._e()
-                      ]
-                    }
-                  }
-                ]),
-                model: {
-                  value: _vm.selected,
-                  callback: function($$v) {
-                    _vm.selected = $$v
-                  },
-                  expression: "selected"
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "name" } }, [_vm._v("Nazov")]),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.name,
-                expression: "name"
-              }
-            ],
-            attrs: { type: "text" },
-            domProps: { value: _vm.name },
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h2", [
+          _vm._v("\n                Vytvoriť nový zoznam\n            ")
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary pull-left",
+            attrs: { id: "btn-list" },
             on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.name = $event.target.value
+              click: function($event) {
+                return _vm.showForm()
               }
             }
-          }),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "isVisible" } }, [_vm._v("Viditelnost")]),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.isVisible,
-                expression: "isVisible"
-              }
-            ],
-            attrs: { type: "checkbox", "true-value": "1", "false-value": "0" },
-            domProps: {
-              checked: Array.isArray(_vm.isVisible)
-                ? _vm._i(_vm.isVisible, null) > -1
-                : _vm._q(_vm.isVisible, "1")
-            },
-            on: {
-              change: function($event) {
-                var $$a = _vm.isVisible,
-                  $$el = $event.target,
-                  $$c = $$el.checked ? "1" : "0"
-                if (Array.isArray($$a)) {
-                  var $$v = null,
-                    $$i = _vm._i($$a, $$v)
-                  if ($$el.checked) {
-                    $$i < 0 && (_vm.isVisible = $$a.concat([$$v]))
-                  } else {
-                    $$i > -1 &&
-                      (_vm.isVisible = $$a
-                        .slice(0, $$i)
-                        .concat($$a.slice($$i + 1)))
-                  }
-                } else {
-                  _vm.isVisible = $$c
-                }
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("button", { attrs: { type: "submit" } }, [_vm._v("Odoslat")])
-        ]
-      ),
-      _vm._v(" "),
-      _c("h1", [_vm._v("Moje zoznamy")]),
-      _vm._v(" "),
-      _vm._l(_vm.bookmarklists, function(bookmarklist) {
-        return _c(
-          "div",
+          },
           [
+            _c("i", { staticClass: "material-icons" }, [_vm._v("add")]),
+            _c("div", { staticClass: "ripple-container" })
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card", attrs: { id: "list-form" } }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _vm.message
+              ? _c("div", [
+                  _c("p", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(_vm.message))
+                  ])
+                ])
+              : _vm.message_success
+              ? _c("div", [
+                  _c("p", { staticClass: "text-success" }, [
+                    _vm._v(_vm._s(_vm.message_success))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _c(
-              "router-link",
-              { attrs: { to: { path: "/bookmark-lists/" + bookmarklist.id } } },
-              [_vm._v(" " + _vm._s(bookmarklist.name) + " ")]
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.createList()
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { staticClass: "bmd-label-floating" }, [
+                        _vm._v("Zvoľte názov:")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { staticClass: "bmd-label-floating" }, [
+                          _vm._v("Nastaviť ako viditeľný:")
+                        ]),
+                        _vm._v(" "),
+                        _c("toggle-button", {
+                          attrs: {
+                            checked: "",
+                            color: "#9c27b0",
+                            "true-value": "1",
+                            "false-value": "0"
+                          },
+                          model: {
+                            value: _vm.isVisible,
+                            callback: function($$v) {
+                              _vm.isVisible = $$v
+                            },
+                            expression: "isVisible"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { staticClass: "typo__label" }, [
+                          _vm._v("Vyberte záložky")
+                        ]),
+                        _vm._v(" "),
+                        _c("multiselect", {
+                          attrs: {
+                            options: _vm.bookmarks,
+                            multiple: true,
+                            "close-on-select": false,
+                            "clear-on-select": false,
+                            "preserve-search": true,
+                            placeholder: "Vyberte",
+                            label: "name",
+                            "track-by": "name",
+                            "preselect-first": true
+                          },
+                          scopedSlots: _vm._u([
+                            {
+                              key: "selection",
+                              fn: function(ref) {
+                                var values = ref.values
+                                var search = ref.search
+                                var isOpen = ref.isOpen
+                                return [
+                                  values.length && !isOpen
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "multiselect__single" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(values.length) +
+                                              " záložiek zvolených"
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              }
+                            }
+                          ]),
+                          model: {
+                            value: _vm.selected,
+                            callback: function($$v) {
+                              _vm.selected = $$v
+                            },
+                            expression: "selected"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Odoslat")]
+                )
+              ]
             ),
             _vm._v(" "),
-            _c("p", [_vm._v(_vm._s(bookmarklist.count))]),
-            _vm._v(" "),
-            _c("button", [_vm._v("Zmazať")]),
-            _vm._v(" "),
-            _c("hr")
-          ],
-          1
-        )
-      })
-    ],
-    2
-  )
+            _c("div", { staticClass: "clearfix" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("div", { staticClass: "card" }, [
+          _vm._m(1),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-body" },
+            _vm._l(_vm.bookmarklists, function(bookmarklist) {
+              return _c("div", [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "h3",
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            attrs: {
+                              to: { path: "/bookmark-lists/" + bookmarklist.id }
+                            }
+                          },
+                          [_vm._v(" " + _vm._s(bookmarklist.name) + " ")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    bookmarklist.count == 0 || bookmarklist.count > 4
+                      ? _c("p", [
+                          _vm._v(
+                            _vm._s(bookmarklist.count) + " záložiek v zozname"
+                          )
+                        ])
+                      : (bookmarklist.count > 1 && bookmarklist.count < 5) ||
+                        bookmarklist.count > 4
+                      ? _c("p", [
+                          _vm._v(
+                            _vm._s(bookmarklist.count) + " záložky v zozname"
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    bookmarklist.count == 1
+                      ? _c("p", [
+                          _vm._v(
+                            _vm._s(bookmarklist.count) + " záložka v zozname"
+                          )
+                        ])
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6" },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger btn-sm pull-right",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteList(bookmarklist.id)
+                            }
+                          }
+                        },
+                        [
+                          _c("i", { staticClass: "material-icons" }, [
+                            _vm._v("delete_outline")
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "btn btn-info btn-sm pull-right",
+                          attrs: {
+                            tag: "button",
+                            to: { path: "/bookmark-lists/" + bookmarklist.id }
+                          }
+                        },
+                        [
+                          _c("i", { staticClass: "material-icons" }, [
+                            _vm._v("trending_flat")
+                          ])
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("hr")
+              ])
+            }),
+            0
+          )
+        ])
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Vytvoriť nový zoznam")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Moje zoznamy")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -9659,243 +10271,390 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v(_vm._s(_vm.bookmarklist.name))]),
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-2" }),
       _vm._v(" "),
-      _c("p", [_vm._v(_vm._s(_vm.bookmarklist.created_at))]),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.editBookmarkList(_vm.id)
-            }
-          }
-        },
-        [
-          _vm.message
-            ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-            : _vm._e(),
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header card-header-primary" }, [
+            _c("h4", { staticClass: "card-title" }, [
+              _vm._v(_vm._s(_vm.bookmarklist.name))
+            ])
+          ]),
           _vm._v(" "),
-          _c("input", {
-            directives: [
+          _c("div", { staticClass: "card-body" }, [
+            _c("h3", [_vm._v("Upraviť zoznam")]),
+            _vm._v(" "),
+            _vm.message_edit_error
+              ? _c("div", [
+                  _c("p", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(_vm.message_edit_error))
+                  ])
+                ])
+              : _vm.message_edit_success
+              ? _c("div", [
+                  _c("p", { staticClass: "text-success" }, [
+                    _vm._v(_vm._s(_vm.message_edit_success))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "form",
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.name,
-                expression: "name"
-              }
-            ],
-            attrs: { type: "text" },
-            domProps: { value: _vm.name },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.name = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _vm.isVisible != 1
-            ? _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.isVisible,
-                    expression: "isVisible"
-                  }
-                ],
-                attrs: { type: "checkbox" },
-                domProps: {
-                  checked: Array.isArray(_vm.isVisible)
-                    ? _vm._i(_vm.isVisible, null) > -1
-                    : _vm.isVisible
-                },
                 on: {
-                  change: function($event) {
-                    var $$a = _vm.isVisible,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.isVisible = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.isVisible = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.isVisible = $$c
-                    }
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.editBookmarkList(_vm.id)
                   }
                 }
-              })
-            : _c("input", {
-                directives: [
+              },
+              [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { staticClass: "bmd-label-static" }, [
+                        _vm._v("Upraviť názov")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { staticClass: "bmd-label-floating" }, [
+                          _vm._v("Nastaviť ako viditeľný:")
+                        ]),
+                        _vm._v(" "),
+                        _c("toggle-button", {
+                          attrs: {
+                            sync: true,
+                            color: "#9c27b0",
+                            "true-value": "1",
+                            "false-value": "0"
+                          },
+                          model: {
+                            value: _vm.isVisible,
+                            callback: function($$v) {
+                              _vm.isVisible = $$v
+                            },
+                            expression: "isVisible"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary pull-right",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Upraviť")]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("hr")
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-12" }, [
+                _c("h3", [_vm._v("Pridať nové záložky do zoznamu")]),
+                _vm._v(" "),
+                _vm.message_add_error
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.message_add_error))
+                      ])
+                    ])
+                  : _vm.message_add_success
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-success" }, [
+                        _vm._v(_vm._s(_vm.message_add_success))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "form",
                   {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.isVisible,
-                    expression: "isVisible"
-                  }
-                ],
-                attrs: { type: "checkbox", checked: "" },
-                domProps: {
-                  checked: Array.isArray(_vm.isVisible)
-                    ? _vm._i(_vm.isVisible, null) > -1
-                    : _vm.isVisible
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.isVisible,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.isVisible = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.isVisible = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.addBookmark(_vm.id)
                       }
-                    } else {
-                      _vm.isVisible = $$c
                     }
-                  }
-                }
-              }),
+                  },
+                  [
+                    _c(
+                      "div",
+                      [
+                        _c("multiselect", {
+                          staticStyle: { "z-index": "50 !important" },
+                          attrs: {
+                            options: _vm.allBookmarks,
+                            multiple: true,
+                            "close-on-select": false,
+                            "clear-on-select": false,
+                            "preserve-search": true,
+                            placeholder: "Vyberte",
+                            label: "name",
+                            "track-by": "name",
+                            "preselect-first": true
+                          },
+                          scopedSlots: _vm._u([
+                            {
+                              key: "selection",
+                              fn: function(ref) {
+                                var values = ref.values
+                                var search = ref.search
+                                var isOpen = ref.isOpen
+                                return [
+                                  values.length && !isOpen
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "multiselect__single" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(values.length) +
+                                              " záložiek zvolených"
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              }
+                            }
+                          ]),
+                          model: {
+                            value: _vm.selected,
+                            callback: function($$v) {
+                              _vm.selected = $$v
+                            },
+                            expression: "selected"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary pull-right",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Pridať")]
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header card-header-text" }, [
+            _c("h4", { staticClass: "card-title" }, [_vm._v("Prečítanosť")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "progress md-progress",
+                staticStyle: { height: "20px" }
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "progress-bar",
+                    style: "width:" + _vm.progress + "%; height: 20px",
+                    attrs: {
+                      role: "progressbar",
+                      "aria-valuenow": "25",
+                      "aria-valuemin": "0",
+                      "aria-valuemax": "100"
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.progress) + "%")]
+                )
+              ]
+            )
+          ]),
           _vm._v(" "),
-          _c("button", { attrs: { type: "submit" } }, [_vm._v("Upraviť")])
-        ]
-      ),
-      _vm._v(" "),
-      _c("h2", [_vm._v("Pridať nové záložky do zoznamu")]),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.addBookmark(_vm.id)
-            }
-          }
-        },
-        [
           _c(
             "div",
+            { staticClass: "card-body" },
             [
-              _c("multiselect", {
-                attrs: {
-                  options: _vm.allBookmarks,
-                  multiple: true,
-                  "close-on-select": false,
-                  "clear-on-select": false,
-                  "preserve-search": true,
-                  placeholder: "Vyberte",
-                  label: "name",
-                  "track-by": "name",
-                  "preselect-first": true
-                },
-                scopedSlots: _vm._u([
-                  {
-                    key: "selection",
-                    fn: function(ref) {
-                      var values = ref.values
-                      var search = ref.search
-                      var isOpen = ref.isOpen
-                      return [
-                        values.length && !isOpen
-                          ? _c("span", { staticClass: "multiselect__single" }, [
-                              _vm._v(
-                                _vm._s(values.length) + " záložiek zvolených"
-                              )
-                            ])
-                          : _vm._e()
-                      ]
-                    }
-                  }
-                ]),
-                model: {
-                  value: _vm.selected,
-                  callback: function($$v) {
-                    _vm.selected = $$v
-                  },
-                  expression: "selected"
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("button", { attrs: { type: "submit" } }, [_vm._v("Pridať")])
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "draggable",
-        {
-          attrs: { list: _vm.bookmarksNew, options: { animation: 200 } },
-          on: { change: _vm.update }
-        },
-        _vm._l(_vm.bookmarksNew, function(bookmark) {
-          return _c(
-            "div",
-            [
-              _c("a", { attrs: { href: bookmark.url, target: "_blank" } }, [
-                _vm._v(_vm._s(bookmark.name))
+              _c("p", [
+                _vm._v(
+                  "tip: Kliknutím a presunutím záložky môžete meniť jednotlivé poradia v zozname"
+                )
               ]),
               _vm._v(" "),
-              _c("br"),
-              _vm._v("\n        " + _vm._s(bookmark.order) + "\n        "),
               _c(
-                "router-link",
+                "draggable",
                 {
                   attrs: {
-                    tag: "button",
-                    to: { path: "/bookmark/" + bookmark.id }
-                  }
+                    list: _vm.bookmarksNew,
+                    options: { animation: 200 }
+                  },
+                  on: { change: _vm.update }
                 },
-                [_vm._v("Podrobnosti")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteBookmark(_vm.id, bookmark.id)
-                    }
-                  }
-                },
-                [_vm._v("Odstrániť")]
-              ),
-              _vm._v(" "),
-              _c("hr")
+                _vm._l(_vm.bookmarksNew, function(bookmark) {
+                  return _c("div", [
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("h3", [
+                          _c(
+                            "a",
+                            { attrs: { href: bookmark.url, target: "_blank" } },
+                            [_vm._v(_vm._s(bookmark.name))]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        bookmark.isRead
+                          ? _c("div", { staticClass: "form-check" }, [
+                              _c("label", { staticClass: "form-check-label" }, [
+                                _vm._v(
+                                  "\n                                            Prečítaná\n                                            "
+                                ),
+                                _c("input", {
+                                  staticClass: "form-check-input",
+                                  attrs: { type: "checkbox", checked: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.markRead(bookmark.id)
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "form-check-sign" }, [
+                                  _c("span", { staticClass: "check" })
+                                ])
+                              ])
+                            ])
+                          : _c("div", { staticClass: "form-check" }, [
+                              _c("label", { staticClass: "form-check-label" }, [
+                                _vm._v(
+                                  "\n                                            Neprečítaná\n                                            "
+                                ),
+                                _c("input", {
+                                  staticClass: "form-check-input",
+                                  attrs: { type: "checkbox" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.markRead(bookmark.id)
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "form-check-sign" }, [
+                                  _c("span", { staticClass: "check" })
+                                ])
+                              ])
+                            ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "col-md-6" },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger btn-sm pull-right",
+                              on: {
+                                click: function($event) {
+                                  return _vm.deleteBookmark(_vm.id, bookmark.id)
+                                }
+                              }
+                            },
+                            [
+                              _c("i", { staticClass: "material-icons" }, [
+                                _vm._v("delete_outline")
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "router-link",
+                            {
+                              staticClass: "btn btn-info btn-sm pull-right",
+                              attrs: {
+                                tag: "button",
+                                to: { path: "/bookmark/" + bookmark.id }
+                              }
+                            },
+                            [
+                              _c("i", { staticClass: "material-icons" }, [
+                                _vm._v("trending_flat")
+                              ])
+                            ]
+                          )
+                        ],
+                        1
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("hr")
+                  ])
+                }),
+                0
+              )
             ],
             1
           )
-        }),
-        0
-      )
-    ],
-    1
-  )
+        ])
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-info pull-left",
+        attrs: { onclick: "window.history.back()", type: "submit" }
+      },
+      [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -9917,153 +10676,273 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v("Pridať kategóriu")]),
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
       _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.addCategory()
-            }
-          }
-        },
-        [
-          _c("input", {
-            directives: [
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _vm.message_create_error
+              ? _c("div", [
+                  _c("p", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(_vm.message_create_error))
+                  ])
+                ])
+              : _vm.message_create_success
+              ? _c("div", [
+                  _c("p", { staticClass: "text-success" }, [
+                    _vm._v(_vm._s(_vm.message_create_success))
+                  ])
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "form",
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.name,
-                expression: "name"
-              }
-            ],
-            domProps: { value: _vm.name },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.addCategory()
+                  }
                 }
-                _vm.name = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("button", { attrs: { type: "submit" } }, [_vm._v("Vytvoriť")])
-        ]
-      ),
-      _vm._v(" "),
-      _c("h1", [_vm._v("Moje kategórie")]),
-      _vm._v(" "),
-      _vm._l(_vm.categories, function(category) {
-        return _c("div", [
-          _c("p", [_vm._v(_vm._s(category.name))]),
-          _vm._v(" "),
-          _vm.message && _vm.currentCategory == category.name
-            ? _c("div", [
-                _c("br"),
+              },
+              [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-3" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-floating",
+                          attrs: { for: "name" }
+                        },
+                        [_vm._v("Názov novej kategórie")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
                 _vm._v(" "),
-                _c("p", [_vm._v(_vm._s(_vm.message))])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          !_vm.expand || _vm.currentCategory != category.name
-            ? _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      ;(_vm.expand = true) &&
-                        (_vm.currentCategory = category.name) &&
-                        (_vm.categoryName = category.name)
-                    }
-                  }
-                },
-                [_vm._v("Upraviť")]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.expand == true && _vm.currentCategory == category.name
-            ? _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      ;(_vm.expand = !_vm.expand) &&
-                        (_vm.currentCategory = null)
-                    }
-                  }
-                },
-                [_vm._v("Skryť")]
-              )
-            : _vm._e(),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Vytvoriť")]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "clearfix" })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "card" }, [
+          _vm._m(1),
           _vm._v(" "),
           _c(
-            "button",
-            {
-              on: {
-                click: function($event) {
-                  ;(_vm.currentCategory = category.name) &&
-                    _vm.deleteCategory(category.id)
-                }
-              }
-            },
-            [_vm._v("Zmazať")]
-          ),
-          _vm._v(" "),
-          _vm.expand && _vm.currentCategory == category.name
-            ? _c("div", [
-                _c(
-                  "form",
-                  {
-                    on: {
-                      submit: function($event) {
-                        $event.preventDefault()
-                        return _vm.editCategory(category.id)
-                      }
-                    }
-                  },
-                  [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.categoryName,
-                          expression: "categoryName"
-                        }
-                      ],
-                      domProps: { value: _vm.categoryName },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.categoryName = $event.target.value
-                        }
-                      }
-                    }),
+            "div",
+            { staticClass: "card-body" },
+            [
+              _vm._l(_vm.categories, function(category) {
+                return _c("div", [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _vm.message_error
+                        ? _c("div", [
+                            _c("p", { staticClass: "text-danger" }, [
+                              _vm._v(_vm._s(_vm.message_error))
+                            ])
+                          ])
+                        : _vm.message_success
+                        ? _c("div", [
+                            _c("p", { staticClass: "text-success" }, [
+                              _vm._v(_vm._s(_vm.message_success))
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("h4", [_vm._v(_vm._s(category.name))])
+                    ]),
                     _vm._v(" "),
-                    _c("button", { attrs: { type: "submit" } }, [
-                      _vm._v("Upraviť")
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-sm btn-danger pull-right",
+                              on: {
+                                click: function($event) {
+                                  ;(_vm.currentCategory = category.name) &&
+                                    _vm.deleteCategory(category.id)
+                                }
+                              }
+                            },
+                            [
+                              _c("i", { staticClass: "material-icons" }, [
+                                _vm._v("delete_outline")
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          !_vm.expand || _vm.currentCategory != category.name
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-sm btn-primary pull-right",
+                                  on: {
+                                    click: function($event) {
+                                      ;(_vm.expand = true) &&
+                                        (_vm.currentCategory = category.name) &&
+                                        (_vm.categoryName = category.name)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "material-icons" }, [
+                                    _vm._v("edit")
+                                  ])
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.expand == true &&
+                          _vm.currentCategory == category.name
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-sm btn-primary pull-right",
+                                  on: {
+                                    click: function($event) {
+                                      ;(_vm.expand = !_vm.expand) &&
+                                        (_vm.currentCategory = null)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Skryť")]
+                              )
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _vm.expand && _vm.currentCategory == category.name
+                            ? _c("div", [
+                                _c(
+                                  "form",
+                                  {
+                                    on: {
+                                      submit: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.editCategory(category.id)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("div", { staticClass: "form-group" }, [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.categoryName,
+                                            expression: "categoryName"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        domProps: { value: _vm.categoryName },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.categoryName =
+                                              $event.target.value
+                                          }
+                                        }
+                                      })
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass:
+                                          "btn btn-sm btn-primary pull-right",
+                                        attrs: { type: "submit" }
+                                      },
+                                      [_vm._v("Upraviť")]
+                                    )
+                                  ]
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ])
                     ])
-                  ]
-                )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr")
+                  ]),
+                  _vm._v(" "),
+                  _c("hr")
+                ])
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "clearfix" })
+            ],
+            2
+          )
         ])
-      })
-    ],
-    2
-  )
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [
+        _vm._v("Vytvoriť novú kategóriu")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-text" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Moje kategórie")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -10086,124 +10965,193 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.edit()
-          }
-        }
-      },
-      [
-        _vm.message
-          ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "oldPassword" } }, [
-          _vm._v("Aktualne heslo:")
-        ]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.oldPassword,
-              expression: "oldPassword"
-            }
-          ],
-          attrs: { type: "password" },
-          domProps: { value: _vm.oldPassword },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.oldPassword = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.oldPassword
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.oldPassword[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "newPassword" } }, [_vm._v("Nove heslo:")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.newPassword,
-              expression: "newPassword"
-            }
-          ],
-          attrs: { type: "password" },
-          domProps: { value: _vm.newPassword },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.newPassword = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.newPassword
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.newPassword[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "confirmPassword" } }, [
-          _vm._v("Zopakujte nove heslo:")
-        ]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.confirmPassword,
-              expression: "confirmPassword"
-            }
-          ],
-          attrs: { type: "password" },
-          domProps: { value: _vm.confirmPassword },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.confirmPassword = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.confirmPassword
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.confirmPassword[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("button", { attrs: { type: "submit" } }, [_vm._v("Zmenit heslo")])
-      ]
-    )
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.edit()
+                  }
+                }
+              },
+              [
+                _vm.message
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.message))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-1" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-10" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "oldPassword" }
+                        },
+                        [_vm._v("Aktuálne heslo:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.oldPassword,
+                            expression: "oldPassword"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "password" },
+                        domProps: { value: _vm.oldPassword },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.oldPassword = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-1" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-10" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "newPassword" }
+                        },
+                        [_vm._v("Nové heslo:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.newPassword,
+                            expression: "newPassword"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "password" },
+                        domProps: { value: _vm.newPassword },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.newPassword = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-1" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-10" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "confirmPassword" }
+                        },
+                        [_vm._v("Zopakujte nové heslo:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.confirmPassword,
+                            expression: "confirmPassword"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "password" },
+                        domProps: { value: _vm.confirmPassword },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.confirmPassword = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Zmeniť")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "clearfix" })
+              ]
+            )
+          ])
+        ])
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Zmeniť heslo")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-info pull-left",
+        attrs: { onclick: "window.history.back()", type: "submit" }
+      },
+      [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -10226,89 +11174,148 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.edit()
-          }
-        }
-      },
-      [
-        _vm.message
-          ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "name" } }, [_vm._v("Meno:")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.name,
-              expression: "name"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.name },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.name = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.name
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.name[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "surname" } }, [_vm._v("Priezvisko:")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.surname,
-              expression: "surname"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.surname },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.surname = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.surname
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.surname[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("button", { attrs: { type: "submit" } }, [_vm._v("Upravit ")])
-      ]
-    )
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.edit()
+                  }
+                }
+              },
+              [
+                _vm.message
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.message))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "name" }
+                        },
+                        [_vm._v("Meno")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "surname" }
+                        },
+                        [_vm._v("Priezvisko:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.surname,
+                            expression: "surname"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.surname },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.surname = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Upraviť")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "clearfix" })
+              ]
+            )
+          ])
+        ])
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Upraviť profil")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-info pull-left",
+        attrs: { onclick: "window.history.back()", type: "submit" }
+      },
+      [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -10331,259 +11338,267 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Moje záložky")]),
-    _vm._v(" "),
-    _c("h2", [_vm._v("Pridať záložku")]),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        staticClass: "btn btn-primary pull-left",
-        attrs: { id: "btn-bookmark" },
-        on: {
-          click: function($event) {
-            return _vm.showForm()
-          }
-        }
-      },
-      [
-        _c("i", { staticClass: "material-icons" }, [_vm._v("add")]),
-        _c("div", { staticClass: "ripple-container" })
-      ]
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "card", attrs: { id: "bookmarkForm" } }, [
-      _vm._m(0),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-2" }),
       _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
+      _c("div", { staticClass: "col-md-8" }, [
+        _c("h2", [_vm._v("Pridať záložku")]),
+        _vm._v(" "),
         _c(
-          "form",
+          "button",
           {
+            staticClass: "btn btn-primary pull-left",
+            attrs: { id: "btn-bookmark" },
             on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.createBookmark()
+              click: function($event) {
+                return _vm.showForm()
               }
             }
           },
           [
-            _vm.message
-              ? _c("div", [
-                  _c("p", { staticClass: "text-danger" }, [
-                    _vm._v(_vm._s(_vm.message))
-                  ])
-                ])
-              : _vm.message_success
-              ? _c("div", [
-                  _c("p", { staticClass: "text-success" }, [
-                    _vm._v(_vm._s(_vm.message_success))
-                  ])
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-5" }, [
-                _c("div", { staticClass: "form-group bmd-form-group" }, [
-                  _c(
-                    "label",
-                    {
-                      staticClass: "bmd-label-floating",
-                      attrs: { for: "name" }
-                    },
-                    [_vm._v("Názov:")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.name,
-                        expression: "name"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.name },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.name = $event.target.value
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _vm.errors.name
-                    ? _c("p", [_vm._v(_vm._s(_vm.errors.name[0]))])
-                    : _vm._e()
-                ]),
+            _c("i", { staticClass: "material-icons" }, [_vm._v("add")]),
+            _c("div", { staticClass: "ripple-container" })
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card", attrs: { id: "bookmarkForm" } }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.createBookmark()
+                  }
+                }
+              },
+              [
+                _vm.message
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.message))
+                      ])
+                    ])
+                  : _vm.message_success
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-success" }, [
+                        _vm._v(_vm._s(_vm.message_success))
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
-                _c("div", { staticClass: "form-group bmd-form-group" }, [
-                  _c(
-                    "label",
-                    {
-                      staticClass: "bmd-label-floating",
-                      attrs: { for: "surname" }
-                    },
-                    [_vm._v("Url:")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.url,
-                        expression: "url"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.url },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.url = $event.target.value
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _vm.errors.url
-                    ? _c("p", [_vm._v(_vm._s(_vm.errors.url[0]))])
-                    : _vm._e()
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group bmd-form-group" }, [
-                  _c(
-                    "div",
-                    [
-                      _c("label", { staticClass: "typo__label" }, [
-                        _vm._v("Vybert kategóriu:")
-                      ]),
-                      _vm._v(" "),
-                      _c("multiselect", {
-                        attrs: {
-                          "deselect-label": "Odstrániť",
-                          "track-by": "name",
-                          label: "name",
-                          placeholder: "Select one",
-                          options: _vm.categories,
-                          searchable: false,
-                          "allow-empty": true
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-5" }, [
+                    _c("div", { staticClass: "form-group bmd-form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-floating",
+                          attrs: { for: "name" }
                         },
-                        scopedSlots: _vm._u([
+                        [_vm._v("Názov:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
                           {
-                            key: "singleLabel",
-                            fn: function(ref) {
-                              var option = ref.option
-                              return [
-                                _c("strong", [_vm._v(_vm._s(option.name))])
-                              ]
-                            }
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
                           }
-                        ]),
-                        model: {
-                          value: _vm.selected,
-                          callback: function($$v) {
-                            _vm.selected = $$v
-                          },
-                          expression: "selected"
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
                         }
                       }),
                       _vm._v(" "),
-                      _c("pre", { staticClass: "language-json" }, [
-                        _c("code", [_vm._v(_vm._s(_vm.categories.name))])
-                      ])
-                    ],
-                    1
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-7" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("div", { staticClass: "form-group bmd-form-group" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "bmd-label-floating",
-                        attrs: { for: "description" }
-                      },
-                      [_vm._v("Popis")]
-                    ),
+                      _vm.errors.name
+                        ? _c("p", [_vm._v(_vm._s(_vm.errors.name[0]))])
+                        : _vm._e()
+                    ]),
                     _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
+                    _c("div", { staticClass: "form-group bmd-form-group" }, [
+                      _c(
+                        "label",
                         {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.description,
-                          expression: "description"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { rows: "5" },
-                      domProps: { value: _vm.description },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+                          staticClass: "bmd-label-floating",
+                          attrs: { for: "surname" }
+                        },
+                        [_vm._v("Url:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.url,
+                            expression: "url"
                           }
-                          _vm.description = $event.target.value
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.url },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.url = $event.target.value
+                          }
                         }
-                      }
-                    }),
+                      }),
+                      _vm._v(" "),
+                      _vm.errors.url
+                        ? _c("p", [_vm._v(_vm._s(_vm.errors.url[0]))])
+                        : _vm._e()
+                    ]),
                     _vm._v(" "),
-                    _vm.errors.description
-                      ? _c("p", [_vm._v(_vm._s(_vm.errors.description[0]))])
-                      : _vm._e()
+                    _c("div", { staticClass: "form-group bmd-form-group" }, [
+                      _c(
+                        "div",
+                        [
+                          _c("label", { staticClass: "typo__label" }, [
+                            _vm._v("Vybert kategóriu:")
+                          ]),
+                          _vm._v(" "),
+                          _c("multiselect", {
+                            attrs: {
+                              "deselect-label": "Odstrániť",
+                              "track-by": "name",
+                              label: "name",
+                              placeholder: "Select one",
+                              options: _vm.categories,
+                              searchable: false,
+                              "allow-empty": true
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "singleLabel",
+                                fn: function(ref) {
+                                  var option = ref.option
+                                  return [
+                                    _c("strong", [_vm._v(_vm._s(option.name))])
+                                  ]
+                                }
+                              }
+                            ]),
+                            model: {
+                              value: _vm.selected,
+                              callback: function($$v) {
+                                _vm.selected = $$v
+                              },
+                              expression: "selected"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("pre", { staticClass: "language-json" }, [
+                            _c("code", [_vm._v(_vm._s(_vm.categories.name))])
+                          ])
+                        ],
+                        1
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-7" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("div", { staticClass: "form-group bmd-form-group" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "bmd-label-floating",
+                            attrs: { for: "description" }
+                          },
+                          [_vm._v("Popis")]
+                        ),
+                        _vm._v(" "),
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.description,
+                              expression: "description"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { rows: "5" },
+                          domProps: { value: _vm.description },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.description = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.description
+                          ? _c("p", [_vm._v(_vm._s(_vm.errors.description[0]))])
+                          : _vm._e()
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {},
+                      [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "bmd-label-floating",
+                            attrs: { for: "isVisible" }
+                          },
+                          [
+                            _vm._v(
+                              "Nastaviť záložku ako viditeľnú pre ostatných:"
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("toggle-button", {
+                          attrs: { value: _vm.isVisible, color: "#9c27b0" },
+                          model: {
+                            value: _vm.isVisible,
+                            callback: function($$v) {
+                              _vm.isVisible = $$v
+                            },
+                            expression: "isVisible"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.isVisible
+                          ? _c("p", [_vm._v(_vm._s(_vm.errors.isVisible[0]))])
+                          : _vm._e()
+                      ],
+                      1
+                    )
                   ])
                 ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  {},
-                  [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "bmd-label-floating",
-                        attrs: { for: "isVisible" }
-                      },
-                      [_vm._v("Nastaviť záložku ako viditeľnú pre ostatných:")]
-                    ),
-                    _vm._v(" "),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c("toggle-button", {
-                      attrs: { color: "#9c27b0" },
-                      model: {
-                        value: _vm.isVisible,
-                        callback: function($$v) {
-                          _vm.isVisible = $$v
-                        },
-                        expression: "isVisible"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _vm.errors.isVisible
-                      ? _c("p", [_vm._v(_vm._s(_vm.errors.isVisible[0]))])
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._m(1),
-            _vm._v(" "),
-            _c("div", { staticClass: "clearfix" })
-          ]
-        )
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "clearfix" })
+              ]
+            )
+          ])
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -10595,152 +11610,153 @@ var render = function() {
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
-    _c("div", { staticClass: "col-md-12" }, [
-      _c(
-        "form",
-        [
-          _c("label", { attrs: { for: "category_table" } }, [
-            _vm._v("Vyberte kategóriu:")
-          ]),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c("multiselect", {
-            staticStyle: { "z-index": "5 !important" },
-            attrs: {
-              "deselect-label": "Odstrániť",
-              "track-by": "name",
-              label: "name",
-              placeholder: "Select one",
-              options: _vm.categories,
-              searchable: false,
-              "allow-empty": true
-            },
-            on: { deselect: _vm.selectCategory, select: _vm.selectCategory },
-            scopedSlots: _vm._u([
-              {
-                key: "singleLabel",
-                fn: function(ref) {
-                  var option = ref.option
-                  return [_c("strong", [_vm._v(_vm._s(option.name))])]
-                }
-              }
-            ]),
-            model: {
-              value: _vm.category_select,
-              callback: function($$v) {
-                _vm.category_select = $$v
-              },
-              expression: "category_select"
-            }
-          })
-        ],
-        1
-      ),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-2" }),
       _vm._v(" "),
-      _c("div", { staticClass: "card" }, [
-        _vm._m(2),
+      _c("div", { staticClass: "col-md-8" }, [
+        _c(
+          "form",
+          [
+            _c("label", { attrs: { for: "category_table" } }, [
+              _vm._v("Vyberte kategóriu:")
+            ]),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("multiselect", {
+              staticStyle: { "z-index": "5 !important" },
+              attrs: {
+                "deselect-label": "Odstrániť",
+                "track-by": "name",
+                label: "name",
+                placeholder: "Vyberte",
+                options: _vm.categories,
+                searchable: false,
+                "allow-empty": true
+              },
+              on: { remove: _vm.nullCategory, select: _vm.selectCategory },
+              scopedSlots: _vm._u([
+                {
+                  key: "singleLabel",
+                  fn: function(ref) {
+                    var option = ref.option
+                    return [_c("strong", [_vm._v(_vm._s(option.name))])]
+                  }
+                }
+              ]),
+              model: {
+                value: _vm.category_select,
+                callback: function($$v) {
+                  _vm.category_select = $$v
+                },
+                expression: "category_select"
+              }
+            })
+          ],
+          1
+        ),
         _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "table-responsive" }, [
-            _c("table", { staticClass: "table" }, [
-              _vm._m(3),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.bookmarks, function(bookmark) {
-                  return _c("tr", { ref: "datatable", refInFor: true }, [
-                    _c("td", [
-                      _c(
-                        "a",
-                        { attrs: { target: "_blank", href: bookmark.url } },
-                        [_c("b", [_vm._v(_vm._s(bookmark.name))])]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("div", [_vm._v(_vm._s(bookmark.description) + " ")])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      bookmark.isRead
-                        ? _c(
-                            "div",
-                            {
-                              staticClass: "form-check",
-                              staticStyle: { "text-align": "center" }
-                            },
-                            [
-                              _c("label", { staticClass: "form-check-label" }, [
-                                _c("input", {
-                                  staticClass: "form-check-input",
-                                  attrs: { type: "checkbox", checked: "" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.markRead(bookmark.id)
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _vm._m(4, true)
-                              ])
-                            ]
-                          )
-                        : _c(
-                            "div",
-                            {
-                              staticClass: "form-check",
-                              staticStyle: { "text-align": "center" }
-                            },
-                            [
-                              _c("label", { staticClass: "form-check-label" }, [
-                                _c("input", {
-                                  staticClass: "form-check-input",
-                                  attrs: { type: "checkbox" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.markRead(bookmark.id)
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _vm._m(5, true)
-                              ])
-                            ]
-                          )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(" " + _vm._s(bookmark.category_name))]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.bookmarks, function(bookmark) {
+                    return _c("tr", { ref: "datatable", refInFor: true }, [
+                      _c("td", [
                         _c(
-                          "div",
-                          {
-                            staticClass: "col-5",
-                            staticStyle: { width: "auto !important" }
-                          },
-                          [
-                            _c(
-                              "router-link",
+                          "a",
+                          { attrs: { target: "_blank", href: bookmark.url } },
+                          [_c("b", [_vm._v(_vm._s(bookmark.name))])]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("div", [_vm._v(_vm._s(bookmark.description) + " ")])
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        bookmark.isRead
+                          ? _c(
+                              "div",
                               {
-                                staticClass: "btn btn-sm btn-info",
-                                attrs: {
-                                  to: "bookmark/" + bookmark.id,
-                                  tag: "button"
-                                }
+                                staticClass: "form-check",
+                                staticStyle: { "text-align": "center" }
                               },
                               [
-                                _c("i", { staticClass: "material-icons" }, [
-                                  _vm._v("trending_flat")
-                                ])
+                                _c(
+                                  "label",
+                                  { staticClass: "form-check-label" },
+                                  [
+                                    _c("input", {
+                                      staticClass: "form-check-input",
+                                      attrs: { type: "checkbox", checked: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.markRead(bookmark.id)
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _vm._m(4, true)
+                                  ]
+                                )
                               ]
                             )
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-5" }, [
+                          : _c(
+                              "div",
+                              {
+                                staticClass: "form-check",
+                                staticStyle: { "text-align": "center" }
+                              },
+                              [
+                                _c(
+                                  "label",
+                                  { staticClass: "form-check-label" },
+                                  [
+                                    _c("input", {
+                                      staticClass: "form-check-input",
+                                      attrs: { type: "checkbox" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.markRead(bookmark.id)
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _vm._m(5, true)
+                                  ]
+                                )
+                              ]
+                            )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(" " + _vm._s(bookmark.category_name))]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        [
+                          _c(
+                            "router-link",
+                            {
+                              staticClass: "btn btn-sm btn-info",
+                              attrs: {
+                                to: "bookmark/" + bookmark.id,
+                                tag: "button"
+                              }
+                            },
+                            [
+                              _c("i", { staticClass: "material-icons" }, [
+                                _vm._v("trending_flat")
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
                           _c(
                             "button",
                             {
@@ -10757,13 +11773,14 @@ var render = function() {
                               ])
                             ]
                           )
-                        ])
-                      ])
+                        ],
+                        1
+                      )
                     ])
-                  ])
-                }),
-                0
-              )
+                  }),
+                  0
+                )
+              ])
             ])
           ])
         ])
@@ -11258,43 +12275,106 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._v("\n    Meno:\n    " + _vm._s(_vm.name) + "\n    "),
-    _c("br"),
-    _vm._v("\n    Priezvisko:\n    " + _vm._s(_vm.surname) + "\n    "),
-    _c("br"),
-    _vm._v("\n    E-mail:\n    " + _vm._s(_vm.email) + "\n    "),
-    _c("br"),
-    _vm._v("\n    Ucet bol vytvoreny dna " + _vm._s(_vm.created_at) + "\n    "),
-    _c("br"),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        attrs: { type: "button" },
-        on: {
-          click: function($event) {
-            return _vm.edit()
-          }
-        }
-      },
-      [_vm._v("Upravit profil")]
-    ),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        attrs: { type: "button" },
-        on: {
-          click: function($event) {
-            return _vm.password()
-          }
-        }
-      },
-      [_vm._v("Zmenit heslo")]
-    )
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("form", [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("b", [_vm._v("Meno:")]),
+                    _c("br"),
+                    _vm._v(
+                      _vm._s(_vm.name) + "\n                                "
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("b", [_vm._v("Priezvisko:")]),
+                    _c("br"),
+                    _vm._v(
+                      _vm._s(_vm.surname) + "\n                                "
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("b", [_vm._v("E-mail:")]),
+                    _c("br"),
+                    _vm._v(
+                      _vm._s(_vm.email) + "\n                                "
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("b", [_vm._v("Profil založený dňa:")]),
+                    _c("br"),
+                    _vm._v(
+                      _vm._s(_vm.created_at) +
+                        "\n                                "
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary pull-right",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.edit()
+                    }
+                  }
+                },
+                [_vm._v("Upraviť profil")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary pull-right",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.password()
+                    }
+                  }
+                },
+                [_vm._v("Zmeniť heslo")]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "clearfix" })
+            ])
+          ])
+        ])
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Môj profil")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -11389,409 +12469,435 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Vyhľadať záložky")]),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.searchBookmarks()
-          }
-        }
-      },
-      [
-        _vm.message
-          ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "text" } }, [_vm._v("Text")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.text,
-              expression: "text"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.text },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.text = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.text
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.text[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "category" } }, [
-          _vm._v("Vyberte kategóriu:")
-        ]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.category_name,
-                expression: "category_name"
-              }
-            ],
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.category_name = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                function($event) {
-                  return _vm.allCategories()
-                }
-              ]
-            }
-          },
-          [
-            _c("option", { attrs: { value: "" } }, [_vm._v("--Žiadna--")]),
-            _vm._v(" "),
-            _vm._l(_vm.categories, function(category) {
-              return _c("option", { domProps: { value: category.name } }, [
-                _vm._v(
-                  "\n                " +
-                    _vm._s(category.name) +
-                    "\n            "
-                )
-              ])
-            })
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _vm.category_name == ""
-          ? _c("div", [
-              _c("label", { attrs: { for: "global" } }, [
-                _vm._v("Hľadať globálne: ")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.global,
-                    expression: "global"
-                  }
-                ],
-                attrs: { type: "checkbox" },
-                domProps: {
-                  checked: Array.isArray(_vm.global)
-                    ? _vm._i(_vm.global, null) > -1
-                    : _vm.global
-                },
                 on: {
-                  change: function($event) {
-                    var $$a = _vm.global,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.global = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.global = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.global = $$c
-                    }
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.searchBookmarks()
                   }
                 }
-              }),
-              _vm._v(" "),
-              _vm.errors.global
-                ? _c("p", [_vm._v(_vm._s(_vm.errors.global[0]))])
-                : _vm._e()
-            ])
-          : _c("div", [
-              _c("label", { attrs: { for: "global" } }, [
-                _vm._v("Hľadať globálne: ")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.global,
-                    expression: "global"
-                  }
-                ],
-                attrs: { type: "checkbox", disabled: "" },
-                domProps: {
-                  checked: Array.isArray(_vm.global)
-                    ? _vm._i(_vm.global, null) > -1
-                    : _vm.global
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.global,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.global = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.global = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.global = $$c
-                    }
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _vm.errors.global
-                ? _c("p", [_vm._v(_vm._s(_vm.errors.global[0]))])
-                : _vm._e()
-            ]),
-        _vm._v(" "),
-        _vm.global == 1
-          ? _c("div", [
-              _c("label", { attrs: { for: "read" } }, [
-                _vm._v("Hľadať na základe prečítanosti: ")
-              ]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Nezáleží")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: {
-                  type: "radio",
-                  disabled: "",
-                  checked: "",
-                  value: "all"
-                },
-                domProps: { checked: _vm._q(_vm.read, "all") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "all"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", [_vm._v("Prečítané")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: { type: "radio", disabled: "", value: "1" },
-                domProps: { checked: _vm._q(_vm.read, "1") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "1"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", [_vm._v("Neprečítané")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: { type: "radio", disabled: "", value: "2" },
-                domProps: { checked: _vm._q(_vm.read, "2") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "2"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _vm.errors.read
-                ? _c("p", [_vm._v(_vm._s(_vm.errors.read[0]))])
-                : _vm._e()
-            ])
-          : _c("div", [
-              _c("label", { attrs: { for: "read" } }, [
-                _vm._v("Hľadať na základe prečítanosti: ")
-              ]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Nezáleží")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: { type: "radio", checked: "", value: "all" },
-                domProps: { checked: _vm._q(_vm.read, "all") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "all"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", [_vm._v("Prečítané")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: { type: "radio", value: "1" },
-                domProps: { checked: _vm._q(_vm.read, "1") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "1"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", [_vm._v("Neprečítané")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.read,
-                    expression: "read"
-                  }
-                ],
-                attrs: { type: "radio", value: "2" },
-                domProps: { checked: _vm._q(_vm.read, "2") },
-                on: {
-                  change: function($event) {
-                    _vm.read = "2"
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _vm.errors.read
-                ? _c("p", [_vm._v(_vm._s(_vm.errors.read[0]))])
-                : _vm._e()
-            ]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("button", { attrs: { type: "submit" } }, [_vm._v("Zobraziť")])
-      ]
-    ),
-    _vm._v(" "),
-    _c("h2", [_vm._v("Výsledky")]),
-    _vm._v(" "),
-    _vm.bookmarks
-      ? _c(
-          "div",
-          _vm._l(_vm.bookmarks, function(bookmark) {
-            return _c(
-              "div",
+              },
               [
-                _c("p", [
-                  _c("a", { attrs: { href: bookmark.url, target: "_blank" } }, [
-                    _vm._v(_vm._s(bookmark.name))
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "name" }
+                        },
+                        [_vm._v("Text")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.text,
+                            expression: "text"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.text },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.text = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "category_table" } }, [
+                          _vm._v("Vyberte kategóriu:")
+                        ]),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("multiselect", {
+                          staticStyle: { "z-index": "5 !important" },
+                          attrs: {
+                            "deselect-label": "Odstrániť",
+                            "track-by": "name",
+                            label: "name",
+                            placeholder: "Vyberte",
+                            options: _vm.categories,
+                            searchable: false,
+                            "allow-empty": true
+                          },
+                          on: { remove: _vm.nullCategory },
+                          scopedSlots: _vm._u([
+                            {
+                              key: "singleLabel",
+                              fn: function(ref) {
+                                var option = ref.option
+                                return [
+                                  _c("strong", [_vm._v(_vm._s(option.name))])
+                                ]
+                              }
+                            }
+                          ]),
+                          model: {
+                            value: _vm.selected,
+                            callback: function($$v) {
+                              _vm.selected = $$v
+                            },
+                            expression: "selected"
+                          }
+                        })
+                      ],
+                      1
+                    )
                   ])
                 ]),
                 _vm._v(" "),
-                _c("p", [_vm._v(_vm._s(bookmark.description))]),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _vm.selected == null
+                      ? _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _c("toggle-button", {
+                              attrs: {
+                                sync: true,
+                                color: "#9c27b0",
+                                "true-value": "1",
+                                "false-value": "0"
+                              },
+                              model: {
+                                value: _vm.global,
+                                callback: function($$v) {
+                                  _vm.global = $$v
+                                },
+                                expression: "global"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("label", { staticClass: "bmd-label-floating" }, [
+                              _vm._v("Hľadať globálne")
+                            ])
+                          ],
+                          1
+                        )
+                      : _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _c("toggle-button", {
+                              attrs: {
+                                sync: true,
+                                color: "#9c27b0",
+                                "true-value": "1",
+                                "false-value": "0"
+                              },
+                              model: {
+                                value: _vm.global,
+                                callback: function($$v) {
+                                  _vm.global = $$v
+                                },
+                                expression: "global"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("label", { staticClass: "bmd-label-static" }, [
+                              _vm._v("Hľadať globálne")
+                            ])
+                          ],
+                          1
+                        )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _vm.global == 0 || _vm.selected != null
+                      ? _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "read" } }, [
+                            _vm._v("Hľadať na základe prečítanosti: ")
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "span",
+                                { staticClass: "custom-control custom-radio" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.read,
+                                        expression: "read"
+                                      }
+                                    ],
+                                    staticClass: "custom-control-input",
+                                    attrs: {
+                                      type: "radio",
+                                      id: "defaultGroupExample1",
+                                      name: "defaultExample2",
+                                      value: "all",
+                                      checked: ""
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(_vm.read, "all")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        _vm.read = "all"
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "defaultGroupExample1" }
+                                    },
+                                    [_vm._v("Nezáleží")]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "span",
+                                { staticClass: "custom-control custom-radio" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.read,
+                                        expression: "read"
+                                      }
+                                    ],
+                                    staticClass: "custom-control-input",
+                                    attrs: {
+                                      type: "radio",
+                                      id: "defaultGroupExample2",
+                                      name: "defaultExample2",
+                                      value: "1"
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(_vm.read, "1")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        _vm.read = "1"
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "defaultGroupExample2" }
+                                    },
+                                    [_vm._v("Prečítané")]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-4" }, [
+                              _c(
+                                "span",
+                                { staticClass: "custom-control custom-radio" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.read,
+                                        expression: "read"
+                                      }
+                                    ],
+                                    staticClass: "custom-control-input",
+                                    attrs: {
+                                      type: "radio",
+                                      id: "defaultGroupExample3",
+                                      name: "defaultExample2",
+                                      value: "2"
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(_vm.read, "2")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        _vm.read = "2"
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "defaultGroupExample3" }
+                                    },
+                                    [_vm._v("Neprečítané")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        ])
+                      : _vm._e()
+                  ])
+                ]),
                 _vm._v(" "),
-                _c(
-                  "router-link",
-                  { attrs: { to: "bookmark/" + bookmark.id, tag: "button" } },
-                  [_vm._v("Podrobnosti")]
-                ),
+                _vm._m(1),
                 _vm._v(" "),
-                _vm.isAdmin == true
-                  ? _c(
-                      "button",
-                      {
-                        on: {
-                          click: function($event) {
-                            return _vm.deleteBookmark(bookmark.id)
-                          }
-                        }
-                      },
-                      [_vm._v("Zmazať")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("hr")
-              ],
-              1
+                _c("div", { staticClass: "clearfix" })
+              ]
             )
-          }),
-          0
-        )
-      : _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _vm.bookmarks
+              ? _c(
+                  "div",
+                  _vm._l(_vm.bookmarks, function(bookmark) {
+                    return _c("div", [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-9" }, [
+                          _c("p", [
+                            _c("b", [
+                              _c(
+                                "a",
+                                {
+                                  attrs: {
+                                    href: bookmark.url,
+                                    target: "_blank"
+                                  }
+                                },
+                                [_vm._v(_vm._s(bookmark.name))]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("p", [_vm._v(_vm._s(bookmark.description))])
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "col-md-3" },
+                          [
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "btn btn-info btn-sm",
+                                attrs: {
+                                  to: "bookmark/" + bookmark.id,
+                                  tag: "button"
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "material-icons" }, [
+                                  _vm._v("trending_flat")
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _vm.isAdmin == true
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteBookmark(bookmark.id)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("i", { staticClass: "material-icons" }, [
+                                      _vm._v("delete_outline")
+                                    ])
+                                  ]
+                                )
+                              : _vm._e()
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("hr")
+                    ])
+                  }),
+                  0
+                )
+              : _c("div", [_c("h4", [_vm._v(_vm._s(_vm.message))])])
+          ])
+        ])
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Vyhľadať záložky")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-primary pull-right", attrs: { type: "submit" } },
+      [_c("i", { staticClass: "material-icons" }, [_vm._v("search")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Výsledky")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -11814,80 +12920,129 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.message
-      ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-      : _vm._e(),
-    _vm._v(" "),
-    _c("table", [
+    _c("div", { staticClass: "card" }, [
       _vm._m(0),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.users, function(user) {
-          return _c("tr", { ref: "datatable", refInFor: true }, [
-            _c("td", [_vm._v(" " + _vm._s(user.id))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(" " + _vm._s(user.name))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(" " + _vm._s(user.surname))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(" " + _vm._s(user.email))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(" " + _vm._s(user.isActive))]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.showProfile(user.id)
-                    }
-                  }
-                },
-                [_vm._v("Zobrazit profil")]
-              ),
-              _vm._v(" "),
-              user.isActive
-                ? _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.deactivate(user.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Deaktivovať")]
-                  )
-                : _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.activate(user.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Aktivovať")]
-                  ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.destroy(user.id)
-                    }
-                  }
-                },
-                [_vm._v("Zmazať")]
-              )
+      _c("div", { staticClass: "card-body" }, [
+        _vm.message
+          ? _c("div", [
+              _c("p", { staticClass: "text-danger" }, [
+                _vm._v(_vm._s(_vm.message))
+              ])
             ])
+          : _vm.message_success
+          ? _c("div", [
+              _c("p", { staticClass: "text-success" }, [
+                _vm._v(_vm._s(_vm.message_success))
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("div", { staticClass: "table-responsive" }, [
+          _c("table", { staticClass: "table" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.users, function(user) {
+                return _c("tr", { ref: "datatable", refInFor: true }, [
+                  _c("td", [_vm._v(_vm._s(user.id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(user.name))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(user.surname))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(user.email))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    user.isActive
+                      ? _c("div", { staticClass: "form-check" }, [
+                          _c(
+                            "i",
+                            { staticClass: "material-icons text-success" },
+                            [_vm._v("check")]
+                          )
+                        ])
+                      : _c("div", { staticClass: "form-check" }, [
+                          _c(
+                            "i",
+                            { staticClass: "material-icons text-danger" },
+                            [_vm._v("close")]
+                          )
+                        ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "div",
+                      { staticClass: "row" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "btn btn-sm btn-info",
+                            attrs: { to: "users/" + user.id, tag: "button" }
+                          },
+                          [
+                            _c("i", { staticClass: "material-icons" }, [
+                              _vm._v("trending_flat")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        user.isActive
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-sm btn-warning",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deactivate(user.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Deaktivovať")]
+                            )
+                          : _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-sm btn-warning",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.activate(user.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Aktivovať")]
+                            ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm btn-danger",
+                            on: {
+                              click: function($event) {
+                                return _vm.destroy(user.id)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "material-icons" }, [
+                              _vm._v("delete_outline")
+                            ])
+                          ]
+                        )
+                      ],
+                      1
+                    )
+                  ])
+                ])
+              }),
+              0
+            )
           ])
-        }),
-        0
-      )
+        ])
+      ])
     ])
   ])
 }
@@ -11896,20 +13051,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("ID")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Meno")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Priezvisko")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Email")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Aktivny")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Akcie")])
-      ])
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title " }, [_vm._v("Moje záložky")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: " text-primary" }, [
+      _c("th", [_vm._v("ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Meno")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Priezvisko")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("E-mail")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Aktívny")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Akcie")])
     ])
   }
 ]
@@ -11935,99 +13096,197 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.edit()
-          }
-        }
-      },
-      [
-        _vm.message
-          ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.message))])])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "name" } }, [_vm._v("Meno:")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.name,
-              expression: "name"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.name },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.name = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.name
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.name[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "surname" } }, [_vm._v("Priezvisko:")]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.surname,
-              expression: "surname"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.surname },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.surname = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.surname
-          ? _c("p", [_vm._v(_vm._s(_vm.errors.surname[0]))])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(
-          "\n        E-mail:\n        " + _vm._s(_vm.email) + "\n        "
-        ),
-        _c("br"),
-        _vm._v(
-          "\n        Ucet bol vytvoreny dna " +
-            _vm._s(_vm.created_at) +
-            "\n        "
-        ),
-        _c("br"),
-        _vm._v(" "),
-        _c("button", { attrs: { type: "submit" } }, [_vm._v("Upravit ")])
-      ]
-    )
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-3" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-6" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header card-header-primary" }, [
+            _c("h3", { staticClass: "card-title" }, [
+              _vm._v(
+                "Profil používateľa " +
+                  _vm._s(_vm.name) +
+                  " " +
+                  _vm._s(_vm.surname)
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.edit()
+                  }
+                }
+              },
+              [
+                _vm.message
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.message))
+                      ])
+                    ])
+                  : _vm.message_success
+                  ? _c("div", [
+                      _c("p", { staticClass: "text-success" }, [
+                        _vm._v(_vm._s(_vm.message_success))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "name" }
+                        },
+                        [_vm._v("Meno")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.name,
+                            expression: "name"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.name },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.name = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "surname" }
+                        },
+                        [_vm._v("Priezvisko:")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.surname,
+                            expression: "surname"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.surname },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.surname = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "email" }
+                        },
+                        [_vm._v("Email:")]
+                      ),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(
+                        "\n                                    " +
+                          _vm._s(_vm.email) +
+                          "\n                                "
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "bmd-label-static",
+                          attrs: { for: "created_at" }
+                        },
+                        [_vm._v("Vytvoerný dňa:")]
+                      ),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(
+                        "\n                                    " +
+                          _vm._s(_vm.created_at) +
+                          "\n                                "
+                      )
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Upraviť")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "clearfix" })
+              ]
+            )
+          ])
+        ])
+      ])
+    ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-info pull-left",
+        attrs: { onclick: "window.history.back()", type: "submit" }
+      },
+      [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
+    )
+  }
+]
 render._withStripped = true
 
 

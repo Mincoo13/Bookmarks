@@ -1,26 +1,61 @@
 <template>
     <div>
-        <form @submit.prevent="edit()">
-            <div v-if="message">
-                <p>{{ message }}</p>
+        <div class="row">
+            <div class="col-md-3">
             </div>
-            <label for="name">Meno:</label>
-            <br>
-            <input type="text" v-model="name" >
-            <p v-if="errors.name">{{ errors.name[0] }}</p>
-            <br>
-            <label for="surname">Priezvisko:</label>
-            <br>
-            <input type="text" v-model="surname" >
-            <p v-if="errors.surname">{{ errors.surname[0] }}</p>
-            <br>
-            E-mail:
-            {{ email }}
-            <br>
-            Ucet bol vytvoreny dna {{ created_at }}
-            <br>
-            <button type="submit">Upravit </button>
-        </form>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h3 class="card-title">Profil používateľa {{ name }} {{ surname }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <form @submit.prevent="edit()">
+                            <div v-if="message">
+                                <p class="text-danger">{{ message }}</p>
+                            </div>
+                            <div v-else-if="message_success">
+                                <p class="text-success">{{ message_success }}</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="name">Meno</label>
+                                        <input class="form-control" type="text" v-model="name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="surname">Priezvisko:</label>
+                                        <input class="form-control" type="text" v-model="surname">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="email">Email:</label>
+                                        <br>
+                                        {{ email }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-static"  for="created_at">Vytvoerný dňa:</label>
+                                        <br>
+                                        {{ created_at }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                            <button  type="submit"  class="btn btn-primary pull-right">Upraviť</button>
+
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -36,7 +71,8 @@
                 created_at: null,
                 auth: auth,
                 currentUrl: null,
-                message: null,
+                message: "",
+                message_success: "",
                 info: null,
                 errors: []
             };
@@ -46,7 +82,6 @@
                 var strings = currentUrl.split("/");
                 this.id = strings[5];
                 console.log(strings[5]);
-
         },
         mounted(){
             axios
@@ -72,10 +107,12 @@
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
-                        this.message = "Používateľ bol upravený.";
+                        this.message_success = "Používateľ bol upravený.";
+                        this.message = "";
                     })
                     .catch(error => {
                         console.log(error.response);
+                        this.message_success = "";
                         this.message = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
