@@ -38,15 +38,15 @@
                         <h3 class="card-title">Moje kategórie</h3>
                     </div>
                     <div class="card-body">
+                        <div v-if="message_error">
+                            <p class="text-danger">{{ message_error }}</p>
+                        </div>
+                        <div v-else-if="message_success">
+                            <p class="text-success">{{ message_success }}</p>
+                        </div>
                         <div v-for="category in categories">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div v-if="message_error">
-                                        <p class="text-danger">{{ message_error }}</p>
-                                    </div>
-                                    <div v-else-if="message_success">
-                                        <p class="text-success">{{ message_success }}</p>
-                                    </div>
                                     <h4>{{ category.name }}</h4>
                                 </div>
                                 <div class="col-md-6">
@@ -112,6 +112,7 @@
                             headers: {Authorization: "Bearer " + this.auth.getToken()}
                         })
                     .then(response => {
+                        this.allCategories();
                         this.message_create_error= "";
                         this.message_create_success = "Kategória bola vytvorená.";
                     })

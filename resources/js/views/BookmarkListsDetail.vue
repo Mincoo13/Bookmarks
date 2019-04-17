@@ -5,7 +5,10 @@
 
             </div>
             <div class="col-md-8">
-                <div class="card">
+                <h2>Upraviť</h2>
+                <button id="btn-bookmark-list" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">edit</i><div class="ripple-container"></div></button>
+
+                <div class="card" id="bookmarkList-form">
                     <div class="card-header card-header-primary">
                         <h4 class="card-title">{{ bookmarklist.name }}</h4>
                         <!--<p class="card-category"></p>-->
@@ -34,10 +37,21 @@
                                     <button class="btn btn-primary pull-right" type="submit">Upraviť</button>
                                 </div>
                             </div>
-                            <hr>
                             <!--<input v-if="isVisible != 1" type="checkbox" v-model="isVisible">-->
                             <!--<input v-else type="checkbox" checked v-model="isVisible">-->
                         </form>
+                    </div>
+                </div>
+                <br v-if="!space">
+                <br v-if="!space">
+                <br v-if="!space">
+
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">{{ bookmarklist.name }}</h4>
+                        <!--<p class="card-category"></p>-->
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <h3>Pridať nové záložky do zoznamu</h3>
@@ -49,7 +63,7 @@
                                 </div>
                                 <form @submit.prevent="addBookmark(id)">
                                     <div>
-                                        <multiselect style="z-index: 50 !important" v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
+                                        <multiselect style="z-index: 50 !important" select-label="Stlačte enter pre výber" deselect-label="Odstrániť" selectedLabel="Vybraté" v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
                                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
                                         </multiselect>
                                     </div>
@@ -131,6 +145,7 @@
                 bookmarks: [],
                 allBookmarks: [],
                 bookmarklist: [],
+                space: null,
                 name: null,
                 isVisible: this.isVisible,
                 id: null,
@@ -168,6 +183,12 @@
                 if (a.order > b.order)
                     return 1;
                 return 0;
+            },
+            showForm(){
+                this.space = 1;
+                $('#bookmarkList-form').animate({height: "toggle", opacity: "toggle"}, "fast");
+                document.getElementById("btn-bookmark-list").style="display: none" ;
+
             },
             markRead(id){
                 axios
@@ -248,7 +269,7 @@
                                 read++;
                             }
                         }
-                        this.progress = (read/count)*100;
+                        this.progress = Math.round((read/count)*100);
                     })
                     .catch(error => {
                         console.log(error.response);

@@ -9,6 +9,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use JWTAuth;
 
 class BookmarkController extends Controller
@@ -109,6 +110,9 @@ class BookmarkController extends Controller
             ],409);
         }
         else{
+            if(!Str::contains($url, 'http://www.') && !Str::contains($url, 'https://www.')){
+                $url = Str::start($url, 'https://www.');
+            }
             if($isVisible == null){
                 $isVisible = true;
             }

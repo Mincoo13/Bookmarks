@@ -22,7 +22,7 @@
                                     <div class="form-group">
                                         <label for="category_table">Vyberte kategóriu:</label>
                                         <br>
-                                        <multiselect style="z-index: 5 !important" v-model="selected" @remove="nullCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Vyberte" :options="categories" :searchable="false" :allow-empty="true">
+                                        <multiselect style="z-index: 5 !important" select-label="Stlačte enter pre výber" selectedLabel="Vybraté" v-model="selected" @remove="nullCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Vyberte" :options="categories" :searchable="false" :allow-empty="true">
                                             <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                                         </multiselect>
                                     </div>
@@ -45,7 +45,7 @@
 
                                         </div>
                                     <div v-else class="form-group" >
-                                            <toggle-button :sync="true" color="#9c27b0" v-model="global" true-value=1 false-value=0 />
+                                            <toggle-button :sync="true" color="#9c27b0" disabled v-model="global" true-value=1 false-value=0 />
                                         <label class="bmd-label-static">Hľadať globálne</label>
 
                                         <!--<label class="form-check-label">-->

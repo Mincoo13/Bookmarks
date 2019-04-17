@@ -1904,9 +1904,6 @@ __webpack_require__.r(__webpack_exports__);
       editText: ""
     };
   },
-  created: function created() {
-    window.scrollTo(0, 0);
-  },
   mounted: function mounted() {
     this.getUserData();
     this.getId();
@@ -2649,7 +2646,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2661,6 +2657,7 @@ __webpack_require__.r(__webpack_exports__);
       auth: _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
       isVisible: true,
       name: null,
+      space: null,
       bookmarklists: [],
       bookmarks: [],
       selected: [],
@@ -2676,6 +2673,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     showForm: function showForm() {
+      this.space = 1;
       $('#list-form').animate({
         height: "toggle",
         opacity: "toggle"
@@ -2908,6 +2906,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2923,6 +2935,7 @@ __webpack_require__.r(__webpack_exports__);
       bookmarks: [],
       allBookmarks: [],
       bookmarklist: [],
+      space: null,
       name: null,
       isVisible: this.isVisible,
       id: null,
@@ -2957,6 +2970,14 @@ __webpack_require__.r(__webpack_exports__);
       if (a.order < b.order) return -1;
       if (a.order > b.order) return 1;
       return 0;
+    },
+    showForm: function showForm() {
+      this.space = 1;
+      $('#bookmarkList-form').animate({
+        height: "toggle",
+        opacity: "toggle"
+      }, "fast");
+      document.getElementById("btn-bookmark-list").style = "display: none";
     },
     markRead: function markRead(id) {
       var _this = this;
@@ -3039,7 +3060,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
 
-        _this4.progress = read / count * 100;
+        _this4.progress = Math.round(read / count * 100);
       }).catch(function (error) {
         console.log(error.response);
         _this4.message = error.response.data.message;
@@ -3255,6 +3276,8 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
+        _this.allCategories();
+
         _this.message_create_error = "";
         _this.message_create_success = "Kategória bola vytvorená.";
       }).catch(function (error) {
@@ -3690,7 +3713,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3705,6 +3727,7 @@ __webpack_require__.r(__webpack_exports__);
       value: null,
       url: null,
       name: null,
+      space: null,
       description: null,
       category_id: null,
       category_name: null,
@@ -3727,7 +3750,12 @@ __webpack_require__.r(__webpack_exports__);
     this.allBookmarks();
   },
   methods: {
+    scrollup: function scrollup() {
+      window.scrollTo(0, 0);
+      console.log("hore");
+    },
     showForm: function showForm() {
+      this.space = 1;
       $('#bookmarkForm').animate({
         height: "toggle",
         opacity: "toggle"
@@ -3962,6 +3990,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4066,6 +4095,9 @@ __webpack_require__.r(__webpack_exports__);
         _this2.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
+    reload: function reload() {
+      location.reload();
+    },
     login: function login() {
       var _this3 = this;
 
@@ -4076,6 +4108,8 @@ __webpack_require__.r(__webpack_exports__);
         _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"].setToken(response.data.data.token);
 
         _this3.$router.push("/");
+
+        location.reload();
       }).catch(function (error) {
         console.log(error.response);
         _this3.message_login = error.response.data.message;
@@ -9829,7 +9863,7 @@ var render = function() {
                                 _vm._v("arrow_drop_down")
                               ]),
                               _vm._v(" "),
-                              _c("p", [_vm._v("Odhlásiť sa")])
+                              _c("p", [_vm._v("Odhlásiť")])
                             ]
                           )
                         : _vm._e()
@@ -10123,13 +10157,11 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("br"),
+        !_vm.space ? _c("br") : _vm._e(),
         _vm._v(" "),
-        _c("br"),
+        !_vm.space ? _c("br") : _vm._e(),
         _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("br"),
+        !_vm.space ? _c("br") : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "card" }, [
           _vm._m(1),
@@ -10276,7 +10308,26 @@ var render = function() {
       _c("div", { staticClass: "col-md-2" }),
       _vm._v(" "),
       _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
+        _c("h2", [_vm._v("Upraviť")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary pull-left",
+            attrs: { id: "btn-bookmark-list" },
+            on: {
+              click: function($event) {
+                return _vm.showForm()
+              }
+            }
+          },
+          [
+            _c("i", { staticClass: "material-icons" }, [_vm._v("edit")]),
+            _c("div", { staticClass: "ripple-container" })
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card", attrs: { id: "bookmarkList-form" } }, [
           _c("div", { staticClass: "card-header card-header-primary" }, [
             _c("h4", { staticClass: "card-title" }, [
               _vm._v(_vm._s(_vm.bookmarklist.name))
@@ -10379,12 +10430,26 @@ var render = function() {
                       [_vm._v("Upraviť")]
                     )
                   ])
-                ]),
-                _vm._v(" "),
-                _c("hr")
+                ])
               ]
-            ),
-            _vm._v(" "),
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        !_vm.space ? _c("br") : _vm._e(),
+        _vm._v(" "),
+        !_vm.space ? _c("br") : _vm._e(),
+        _vm._v(" "),
+        !_vm.space ? _c("br") : _vm._e(),
+        _vm._v(" "),
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header card-header-primary" }, [
+            _c("h4", { staticClass: "card-title" }, [
+              _vm._v(_vm._s(_vm.bookmarklist.name))
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-12" }, [
                 _c("h3", [_vm._v("Pridať nové záložky do zoznamu")]),
@@ -10420,6 +10485,9 @@ var render = function() {
                         _c("multiselect", {
                           staticStyle: { "z-index": "50 !important" },
                           attrs: {
+                            "select-label": "Stlačte enter pre výber",
+                            "deselect-label": "Odstrániť",
+                            selectedLabel: "Vybraté",
                             options: _vm.allBookmarks,
                             multiple: true,
                             "close-on-select": false,
@@ -10771,24 +10839,24 @@ var render = function() {
             "div",
             { staticClass: "card-body" },
             [
+              _vm.message_error
+                ? _c("div", [
+                    _c("p", { staticClass: "text-danger" }, [
+                      _vm._v(_vm._s(_vm.message_error))
+                    ])
+                  ])
+                : _vm.message_success
+                ? _c("div", [
+                    _c("p", { staticClass: "text-success" }, [
+                      _vm._v(_vm._s(_vm.message_success))
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
               _vm._l(_vm.categories, function(category) {
                 return _c("div", [
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-md-6" }, [
-                      _vm.message_error
-                        ? _c("div", [
-                            _c("p", { staticClass: "text-danger" }, [
-                              _vm._v(_vm._s(_vm.message_error))
-                            ])
-                          ])
-                        : _vm.message_success
-                        ? _c("div", [
-                            _c("p", { staticClass: "text-success" }, [
-                              _vm._v(_vm._s(_vm.message_success))
-                            ])
-                          ])
-                        : _vm._e(),
-                      _vm._v(" "),
                       _c("h4", [_vm._v(_vm._s(category.name))])
                     ]),
                     _vm._v(" "),
@@ -11396,7 +11464,7 @@ var render = function() {
                       _c(
                         "label",
                         {
-                          staticClass: "bmd-label-floating",
+                          staticClass: "bmd-label-static",
                           attrs: { for: "name" }
                         },
                         [_vm._v("Názov:")]
@@ -11433,7 +11501,7 @@ var render = function() {
                       _c(
                         "label",
                         {
-                          staticClass: "bmd-label-floating",
+                          staticClass: "bmd-label-static",
                           attrs: { for: "surname" }
                         },
                         [_vm._v("Url:")]
@@ -11475,11 +11543,14 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("multiselect", {
+                            staticStyle: { "z-index": "50 !important" },
                             attrs: {
+                              placeholder: "Vyberte",
                               "deselect-label": "Odstrániť",
+                              selectLabel: "Stlačte enter pre výber",
+                              selectedLabel: "Vybraté",
                               "track-by": "name",
                               label: "name",
-                              placeholder: "Select one",
                               options: _vm.categories,
                               searchable: false,
                               "allow-empty": true
@@ -11519,7 +11590,7 @@ var render = function() {
                         _c(
                           "label",
                           {
-                            staticClass: "bmd-label-floating",
+                            staticClass: "bmd-label-static",
                             attrs: { for: "description" }
                           },
                           [_vm._v("Popis")]
@@ -11560,7 +11631,7 @@ var render = function() {
                         _c(
                           "label",
                           {
-                            staticClass: "bmd-label-floating",
+                            staticClass: "bmd-label-static",
                             attrs: { for: "isVisible" }
                           },
                           [
@@ -11602,13 +11673,7 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("br"),
+    !_vm.space ? _c("br") : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-2" }),
@@ -11624,8 +11689,10 @@ var render = function() {
             _c("br"),
             _vm._v(" "),
             _c("multiselect", {
-              staticStyle: { "z-index": "5 !important" },
+              staticStyle: { "z-index": "50 !important" },
               attrs: {
+                selectLabel: "Stlačte enter pre výber",
+                selectedLabel: "Vybraté",
                 "deselect-label": "Odstrániť",
                 "track-by": "name",
                 label: "name",
@@ -12538,6 +12605,8 @@ var render = function() {
                         _c("multiselect", {
                           staticStyle: { "z-index": "5 !important" },
                           attrs: {
+                            "select-label": "Stlačte enter pre výber",
+                            selectedLabel: "Vybraté",
                             "deselect-label": "Odstrániť",
                             "track-by": "name",
                             label: "name",
@@ -12609,6 +12678,7 @@ var render = function() {
                               attrs: {
                                 sync: true,
                                 color: "#9c27b0",
+                                disabled: "",
                                 "true-value": "1",
                                 "false-value": "0"
                               },

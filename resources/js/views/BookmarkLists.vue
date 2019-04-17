@@ -52,10 +52,9 @@
                     </div>
                 </div>
 
-                <br>
-                <br>
-                <br>
-                <br>
+                <br v-if="!space">
+                <br v-if="!space">
+                <br v-if="!space">
 
                 <div class="card">
                     <div class="card-header card-header-primary">
@@ -98,6 +97,7 @@
                 auth: auth,
                 isVisible: true,
                 name: null,
+                space: null,
                 bookmarklists: [],
                 bookmarks: [],
                 selected: [],
@@ -113,7 +113,7 @@
         },
         methods: {
             showForm(){
-
+                this.space = 1;
                 $('#list-form').animate({height: "toggle", opacity: "toggle"}, "fast");
                 document.getElementById("btn-list").style="display: none" ;
 

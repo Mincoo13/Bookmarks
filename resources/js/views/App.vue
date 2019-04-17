@@ -61,7 +61,7 @@
                     <li id="logout" class="nav-item active-pro logout">
                         <a class="nav-link" @click="logout()" v-if="auth.check()">
                         <i class="material-icons">arrow_drop_down</i>
-                        <p>Odhlásiť sa</p>
+                        <p>Odhlásiť</p>
                     </a>
                     </li>
                 </ul>

@@ -25,13 +25,13 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <div class="form-group bmd-form-group">
-                                        <label class="bmd-label-floating"  for="name">Názov:</label>
+                                        <label class="bmd-label-static"  for="name">Názov:</label>
                                         <input type="text" v-model="name" class="form-control">
                                         <p v-if="errors.name">{{ errors.name[0] }}</p>
 
                                     </div>
                                     <div class="form-group bmd-form-group">
-                                        <label class="bmd-label-floating" for="surname">Url:</label>
+                                        <label class="bmd-label-static" for="surname">Url:</label>
                                         <input type="text" v-model="url" class="form-control">
                                         <p v-if="errors.url">{{ errors.url[0] }}</p>
 
@@ -40,7 +40,7 @@
 
                                         <div>
                                             <label class="typo__label">Vybert kategóriu:</label>
-                                            <multiselect v-model="selected" deselect-label="Odstrániť"  track-by="name" label="name" placeholder="Select one" :options="categories" :searchable="false" :allow-empty="true">
+                                            <multiselect style="z-index: 50 !important" placeholder="Vyberte" v-model="selected" deselect-label="Odstrániť" selectLabel="Stlačte enter pre výber" selectedLabel="Vybraté"  track-by="name" label="name" :options="categories" :searchable="false" :allow-empty="true">
                                                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                                             </multiselect>
                                             <pre class="language-json"><code>{{ categories.name  }}</code></pre>
@@ -50,14 +50,14 @@
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <div class="form-group bmd-form-group">
-                                            <label class="bmd-label-floating"  for="description">Popis</label>
+                                            <label class="bmd-label-static"  for="description">Popis</label>
                                             <textarea v-model="description" class="form-control" rows="5"></textarea>
                                             <p v-if="errors.description">{{ errors.description[0] }}</p>
 
                                         </div>
                                     </div>
                                     <div class="">
-                                        <label class="bmd-label-floating"  for="isVisible">Nastaviť záložku ako viditeľnú pre ostatných:</label>
+                                        <label class="bmd-label-static"  for="isVisible">Nastaviť záložku ako viditeľnú pre ostatných:</label>
                                         <br>
                                         <toggle-button :value="isVisible" color="#9c27b0" v-model="isVisible"/>
                                         <p v-if="errors.isVisible">{{ errors.isVisible[0] }}</p>
@@ -75,10 +75,9 @@
 
         </div>
 
-        <br>
-        <br>
-        <br>
-        <br>
+        <!--<br v-if="!space">-->
+        <!--<br v-if="!space">-->
+        <br v-if="!space">
 
         <div class="row">
         <div class="col-md-2">
@@ -89,7 +88,7 @@
             <form>
                 <label for="category_table">Vyberte kategóriu:</label>
                 <br>
-                <multiselect style="z-index: 5 !important" v-model="category_select" @remove="nullCategory" @select="selectCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Vyberte" :options="categories" :searchable="false" :allow-empty="true">
+                <multiselect style="z-index: 50 !important" selectLabel="Stlačte enter pre výber" selectedLabel="Vybraté" v-model="category_select" @remove="nullCategory" @select="selectCategory" deselect-label="Odstrániť" track-by="name" label="name" placeholder="Vyberte" :options="categories" :searchable="false" :allow-empty="true">
                     <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.name }}</strong></template>
                 </multiselect>
             </form>
@@ -134,7 +133,7 @@
                                 </td>
                                 <td > {{ bookmark.category_name }}</td>
                                 <td>
-                                    <router-link :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
+                                    <router-link  :to="'bookmark/' + bookmark.id " tag="button" class="btn btn-sm btn-info"><i class="material-icons">trending_flat</i></router-link>
                                     <button v-on:click="deleteBookmark(bookmark.id)" class="btn btn-sm btn-danger"><i class="material-icons">delete_outline</i></button>
                                 </td>
                             </tr>
@@ -165,6 +164,7 @@
                 value: null,
                 url: null,
                 name: null,
+                space: null,
                 description: null,
                 category_id: null,
                 category_name: null,
@@ -188,9 +188,12 @@
             this.allBookmarks();
         },
         methods: {
-
+            scrollup(){
+                window.scrollTo(0, 0);
+                console.log("hore");
+            },
             showForm(){
-
+                    this.space = 1;
                     $('#bookmarkForm').animate({height: "toggle", opacity: "toggle"}, "fast");
                     document.getElementById("btn-bookmark").style="display: none" ;
 
