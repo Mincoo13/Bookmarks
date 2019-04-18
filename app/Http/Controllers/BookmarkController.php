@@ -362,7 +362,7 @@ class BookmarkController extends Controller
         $email = $request->email;
         $exist = User::where('email', $email)->first();
         $bookmark = Bookmark::find($id);
-        if($bookmark->isVisible != 1 || $user->id != $bookmark->user_id){
+        if($bookmark->isVisible != 1 && $user->id != $bookmark->user_id){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Nemôžete zdieľať túto záložku.',

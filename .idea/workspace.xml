@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462562e7-0405-4df1-bd5f-7d427d3d46da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/views/mail/sharebookmarklist.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/ShareBookmark.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ShareBookmark.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/views/BookmarkListsDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/BookmarkListsDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +84,7 @@
           <entry key="css" value="151" />
           <entry key="env" value="14" />
           <entry key="json" value="20" />
-          <entry key="php" value="4670" />
+          <entry key="php" value="4674" />
           <entry key="vue" value="3169" />
           <entry key="xml" value="86" />
         </counts>
@@ -100,7 +95,7 @@
           <entry key="Blade" value="643" />
           <entry key="CSS" value="151" />
           <entry key="JSON" value="20" />
-          <entry key="PHP" value="4027" />
+          <entry key="PHP" value="4031" />
           <entry key="Vue.js" value="3169" />
           <entry key="XML" value="86" />
         </counts>
@@ -114,7 +109,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/js/views/BookmarkListsDetail.vue">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="267">
@@ -139,8 +134,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="366" column="36" selection-start-line="366" selection-start-column="36" selection-end-line="366" selection-end-column="36" />
+            <state relative-caret-position="272">
+              <caret line="364" column="39" selection-start-line="364" selection-start-column="39" selection-end-line="364" selection-end-column="39" />
               <folding>
                 <element signature="e#40#57#0#PHP" expanded="true" />
               </folding>
@@ -148,11 +143,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6613">
-              <caret line="13" column="12" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+            <state relative-caret-position="170">
+              <caret line="412" column="43" selection-start-line="412" selection-start-column="43" selection-end-line="412" selection-end-column="43" />
               <folding>
                 <element signature="e#40#57#0#PHP" expanded="true" />
               </folding>
@@ -163,8 +158,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/js/components/Bookmark.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="198" column="20" lean-forward="true" selection-start-line="198" selection-start-column="20" selection-end-line="207" selection-end-column="23" />
+            <state relative-caret-position="357">
+              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
             </state>
           </provider>
         </entry>
@@ -273,15 +268,15 @@
         <option value="$PROJECT_DIR$/resources/js/views/SearchBookmarks.vue" />
         <option value="$PROJECT_DIR$/resources/js/views/BookmarkLists.vue" />
         <option value="$PROJECT_DIR$/resources/views/mail/sharebookmark.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php" />
         <option value="$PROJECT_DIR$/resources/js/components/Bookmark.vue" />
         <option value="$PROJECT_DIR$/app/Mail/ShareBookmark.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php" />
         <option value="$PROJECT_DIR$/routes/api.php" />
         <option value="$PROJECT_DIR$/resources/views/mail/sharebookmarklist.blade.php" />
         <option value="$PROJECT_DIR$/app/Mail/ShareBookmarkList.php" />
         <option value="$PROJECT_DIR$/public/assets/css/material-dashboard.css" />
         <option value="$PROJECT_DIR$/resources/js/views/BookmarkListsDetail.vue" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php" />
       </list>
     </option>
   </component>
@@ -592,12 +587,12 @@
       <workItem from="1555533300158" duration="5290000" />
       <workItem from="1555540936179" duration="2853000" />
       <workItem from="1555544762699" duration="11327000" />
-      <workItem from="1555578982196" duration="3191000" />
+      <workItem from="1555578982196" duration="4087000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84554000" />
+    <option name="totallyTimeSpent" value="85450000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -895,16 +890,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="366" column="36" selection-start-line="366" selection-start-column="36" selection-end-line="366" selection-end-column="36" />
-          <folding>
-            <element signature="e#40#57#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/api.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="471">
@@ -940,23 +925,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6613">
-          <caret line="13" column="12" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
-          <folding>
-            <element signature="e#40#57#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/js/components/Bookmark.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="198" column="20" lean-forward="true" selection-start-line="198" selection-start-column="20" selection-end-line="207" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/js/views/BookmarkListsDetail.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
@@ -964,6 +932,33 @@
           <folding>
             <element signature="n#style#0;n#multiselect#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#div#0;n#div#2;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/js/components/Bookmark.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="364" column="39" selection-start-line="364" selection-start-column="39" selection-end-line="364" selection-end-column="39" />
+          <folding>
+            <element signature="e#40#57#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="412" column="43" selection-start-line="412" selection-start-column="43" selection-end-line="412" selection-end-column="43" />
+          <folding>
+            <element signature="e#40#57#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>

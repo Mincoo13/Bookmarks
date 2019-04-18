@@ -410,7 +410,7 @@ class BookmarkListController extends Controller
         $exist = User::where('email', $email)->first();
         $sender = $user->name." ".$user->surname;
         $bookmarklist = BookmarkList::find($id);
-        if($bookmarklist->isVisible != 1 || $user->id != $bookmarklist->user_id){
+        if($bookmarklist->isVisible != 1 && $user->id != $bookmarklist->user_id){
             return response()->json([
                 'status' => 'error',
                 'message' => 'Nemôžete zdieľať tento zoznam.',
