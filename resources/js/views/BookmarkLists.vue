@@ -39,7 +39,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="typo__label">Vyberte záložky</label>
-                                        <multiselect  v-model="selected" :options="bookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
+                                        <multiselect style="z-index: 5 !important" v-model="selected" :options="bookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
                                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
                                         </multiselect>
                                     </div>

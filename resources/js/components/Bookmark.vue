@@ -53,9 +53,25 @@
                                     </div>
                                 </div>
                                 <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
-                                <router-link :to="'/bookmark/'+id+'/edit'" v-if="isAdmin == 1 || bookmark.user_id == userId" tag="button" class="btn btn-primary pull-right">Upraviť záložku</router-link>
+                                <button v-on:click="share = true" class="btn btn-primary pull-right">Zdieľať</button>
+                                <router-link :to="'/bookmark/'+id+'/edit'" v-if="isAdmin == 1 || bookmark.user_id == userId" tag="button" class="btn btn-primary pull-right"><i class="material-icons">edit</i></router-link>
+
                                 <!--<button  class="btn btn-primary pull-right">Update Profile</button>-->
                                 <div class="clearfix"></div>
+                            </form>
+                            <form v-if="share == true" @submit.prevent="shareBookmark()">
+                                <hr>
+                                <div v-if="share_message_error">
+                                    <p class="text-danger">{{ share_message_error }}</p>
+                                </div>
+                                <div v-else-if="share_message_success">
+                                    <p class="text-success">{{ share_message_success}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Zadajte Email:</label>
+                                    <input class="form-control" v-model="email" />
+                                </div>
+                                <button class="btn btn-primary pull-right"><i class="material-icons">send</i></button>
                             </form>
                         </div>
                     </div>
@@ -126,6 +142,8 @@
                 auth: auth,
                 name: null,
                 expand: false,
+                share: false,
+                email: null,
                 id: null,
                 isAdmin: null,
                 fullnameBookmark: null,
@@ -137,6 +155,8 @@
                 comments: [],
                 currentComment: null,
                 editText: "",
+                share_message_error: "",
+                share_message_success: "",
             };
         },
         mounted(){
@@ -166,6 +186,26 @@
                 var currentUrl = window.location.href;
                 var strings = currentUrl.split("/");
                 this.id = strings[5];
+            },
+            shareBookmark(){
+                axios
+                    .post('share-bookmark/'+this.id,
+                        {
+                            email: this.email,
+                        },
+                        {
+                            headers: { Authorization: "Bearer " + this.auth.getToken() }
+                        })
+                    .then(response => (
+                        this.share_message_error = "",
+                        this.share_message_success = "Záložka bola poslaná na email "+this.email
+                    ))
+                    .catch(error => {
+                        console.log(error.response);
+                        this.share_message_success = "";
+                        this.share_message_error = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
             },
             getComments(){
                 axios

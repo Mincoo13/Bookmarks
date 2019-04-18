@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Bookmark;
 use App\Category;
 use App\Comment;
+use App\Mail\ShareBookmark;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use JWTAuth;
 
@@ -352,6 +354,29 @@ class BookmarkController extends Controller
                 ],200);
             }
         }
+    }
+
+    public function shareBookmark($id, Request $request){
+        $user = JWTAuth::user();
+        $sender = $user->name." ".$user->surname;
+        $email = $request->email;
+        $exist = User::where('email', $email)->first();
+        $bookmark = Bookmark::find($id);
+        if($bookmark->isVisible != 1 || $user->id != $bookmark->user_id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nemôžete zdieľať túto záložku.',
+            ],401);
+        }
+        elseif(!$exist){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento e-mail sa v našej databáze nenachádza.',
+            ],401);
+        }
+        Mail::to($email)->send(new ShareBookmark($sender, $bookmark->url, $bookmark->name));
+        $message = "Pouzivatel ".$sender." vam posiela zalozku: ".$bookmark->name." s adresou ".$bookmark->url;
+        return $message;
     }
 
     public function searchBookmarks(Request $request){

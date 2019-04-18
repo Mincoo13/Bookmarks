@@ -46,7 +46,7 @@
                 <br v-if="!space">
                 <br v-if="!space">
 
-                <div v-if="isAdmin == 1 || userId == bookmarklist.user_id" class="card">
+                <div v-if="userId == bookmarklist.user_id" class="card">
                     <div class="card-header card-header-primary">
                         <h4 class="card-title">{{ bookmarklist.name }}</h4>
                         <!--<p class="card-category"></p>-->

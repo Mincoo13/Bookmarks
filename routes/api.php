@@ -24,6 +24,7 @@ Route::middleware('jwt.auth')->group(function(){
     Route::delete('bookmarks/{id}','BookmarkController@deleteBookmark');
     Route::post('search-bookmarks','BookmarkController@searchBookmarks');
     Route::get('bookmarks/{id}/user', 'BookmarkController@getUserName');
+    Route::post('share-bookmark/{id}', 'BookmarkController@shareBookmark');
 
     Route::post('comments', 'CommentController@createComment');
     Route::get('comments/{id}/user', 'CommentController@getUserName');

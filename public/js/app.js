@@ -1884,6 +1884,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1891,6 +1907,8 @@ __webpack_require__.r(__webpack_exports__);
       auth: _auth_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
       name: null,
       expand: false,
+      share: false,
+      email: null,
       id: null,
       isAdmin: null,
       fullnameBookmark: null,
@@ -1901,7 +1919,9 @@ __webpack_require__.r(__webpack_exports__);
       bookmark: [],
       comments: [],
       currentComment: null,
-      editText: ""
+      editText: "",
+      share_message_error: "",
+      share_message_success: ""
     };
   },
   mounted: function mounted() {
@@ -1932,57 +1952,75 @@ __webpack_require__.r(__webpack_exports__);
       var strings = currentUrl.split("/");
       this.id = strings[5];
     },
-    getComments: function getComments() {
+    shareBookmark: function shareBookmark() {
       var _this2 = this;
+
+      axios.post('share-bookmark/' + this.id, {
+        email: this.email
+      }, {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        return _this2.share_message_error = "", _this2.share_message_success = "Záložka bola poslaná na email " + _this2.email;
+      }).catch(function (error) {
+        console.log(error.response);
+        _this2.share_message_success = "";
+        _this2.share_message_error = error.response.data.message;
+        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    getComments: function getComments() {
+      var _this3 = this;
 
       axios.get("comments/" + this.id, {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        return _this2.comments = response.data;
-      }).catch(function (error) {
-        console.log(error.response);
-        _this2.message = error.response.data.message;
-        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
-      });
-    },
-    getUserData: function getUserData() {
-      var _this3 = this;
-
-      axios.get("/profile", {
-        headers: {
-          Authorization: "Bearer " + this.auth.getToken()
-        }
-      }).then(function (response) {
-        _this3.isAdmin = response.data.isAdmin;
-        _this3.userId = response.data.id;
-        var userName = response.data.name;
-        var userSurname = response.data.surname;
-        _this3.userFullname = userName + " " + userSurname;
+        return _this3.comments = response.data;
       }).catch(function (error) {
         console.log(error.response);
         _this3.message = error.response.data.message;
         _this3.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    getUserBookmark: function getUserBookmark(id) {
+    getUserData: function getUserData() {
       var _this4 = this;
 
-      axios.get("/bookmarks/" + id + "/user", {
+      axios.get("/profile", {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this4.fullnameBookmark = response.data;
+        _this4.isAdmin = response.data.isAdmin;
+        _this4.userId = response.data.id;
+        var userName = response.data.name;
+        var userSurname = response.data.surname;
+        _this4.userFullname = userName + " " + userSurname;
       }).catch(function (error) {
         console.log(error.response);
         _this4.message = error.response.data.message;
         _this4.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    addComment: function addComment() {
+    getUserBookmark: function getUserBookmark(id) {
       var _this5 = this;
+
+      axios.get("/bookmarks/" + id + "/user", {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        _this5.fullnameBookmark = response.data;
+      }).catch(function (error) {
+        console.log(error.response);
+        _this5.message = error.response.data.message;
+        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    addComment: function addComment() {
+      var _this6 = this;
 
       axios.post("/comments", {
         text: this.text,
@@ -1992,28 +2030,8 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this5.message = "Komentár bol pridaný.";
-        _this5.text = null;
-
-        _this5.getComments();
-      }).catch(function (error) {
-        console.log(error.response);
-        _this5.message = error.response.data.message;
-        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
-      });
-    },
-    editComment: function editComment(id) {
-      var _this6 = this;
-
-      axios.patch('/comments/' + id, {
-        text: this.textComment
-      }, {
-        headers: {
-          Authorization: "Bearer " + this.auth.getToken()
-        }
-      }).then(function (response) {
-        _this6.message = "Komentár bol upravený.";
-        _this6.expand = false;
+        _this6.message = "Komentár bol pridaný.";
+        _this6.text = null;
 
         _this6.getComments();
       }).catch(function (error) {
@@ -2022,21 +2040,41 @@ __webpack_require__.r(__webpack_exports__);
         _this6.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
-    deleteComment: function deleteComment(id) {
+    editComment: function editComment(id) {
       var _this7 = this;
 
-      axios.delete('comments/' + id, {
+      axios.patch('/comments/' + id, {
+        text: this.textComment
+      }, {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this7.message = "Komentár bol zmazaný.";
+        _this7.message = "Komentár bol upravený.";
+        _this7.expand = false;
 
         _this7.getComments();
       }).catch(function (error) {
         console.log(error.response);
         _this7.message = error.response.data.message;
         _this7.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    deleteComment: function deleteComment(id) {
+      var _this8 = this;
+
+      axios.delete('comments/' + id, {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        _this8.message = "Komentár bol zmazaný.";
+
+        _this8.getComments();
+      }).catch(function (error) {
+        console.log(error.response);
+        _this8.message = error.response.data.message;
+        _this8.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     }
   }
@@ -8887,6 +8925,19 @@ var render = function() {
                 _vm._v(" "),
                 _vm._m(0),
                 _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary pull-right",
+                    on: {
+                      click: function($event) {
+                        _vm.share = true
+                      }
+                    }
+                  },
+                  [_vm._v("Zdieľať")]
+                ),
+                _vm._v(" "),
                 _vm.isAdmin == 1 || _vm.bookmark.user_id == _vm.userId
                   ? _c(
                       "router-link",
@@ -8897,19 +8948,81 @@ var render = function() {
                           tag: "button"
                         }
                       },
-                      [_vm._v("Upraviť záložku")]
+                      [
+                        _c("i", { staticClass: "material-icons" }, [
+                          _vm._v("edit")
+                        ])
+                      ]
                     )
                   : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "clearfix" })
               ],
               1
-            )
+            ),
+            _vm._v(" "),
+            _vm.share == true
+              ? _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.shareBookmark()
+                      }
+                    }
+                  },
+                  [
+                    _c("hr"),
+                    _vm._v(" "),
+                    _vm.share_message_error
+                      ? _c("div", [
+                          _c("p", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.share_message_error))
+                          ])
+                        ])
+                      : _vm.share_message_success
+                      ? _c("div", [
+                          _c("p", { staticClass: "text-success" }, [
+                            _vm._v(_vm._s(_vm.share_message_success))
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [_vm._v("Zadajte Email:")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.email,
+                            expression: "email"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.email },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.email = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(1)
+                  ]
+                )
+              : _vm._e()
           ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "card" }, [
-          _vm._m(1),
+          _vm._m(2),
           _vm._v(" "),
           _c(
             "div",
@@ -9130,6 +9243,14 @@ var staticRenderFns = [
       },
       [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "btn btn-primary pull-right" }, [
+      _c("i", { staticClass: "material-icons" }, [_vm._v("send")])
+    ])
   },
   function() {
     var _vm = this
@@ -10175,6 +10296,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("multiselect", {
+                          staticStyle: { "z-index": "5 !important" },
                           attrs: {
                             options: _vm.bookmarks,
                             multiple: true,
@@ -10530,7 +10652,7 @@ var render = function() {
         _vm._v(" "),
         !_vm.space ? _c("br") : _vm._e(),
         _vm._v(" "),
-        _vm.isAdmin == 1 || _vm.userId == _vm.bookmarklist.user_id
+        _vm.userId == _vm.bookmarklist.user_id
           ? _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-header card-header-primary" }, [
                 _c("h4", { staticClass: "card-title" }, [
