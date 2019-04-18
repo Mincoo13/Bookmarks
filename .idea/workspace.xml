@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="462562e7-0405-4df1-bd5f-7d427d3d46da" name="Default Changelist" comment="" />
+    <list default="true" id="462562e7-0405-4df1-bd5f-7d427d3d46da" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +58,7 @@
           <entry key="js" value="2" />
           <entry key="json" value="4" />
           <entry key="lock" value="1" />
-          <entry key="php" value="94" />
+          <entry key="php" value="95" />
           <entry key="vue" value="14" />
           <entry key="xml" value="4" />
         </counts>
@@ -68,7 +70,7 @@
           <entry key="CSS" value="4" />
           <entry key="JSON" value="4" />
           <entry key="JavaScript" value="2" />
-          <entry key="PHP" value="79" />
+          <entry key="PHP" value="80" />
           <entry key="PLAIN_TEXT" value="4" />
           <entry key="Vue.js" value="14" />
           <entry key="XML" value="5" />
@@ -81,7 +83,7 @@
           <entry key="css" value="151" />
           <entry key="env" value="17" />
           <entry key="json" value="20" />
-          <entry key="php" value="4678" />
+          <entry key="php" value="4684" />
           <entry key="vue" value="3169" />
           <entry key="xml" value="86" />
         </counts>
@@ -92,7 +94,7 @@
           <entry key="Blade" value="643" />
           <entry key="CSS" value="151" />
           <entry key="JSON" value="20" />
-          <entry key="PHP" value="4035" />
+          <entry key="PHP" value="4041" />
           <entry key="Vue.js" value="3169" />
           <entry key="XML" value="86" />
         </counts>
@@ -137,11 +139,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/mail.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="267">
-              <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="49" />
+              <caret line="50" column="41" selection-start-line="50" selection-start-column="41" selection-end-line="50" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="262" column="56" selection-start-line="262" selection-start-column="56" selection-end-line="262" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -251,6 +262,7 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/BookmarkListController.php" />
         <option value="$PROJECT_DIR$/.env" />
         <option value="$PROJECT_DIR$/config/mail.php" />
+        <option value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php" />
       </list>
     </option>
   </component>
@@ -548,12 +560,12 @@
       <workItem from="1555533300158" duration="5290000" />
       <workItem from="1555540936179" duration="2853000" />
       <workItem from="1555544762699" duration="11327000" />
-      <workItem from="1555578982196" duration="8087000" />
+      <workItem from="1555578982196" duration="8430000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="89450000" />
+    <option name="totallyTimeSpent" value="89793000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -597,13 +609,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/database/seeds/UsersTableSeeder.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="47" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Auth/VerificationController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="123">
@@ -924,7 +929,14 @@
     <entry file="file://$PROJECT_DIR$/config/mail.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
-          <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="49" />
+          <caret line="50" column="41" selection-start-line="50" selection-start-column="41" selection-end-line="50" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="262" column="56" selection-start-line="262" selection-start-column="56" selection-end-line="262" selection-end-column="56" />
         </state>
       </provider>
     </entry>
