@@ -5,15 +5,15 @@
 
             </div>
             <div class="col-md-8">
-                <h2>Upraviť</h2>
-                <button id="btn-bookmark-list" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">edit</i><div class="ripple-container"></div></button>
+                <h2>{{ bookmarklist.name }}</h2>
+                <button v-if="isAdmin == 1 || userId == bookmarklist.user_id" id="btn-bookmark-list" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">edit</i><div class="ripple-container"></div></button>
 
-                <div class="card" id="bookmarkList-form">
+                <div v-if="isAdmin == 1 || userId == bookmarklist.user_id" class="card" id="bookmarkList-form">
                     <div class="card-header card-header-primary">
-                        <h4 class="card-title">{{ bookmarklist.name }}</h4>
+                        <h4 class="card-title">Upraviť</h4>
                         <!--<p class="card-category"></p>-->
                     </div>
-                    <div class="card-body">
+                    <div  class="card-body">
                         <h3>Upraviť zoznam</h3>
                         <div v-if="message_edit_error">
                             <p class="text-danger">{{ message_edit_error }}</p>
@@ -46,7 +46,7 @@
                 <br v-if="!space">
                 <br v-if="!space">
 
-                <div class="card">
+                <div v-if="isAdmin == 1 || userId == bookmarklist.user_id" class="card">
                     <div class="card-header card-header-primary">
                         <h4 class="card-title">{{ bookmarklist.name }}</h4>
                         <!--<p class="card-category"></p>-->
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" v-if="isAdmin == 1 || userId == bookmarklist.user_id">
                     <div class="card-header card-header-text">
                         <h4 class="card-title">Prečítanosť</h4>
                         <div class="progress md-progress" style="height: 20px">
@@ -95,7 +95,7 @@
                                         <div v-if="bookmark.isRead" class="form-check" >
                                             <label class="form-check-label">
                                                 Prečítaná
-                                                <input class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)">
+                                                <input class="form-check-input" type="checkbox" checked v-on:change="markRead(bookmark.id)">
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -122,6 +122,21 @@
                         </draggable>
                     </div>
                 </div>
+                <div v-else class="card">
+                    <div class="card-body">
+                        <div v-for="bookmark in bookmarksNew" >
+                            <div class="row" v-if="isAdmin == 1 || bookmark.isVisible == 1">
+                                <div class="col-md-6">
+                                    <h3><a :href="bookmark.url" target="_blank">{{ bookmark.name }}</a></h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <router-link class="btn btn-info btn-sm pull-right" tag="button" :to="{ path:'/bookmark/'+bookmark.id }"><i class="material-icons">trending_flat</i></router-link>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -141,6 +156,8 @@
         data(){
             return{
                 auth: auth,
+                isAdmin: false,
+                userId: 999,
                 bookmarksNew: [],
                 bookmarks: [],
                 allBookmarks: [],
@@ -159,10 +176,10 @@
         },
         mounted(){
             this.getId();
+            this.getUserData();
             this.getBookmarkList(this.id);
             this.getAllBookmarks();
             this.getBookmarks(this.id);
-            console.log(this.isVisible);
         },
         computed: {
             sorted: function() {
@@ -189,6 +206,22 @@
                 $('#bookmarkList-form').animate({height: "toggle", opacity: "toggle"}, "fast");
                 document.getElementById("btn-bookmark-list").style="display: none" ;
 
+            },
+            getUserData(){
+                axios
+                    .get("/profile",
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.isAdmin = response.data.isAdmin;
+                        this.userId = response.data.id;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
             },
             markRead(id){
                 axios
@@ -217,7 +250,7 @@
                         this.name = response.data.name;
                         if(response.data.isVisible == 1)this.isVisible = true;
                         else this.isVisible = false;
-                        console.log(this.isVisible);
+                        console.log(this.isAdmin+" "+this.userId+" "+this.bookmarklist.user_id);
                     })
                     .catch(error => {
                         console.log(error.response);

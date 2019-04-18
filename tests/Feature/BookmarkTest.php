@@ -119,7 +119,7 @@ class BookmarkTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/bookmarks/1', ['name' => $name, 'url' => $url, 'description' => $description, 'category_id' => 1]);
+        ])->json('PATCH', '/api/bookmarks/1', ['name' => $name, 'isRead' => 1, 'isVisible' => 1, 'url' => $url, 'description' => $description, 'category_id' => 1]);
         $response->assertStatus(200);
 
 //        Zmena zalozky na povodny nazov a url
@@ -127,7 +127,7 @@ class BookmarkTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/bookmarks/1', ['name' => 'Materna', 'url' => 'maternauni.slack.com', 'description' => $description, 'category_id' => 1]);
+        ])->json('PATCH', '/api/bookmarks/1', ['name' => 'Materna', 'isRead' => 1, 'isVisible' => 1, 'url' => 'maternauni.slack.com', 'description' => $description, 'category_id' => 1]);
         $response->assertStatus(200);
     }
 
@@ -138,20 +138,13 @@ class BookmarkTest extends TestCase
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
         $token = $response->json()['data']['token'];
+
 //        Pokus o zmenu zalozky bez zadania nazvu
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/bookmarks/1', ['url' => 'test.com', 'description' => $description, 'category_id' => 1]);
-        $response->assertStatus(409);
-
-//        Pokus o zmenu zalozky bez zadania url
-        $response = $this->withHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/bookmarks/1', ['name' => 'test2', 'description' => $description, 'category_id' => 1]);
+        ])->json('PATCH', '/api/bookmarks/1', ['name' => '', 'isRead'=> 1, 'isVisible'=> 1, 'url' => 'test.com', 'description' => $description, 'category_id' => 1]);
         $response->assertStatus(409);
 
 //        Pokus o zmenu zalozky, ktora nepatri danemu pouzivatelovi

@@ -214,7 +214,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass123!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(200);
-        $response->assertSee('Heslo bolo zmenene.');
 //        Spatna zmena na povodne heslo
         $response = $this->withHeaders([
             'Accept' => 'application/json',
@@ -222,7 +221,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Newpass123!', 'newPassword' => $password, 'confirmPassword' => $password]);
         $response->assertStatus(200);
-        $response->assertSee('Heslo bolo zmenene.');
     }
 
     public function testInvalidPasswordChange(){
@@ -238,7 +236,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => 'Nespravneheslo', 'newPassword' => 'Newpass123!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(500);
-        $response->assertSee('Aktualne heslo je nespravne.');
 
 //        Nove heslo sa nezhoduje s potvrdzovacim heslom
         $response = $this->withHeaders([
@@ -247,7 +244,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass1234!', 'confirmPassword' => 'Newpass123!']);
         $response->assertStatus(500);
-        $response->assertSee('Nove hesla sa nezhoduju.');
 
 //        Nove heslo nesplna poziadavky silneho hesla
         $response = $this->withHeaders([
@@ -256,7 +252,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => 'Newpass', 'confirmPassword' => 'Newpass']);
         $response->assertStatus(500);
-        $response->assertSee('Nove heslo nesplna poziadavky dostatocne silneho hesla.');
 
 //        Nove heslo je rovnake ako aktualne heslo
         $response = $this->withHeaders([
@@ -265,7 +260,6 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer' . $token,
         ])->json('PATCH', '/api/users/changepassword', ['oldPassword' => $password, 'newPassword' => $password, 'confirmPassword' => $password]);
         $response->assertStatus(500);
-        $response->assertSee('Nove heslo nemoze byt rovnake ako stare heslo.');
     }
 
     public function testValidActivation(){
@@ -338,7 +332,6 @@ class UserTest extends TestCase
 //      Pokus o vyresetovanie hesla na neexistujuceho pouzivatela
         $response = $this->json('POST', 'api/forgotten-password', ['email' => 'bad@email.com']);
         $response->assertStatus(409);
-        $response->assertSee("Ziaden pouzivatel nie je zaregistrovany pod touto e-mailovou adresou.");
 
 //      Vygenerovanie noveho hesla pouzivatelom
         $response = $this->json('POST', 'api/forgotten-password', ['email' => 'sally.smith@example.com']);

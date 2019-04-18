@@ -399,4 +399,43 @@ class BookmarkListController extends Controller
         }
         return $bookmarks;
     }
+
+    public function searchBookmarkLists(Request $request){
+        $user = JWTAuth::user();
+        $user_id = $user->id;
+        $text = $request->text;
+        $global = $request->global;
+        if($global == true){
+            $all_global = BookmarkList::where('isVisible', '=', true)->orWhere('user_id','=',$user_id)->get();
+            $result = [];
+            foreach ($all_global as $item_global){
+                if(str_contains(strtolower($item_global->name), strtolower($text)))
+                    $result[]=$item_global;
+            }
+            if(empty($result)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
+                ],409);
+            }
+            else
+                return $result;
+        }
+        else{
+            $all_private = BookmarkList::where('isVisible', '=', false)->orWhere('user_id','=',$user_id)->get();
+            $result = [];
+            foreach ($all_private as $item_private){
+                if(str_contains(strtolower($item_private->name), strtolower($text)))
+                    $result[]=$item_private;
+            }
+            if(empty($result)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Požiadavkam nevyhovujú žiadne výsledky.',
+                ],409);
+            }
+            else
+                return $result;
+        }
+    }
 }

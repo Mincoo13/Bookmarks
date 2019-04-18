@@ -40,8 +40,9 @@ Route::middleware('jwt.auth')->group(function(){
     Route::patch('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
     Route::delete('bookmark-lists/{id}/delete', 'BookmarkListController@deleteBookmarkList');
     Route::get('bookmark-lists/{id}/content', 'BookmarkListController@getContent');
+    Route::post('search-bookmark-lists', 'BookmarkListController@searchBookmarkLists');
 
-        Route::get('users', 'UserController@getUsers')->middleware('admin');
+    Route::get('users', 'UserController@getUsers')->middleware('admin');
         Route::get('users/{id}', 'UserController@showUser')->middleware('admin');
         Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');

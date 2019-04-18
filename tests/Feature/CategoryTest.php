@@ -49,7 +49,6 @@ class CategoryTest extends TestCase
 
     public function testInvalidCreateCategory(){
 //        Pokus o upravu kategorie na nazov, pod ktorym uz ina kategoria existuje.
-        $name = "food";
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
@@ -59,7 +58,7 @@ class CategoryTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/categories', ['name' => $name]);
+        ])->json('POST', '/api/categories', ['name' => 'food']);
         $response->assertStatus(409);
     }
 

@@ -398,7 +398,7 @@ class BookmarkController extends Controller
 //                    Do vysledku ulozim vsetky zalozky, ktore obsahuju dany retazec
                     $result = [];
                     foreach ($all_read as $item_read){
-                        if(str_contains($item_read->name, $text) || str_contains($item_read->url, $text) || str_contains($item_read->description, $text)){
+                        if(str_contains(strtolower($item_read->name), strtolower($text)) || str_contains(strtolower($item_read->url), strtolower($text)) || str_contains(strtolower($item_read->description), strtolower($text))){
                             $result[] = $item_read;
                         }
                     }
@@ -422,7 +422,7 @@ class BookmarkController extends Controller
 //                    Do vysledku ulozim vsetky zalozky, ktore obsahuju dany retazec
                     $result = [];
                     foreach ($all_unread as $item_unread){
-                        if(str_contains($item_unread->name, $text) || str_contains($item_unread->url, $text) || str_contains($item_unread->description, $text)){
+                        if(str_contains(strtolower($item_unread->name), strtolower($text)) || str_contains(strtolower($item_unread->url), strtolower($text)) || str_contains(strtolower($item_unread->description), strtolower($text))){
                             $result[] = $item_unread;
                         }
                     }
@@ -437,7 +437,7 @@ class BookmarkController extends Controller
                 }
                 else{
                     foreach ($all_category as $item_category) {
-                        if (str_contains($item_category->name, $text) || str_contains($item_category->url, $text) || str_contains($item_category->description, $text)) {
+                        if (str_contains(strtolower($item_category->name), strtolower($text)) || str_contains(strtolower($item_category->url), strtolower($text)) || str_contains(strtolower($item_category->description), strtolower($text))) {
                             $result[] = $item_category;
                         }
                     }
@@ -459,7 +459,7 @@ class BookmarkController extends Controller
 
                 $result = [];
                 foreach ($all_global as $item_global){
-                    if(str_contains($item_global->name, $text) || str_contains($item_global->url, $text) || str_contains($item_global->description, $text))
+                    if(str_contains(strtolower($item_global->name), strtolower($text)) || str_contains(strtolower($item_global->url), strtolower($text)) || str_contains(strtolower($item_global->description), strtolower($text)))
                         $result[]=$item_global;
                 }
                 if(empty($result)){
@@ -485,7 +485,7 @@ class BookmarkController extends Controller
 
                     $result = [];
                     foreach ($all_read as $item_read){
-                        if(str_contains($item_read->name, $text) || str_contains($item_read->url, $text) || str_contains($item_read->description, $text))
+                        if(str_contains(strtolower($item_read->name), strtolower($text)) || str_contains(strtolower($item_read->url), strtolower($text)) || str_contains(strtolower($item_read->description), strtolower($text)))
                             $result[]=$item_read;
                     }
                     if(empty($result)){
@@ -507,7 +507,7 @@ class BookmarkController extends Controller
 
                     $result = [];
                     foreach ($all_unread as $item_unread){
-                        if(str_contains($item_unread->name, $text) || str_contains($item_unread->url, $text) || str_contains($item_unread->description, $text))
+                        if(str_contains(strtolower($item_unread->name), strtolower($text)) || str_contains(strtolower($item_unread->url), strtolower($text)) || str_contains(strtolower($item_unread->description), strtolower($text)))
                             $result[]=$item_unread;
                     }
                     if(empty($result)){
@@ -523,7 +523,7 @@ class BookmarkController extends Controller
                 else{
                     $result = [];
                     foreach ($all_private as $item_private){
-                        if(str_contains($item_private->name, $text) || str_contains($item_private->url, $text) || str_contains($item_private->description, $text))
+                        if(str_contains(strtolower($item_private->name), strtolower($text)) || str_contains(strtolower($item_private->url), strtolower($text)) || str_contains(strtolower($item_private->description), strtolower($text)))
                             $result[]=$item_private;
                     }
                     if(empty($result)){
