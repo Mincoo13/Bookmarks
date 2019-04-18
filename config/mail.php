@@ -48,7 +48,7 @@ return [
     'encryption' => env('MAIL_ENCRYPTION', 'tls'),
     'username' => env('MAIL_USERNAME', 'shared.bookmarks.app@gmail.com'),
 
-    'password' => env('MAIL_PASSWORD','Shared1211'),
+    'password' => env('MAIL_PASSWORD','Tr'),
     'sendmail' => '/usr/sbin/sendmail -bs',
     'markdown' => [
         'theme' => 'default',

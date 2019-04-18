@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="462562e7-0405-4df1-bd5f-7d427d3d46da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
-    </list>
+    <list default="true" id="462562e7-0405-4df1-bd5f-7d427d3d46da" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,20 +128,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.env">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="22" column="19" lean-forward="true" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+            <state relative-caret-position="1">
+              <caret line="25" selection-start-line="25" selection-start-column="1" selection-end-line="32" selection-end-column="20" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config/mail.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="44" column="45" selection-start-line="44" selection-start-column="45" selection-end-line="44" selection-end-column="45" />
+            <state relative-caret-position="267">
+              <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -489,7 +486,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="Validator&#9;null&#9;null&#10;appservice&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php&#10;htac&#9;FILE&#9;file://C:/Users/acer/Bookmarks/public/.htaccess&#10;nginx&#9;null&#9;null&#10;appservi&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php&#10;asset&#9;null&#9;null&#10;.htaccess&#9;FILE&#9;file://C:/Users/acer/Bookmarks/public/.htaccess&#10;appserviceprovider&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php" />
+    <property name="SearchEverywhereHistoryKey" value="Swift/Transport/StreamBuffer.php&#9;FILE&#9;file://C:/Users/acer/Bookmarks/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php&#10;Validator&#9;null&#9;null&#10;appservice&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php&#10;htac&#9;FILE&#9;file://C:/Users/acer/Bookmarks/public/.htaccess&#10;nginx&#9;null&#9;null&#10;appservi&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php&#10;asset&#9;null&#9;null&#10;.htaccess&#9;FILE&#9;file://C:/Users/acer/Bookmarks/public/.htaccess&#10;appserviceprovider&#9;FILE&#9;file://C:/Users/acer/Bookmarks/app/Providers/AppServiceProvider.php" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -551,12 +548,12 @@
       <workItem from="1555533300158" duration="5290000" />
       <workItem from="1555540936179" duration="2853000" />
       <workItem from="1555544762699" duration="11327000" />
-      <workItem from="1555578982196" duration="6636000" />
+      <workItem from="1555578982196" duration="8087000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87999000" />
+    <option name="totallyTimeSpent" value="89450000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -571,7 +568,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21208054" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21208054" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -586,7 +583,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5013423" side_tool="true" weight="0.45957446" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4986577" visible="true" weight="0.19148937" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.4986577" visible="true" weight="0.19148937" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -917,17 +914,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/mail.php">
+    <entry file="file://$PROJECT_DIR$/.env">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="44" column="45" selection-start-line="44" selection-start-column="45" selection-end-line="44" selection-end-column="45" />
+        <state relative-caret-position="1">
+          <caret line="25" selection-start-line="25" selection-start-column="1" selection-end-line="32" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.env">
+    <entry file="file://$PROJECT_DIR$/config/mail.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="22" column="19" lean-forward="true" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+        <state relative-caret-position="267">
+          <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="49" />
         </state>
       </provider>
     </entry>
