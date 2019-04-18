@@ -16,39 +16,17 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),
-    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
-    'port' => env('MAIL_PORT', 2525),
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'shared.bookmarks.app@gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'Shared Bookmarks'),
-    ],
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-    'username' => env('MAIL_USERNAME', 'ba10b8ec1fd255'),
-
-    'password' => env('MAIL_PASSWORD','00c09d9975e5ef'),
-    'sendmail' => '/usr/sbin/sendmail -bs',
-    'markdown' => [
-        'theme' => 'default',
-
-        'paths' => [
-            resource_path('views/vendor/mail'),
-        ],
-    ],
-    'log_channel' => env('MAIL_LOG_CHANNEL'),
-
-
 //    'driver' => env('MAIL_DRIVER', 'smtp'),
-//    'host' => env('MAIL_HOST', 'smtp.gmail.io'),
-//    'port' => env('MAIL_PORT', 587),
+//    'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+//    'port' => env('MAIL_PORT', 2525),
 //    'from' => [
 //        'address' => env('MAIL_FROM_ADDRESS', 'shared.bookmarks.app@gmail.com'),
 //        'name' => env('MAIL_FROM_NAME', 'Shared Bookmarks'),
 //    ],
 //    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-//    'username' => env('MAIL_USERNAME', 'shared.bookmarks.app@gmail.com'),
+//    'username' => env('MAIL_USERNAME', 'ba10b8ec1fd255'),
 //
-//    'password' => env('MAIL_PASSWORD','Shared1211'),
+//    'password' => env('MAIL_PASSWORD','00c09d9975e5ef'),
 //    'sendmail' => '/usr/sbin/sendmail -bs',
 //    'markdown' => [
 //        'theme' => 'default',
@@ -58,6 +36,28 @@ return [
 //        ],
 //    ],
 //    'log_channel' => env('MAIL_LOG_CHANNEL'),
+
+
+    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'host' => env('MAIL_HOST', 'smtp.gmail.io'),
+    'port' => env('MAIL_PORT', 587),
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'shared.bookmarks.app@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Shared Bookmarks'),
+    ],
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'username' => env('MAIL_USERNAME', 'shared.bookmarks.app@gmail.com'),
+
+    'password' => env('MAIL_PASSWORD','Shared1211'),
+    'sendmail' => '/usr/sbin/sendmail -bs',
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+    'log_channel' => env('MAIL_LOG_CHANNEL'),
 
 
     /*
