@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Bookmark;
 use App\BookmarkList;
+use App\Mail\ShareBookmarkList;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use JWTAuth;
 
 class BookmarkListController extends Controller
@@ -398,6 +401,30 @@ class BookmarkListController extends Controller
             }
         }
         return $bookmarks;
+    }
+
+    public function shareBookmarkList($id, Request $request){
+        $user = JWTAuth::user();
+        $url = $request->url;
+        $email = $request->email;
+        $exist = User::where('email', $email)->first();
+        $sender = $user->name." ".$user->surname;
+        $bookmarklist = BookmarkList::find($id);
+        if($bookmarklist->isVisible != 1 || $user->id != $bookmarklist->user_id){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nemôžete zdieľať tento zoznam.',
+            ],401);
+        }
+        elseif(!$exist){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tento e-mail sa v našej databáze nenachádza.',
+            ],401);
+        }
+        Mail::to($email)->send(new ShareBookmarkList($sender, $url, $bookmarklist->name));
+        $message = "Pouzivatel ".$sender." vam posiela zalozku: ".$bookmarklist->name." s adresou ".$url;
+        return $message;
     }
 
     public function searchBookmarkLists(Request $request){

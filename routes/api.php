@@ -42,6 +42,8 @@ Route::middleware('jwt.auth')->group(function(){
     Route::delete('bookmark-lists/{id}/delete', 'BookmarkListController@deleteBookmarkList');
     Route::get('bookmark-lists/{id}/content', 'BookmarkListController@getContent');
     Route::post('search-bookmark-lists', 'BookmarkListController@searchBookmarkLists');
+    Route::post('share-bookmark-list/{id}', 'BookmarkListController@shareBookmarkList');
+
 
     Route::get('users', 'UserController@getUsers')->middleware('admin');
         Route::get('users/{id}', 'UserController@showUser')->middleware('admin');

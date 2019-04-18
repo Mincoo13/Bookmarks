@@ -2973,6 +2973,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2992,6 +3018,9 @@ __webpack_require__.r(__webpack_exports__);
       bookmarklist: [],
       space: null,
       name: null,
+      share: true,
+      email: null,
+      expand: false,
       isVisible: this.isVisible,
       id: null,
       progress: 0,
@@ -2999,6 +3028,8 @@ __webpack_require__.r(__webpack_exports__);
       message_edit_success: "",
       message_add_error: "",
       message_add_success: "",
+      share_message_success: "",
+      share_message_error: "",
       selected: []
     };
   },
@@ -3034,24 +3065,44 @@ __webpack_require__.r(__webpack_exports__);
       }, "fast");
       document.getElementById("btn-bookmark-list").style = "display: none";
     },
-    getUserData: function getUserData() {
+    shareBookmarkList: function shareBookmarkList() {
       var _this = this;
+
+      var currentUrl = window.location.href;
+      axios.post('share-bookmark-list/' + this.id, {
+        email: this.email,
+        url: currentUrl
+      }, {
+        headers: {
+          Authorization: "Bearer " + this.auth.getToken()
+        }
+      }).then(function (response) {
+        return _this.share_message_error = "", _this.share_message_success = "Zoznam záložiek bol poslaný na email " + _this.email;
+      }).catch(function (error) {
+        console.log(error.response);
+        _this.share_message_success = "";
+        _this.share_message_error = error.response.data.message;
+        _this.errors = error.response.data.errors ? error.response.data.errors : [];
+      });
+    },
+    getUserData: function getUserData() {
+      var _this2 = this;
 
       axios.get("/profile", {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this.isAdmin = response.data.isAdmin;
-        _this.userId = response.data.id;
+        _this2.isAdmin = response.data.isAdmin;
+        _this2.userId = response.data.id;
       }).catch(function (error) {
         console.log(error.response);
-        _this.message = error.response.data.message;
-        _this.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this2.message = error.response.data.message;
+        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     markRead: function markRead(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.patch("bookmarks/" + id + "/mark-read", {
         data: this.data
@@ -3060,29 +3111,29 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this2.getBookmarks(_this2.id);
+        _this3.getBookmarks(_this3.id);
       }).catch(function (error) {
         console.log(error.response);
-        _this2.message = error.response.data.message;
-        _this2.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this3.message = error.response.data.message;
+        _this3.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     getBookmarkList: function getBookmarkList(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/bookmark-lists/' + id, {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this3.bookmarklist = response.data;
-        _this3.name = response.data.name;
-        if (response.data.isVisible == 1) _this3.isVisible = true;else _this3.isVisible = false;
-        console.log(_this3.isAdmin + " " + _this3.userId + " " + _this3.bookmarklist.user_id);
+        _this4.bookmarklist = response.data;
+        _this4.name = response.data.name;
+        if (response.data.isVisible == 1) _this4.isVisible = true;else _this4.isVisible = false;
+        console.log(_this4.isAdmin + " " + _this4.userId + " " + _this4.bookmarklist.user_id);
       }).catch(function (error) {
         console.log(error.response);
-        _this3.message = error.response.data.message;
-        _this3.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this4.message = error.response.data.message;
+        _this4.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     getId: function getId() {
@@ -3094,7 +3145,7 @@ __webpack_require__.r(__webpack_exports__);
       this.bookmarksNew = _.orderBy(arrays, 'order', 'asc');
     },
     getAllBookmarks: function getAllBookmarks() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.post('/get-bookmarks', {
         category_id: null
@@ -3103,26 +3154,26 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this4.allBookmarks = response.data;
+        _this5.allBookmarks = response.data;
       }).catch(function (error) {
         console.log(error.response);
-        _this4.message = error.response.data.message;
-        _this4.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this5.message = error.response.data.message;
+        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     getBookmarks: function getBookmarks(id) {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get('bookmark-lists/' + id + '/content', {
         headers: {
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this5.bookmarks = response.data;
-        _this5.bookmarksNew = _this5.bookmarks;
+        _this6.bookmarks = response.data;
+        _this6.bookmarksNew = _this6.bookmarks;
         var i;
         var read = 0;
-        var bookmarks = _this5.bookmarks;
+        var bookmarks = _this6.bookmarks;
         var count = bookmarks.length;
 
         for (i in bookmarks) {
@@ -3131,15 +3182,15 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
 
-        _this5.progress = Math.round(read / count * 100);
+        _this6.progress = Math.round(read / count * 100);
       }).catch(function (error) {
         console.log(error.response);
-        _this5.message = error.response.data.message;
-        _this5.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this6.message = error.response.data.message;
+        _this6.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     deleteBookmark: function deleteBookmark(id, bookmark_id) {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.patch('bookmark-lists/' + id, {
         bookmark_id: bookmark_id
@@ -3148,17 +3199,17 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this6.message = "Položka bola zo zoznamu odstránená.";
+        _this7.message = "Položka bola zo zoznamu odstránená.";
 
-        _this6.getBookmarks(id);
+        _this7.getBookmarks(id);
       }).catch(function (error) {
         console.log(error.response);
-        _this6.message = error.response.data.message;
-        _this6.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this7.message = error.response.data.message;
+        _this7.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     addBookmark: function addBookmark() {
-      var _this7 = this;
+      var _this8 = this;
 
       var item = null;
 
@@ -3170,20 +3221,20 @@ __webpack_require__.r(__webpack_exports__);
             Authorization: "Bearer " + this.auth.getToken()
           }
         }).then(function (response) {
-          _this7.message_add_error = "";
-          _this7.message_add_success = "Záložky boli pridané do zoznamu.";
+          _this8.message_add_error = "";
+          _this8.message_add_success = "Záložky boli pridané do zoznamu.";
 
-          _this7.getBookmarks(_this7.id);
+          _this8.getBookmarks(_this8.id);
         }).catch(function (error) {
           console.log(error.response);
-          _this7.message_add_success = "";
-          _this7.message_add_error = error.response.data.message;
-          _this7.errors = error.response.data.errors ? error.response.data.errors : [];
+          _this8.message_add_success = "";
+          _this8.message_add_error = error.response.data.message;
+          _this8.errors = error.response.data.errors ? error.response.data.errors : [];
         });
       }
     },
     editBookmarkList: function editBookmarkList(id) {
-      var _this8 = this;
+      var _this9 = this;
 
       axios.patch('bookmark-lists/' + id + '/edit', {
         name: this.name,
@@ -3193,28 +3244,28 @@ __webpack_require__.r(__webpack_exports__);
           Authorization: "Bearer " + this.auth.getToken()
         }
       }).then(function (response) {
-        _this8.message_edit_success = "Zoznam bol upravený.";
-        _this8.message_edit_error = "";
+        _this9.message_edit_success = "Zoznam bol upravený.";
+        _this9.message_edit_error = "";
 
-        _this8.getBookmarkList(id);
+        _this9.getBookmarkList(id);
       }).catch(function (error) {
         console.log(error.response);
-        _this8.message_edit_error = error.response.data.message;
-        _this8.message_edit_success = "";
-        _this8.errors = error.response.data.errors ? error.response.data.errors : [];
+        _this9.message_edit_error = error.response.data.message;
+        _this9.message_edit_success = "";
+        _this9.errors = error.response.data.errors ? error.response.data.errors : [];
       });
     },
     update: function update() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.bookmarks.map(function (bookmark, index) {
         bookmark.order = index + 1;
-        axios.patch('/bookmark-lists/' + _this9.id + '/order', {
+        axios.patch('/bookmark-lists/' + _this10.id + '/order', {
           order: bookmark.order,
           bookmark_id: bookmark.id
         }, {
           headers: {
-            Authorization: "Bearer " + _this9.auth.getToken()
+            Authorization: "Bearer " + _this10.auth.getToken()
           }
         });
       });
@@ -10771,6 +10822,70 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
+        _c("div", { staticClass: "card" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-12" }, [
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.shareBookmarkList()
+                      }
+                    }
+                  },
+                  [
+                    _vm.share_message_error
+                      ? _c("div", [
+                          _c("p", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.share_message_error))
+                          ])
+                        ])
+                      : _vm.share_message_success
+                      ? _c("div", [
+                          _c("p", { staticClass: "text-success" }, [
+                            _vm._v(_vm._s(_vm.share_message_success))
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [_vm._v("Zadajte Email:")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.email,
+                            expression: "email"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.email },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.email = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(3)
+                  ]
+                )
+              ])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
         _vm.isAdmin == 1 || _vm.userId == _vm.bookmarklist.user_id
           ? _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-header card-header-text" }, [
@@ -11030,6 +11145,22 @@ var staticRenderFns = [
       },
       [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header card-header-primary" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Zdieľať")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "btn btn-primary pull-right" }, [
+      _c("i", { staticClass: "material-icons" }, [_vm._v("send")])
+    ])
   }
 ]
 render._withStripped = true

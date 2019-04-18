@@ -75,6 +75,31 @@
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Zdieľať</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form @submit.prevent="shareBookmarkList()">
+                                    <div v-if="share_message_error">
+                                        <p class="text-danger">{{ share_message_error }}</p>
+                                    </div>
+                                    <div v-else-if="share_message_success">
+                                        <p class="text-success">{{ share_message_success}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Zadajte Email:</label>
+                                        <input class="form-control" v-model="email" />
+                                    </div>
+                                    <button class="btn btn-primary pull-right"><i class="material-icons">send</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card" v-if="isAdmin == 1 || userId == bookmarklist.user_id">
                     <div class="card-header card-header-text">
                         <h4 class="card-title">Prečítanosť</h4>
@@ -86,6 +111,7 @@
 
                     <div class="card-body">
                         <p>tip: Kliknutím a presunutím záložky môžete meniť jednotlivé poradia v zozname</p>
+
                         <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
                             <div v-for="bookmark in bookmarksNew" >
                                 <div class="row">
@@ -164,6 +190,9 @@
                 bookmarklist: [],
                 space: null,
                 name: null,
+                share: true,
+                email: null,
+                expand: false,
                 isVisible: this.isVisible,
                 id: null,
                 progress: 0,
@@ -171,6 +200,8 @@
                 message_edit_success: "",
                 message_add_error: "",
                 message_add_success: "",
+                share_message_success: "",
+                share_message_error: "",
                 selected: [],
             }
         },
@@ -205,9 +236,31 @@
                 this.space = 1;
                 $('#bookmarkList-form').animate({height: "toggle", opacity: "toggle"}, "fast");
                 document.getElementById("btn-bookmark-list").style="display: none" ;
-
+            },
+            shareBookmarkList(){
+                var currentUrl = window.location.href;
+              axios
+                  .post('share-bookmark-list/'+this.id,
+                      {
+                          email: this.email,
+                          url: currentUrl,
+                      },
+                      {
+                          headers: {Authorization: "Bearer " + this.auth.getToken()}
+                      })
+                  .then(response => (
+                      this.share_message_error = "",
+                          this.share_message_success = "Zoznam záložiek bol poslaný na email "+this.email
+                  ))
+                  .catch(error => {
+                      console.log(error.response);
+                      this.share_message_success = "";
+                      this.share_message_error = error.response.data.message;
+                      this.errors = error.response.data.errors ? error.response.data.errors : [];
+                  });
             },
             getUserData(){
+
                 axios
                     .get("/profile",
                         {
