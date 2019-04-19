@@ -112,8 +112,8 @@ class BookmarkController extends Controller
             ],409);
         }
         else{
-            if(!Str::contains($url, 'http://www.') && !Str::contains($url, 'https://www.')){
-                $url = Str::start($url, 'https://www.');
+            if(!Str::contains($url, 'http://') && !Str::contains($url, 'https://')){
+                $url = Str::start($url, 'https://');
             }
             if($isVisible == null){
                 $isVisible = true;
