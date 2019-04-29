@@ -47,6 +47,19 @@ html {
   background: #9c27b0 !important;
 }
 
+.multiselect__tag{
+  background: #9c27b0 !important;
+}
+
+.multiselect__tag-icon{
+  color: white !important;
+}
+
+.multiselect__tag-icon:hover{
+  color: white !important;
+  background: #651f77 !important;
+}
+
 .multiselect__option--highlight:after{
   background: #9c27b0 !important;
 
@@ -61,6 +74,10 @@ html {
 }
 
 #list-form{
+  display: none;
+}
+
+#bookmarkList-form{
   display: none;
 }
 

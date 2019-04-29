@@ -5,12 +5,15 @@
 
             </div>
             <div class="col-md-8">
-                <div class="card">
+                <h2>{{ bookmarklist.name }}</h2>
+                <button v-if="isAdmin == 1 || userId == bookmarklist.user_id" id="btn-bookmark-list" class="btn btn-primary pull-left" @click="showForm()"><i class="material-icons">edit</i><div class="ripple-container"></div></button>
+
+                <div v-if="isAdmin == 1 || userId == bookmarklist.user_id" class="card" id="bookmarkList-form">
                     <div class="card-header card-header-primary">
-                        <h4 class="card-title">{{ bookmarklist.name }}</h4>
+                        <h4 class="card-title">Upraviť</h4>
                         <!--<p class="card-category"></p>-->
                     </div>
-                    <div class="card-body">
+                    <div  class="card-body">
                         <h3>Upraviť zoznam</h3>
                         <div v-if="message_edit_error">
                             <p class="text-danger">{{ message_edit_error }}</p>
@@ -34,10 +37,21 @@
                                     <button class="btn btn-primary pull-right" type="submit">Upraviť</button>
                                 </div>
                             </div>
-                            <hr>
                             <!--<input v-if="isVisible != 1" type="checkbox" v-model="isVisible">-->
                             <!--<input v-else type="checkbox" checked v-model="isVisible">-->
                         </form>
+                    </div>
+                </div>
+                <br v-if="!space">
+                <br v-if="!space">
+                <br v-if="!space">
+
+                <div v-if="userId == bookmarklist.user_id" class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">{{ bookmarklist.name }}</h4>
+                        <!--<p class="card-category"></p>-->
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <h3>Pridať nové záložky do zoznamu</h3>
@@ -49,7 +63,7 @@
                                 </div>
                                 <form @submit.prevent="addBookmark(id)">
                                     <div>
-                                        <multiselect style="z-index: 50 !important" v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
+                                        <multiselect style="z-index: 50 !important" select-label="Stlačte enter pre výber" deselect-label="Odstrániť" selectedLabel="Vybraté" v-model="selected" :options="allBookmarks" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Vyberte" label="name" track-by="name" :preselect-first="true">
                                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} záložiek zvolených</span></template>
                                         </multiselect>
                                     </div>
@@ -62,6 +76,31 @@
                 </div>
 
                 <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Zdieľať</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form @submit.prevent="shareBookmarkList()">
+                                    <div v-if="share_message_error">
+                                        <p class="text-danger">{{ share_message_error }}</p>
+                                    </div>
+                                    <div v-else-if="share_message_success">
+                                        <p class="text-success">{{ share_message_success}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Zadajte Email:</label>
+                                        <input class="form-control" v-model="email" />
+                                    </div>
+                                    <button class="btn btn-primary pull-right"><i class="material-icons">send</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" v-if="isAdmin == 1 || userId == bookmarklist.user_id">
                     <div class="card-header card-header-text">
                         <h4 class="card-title">Prečítanosť</h4>
                         <div class="progress md-progress" style="height: 20px">
@@ -72,6 +111,7 @@
 
                     <div class="card-body">
                         <p>tip: Kliknutím a presunutím záložky môžete meniť jednotlivé poradia v zozname</p>
+
                         <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
                             <div v-for="bookmark in bookmarksNew" >
                                 <div class="row">
@@ -81,7 +121,7 @@
                                         <div v-if="bookmark.isRead" class="form-check" >
                                             <label class="form-check-label">
                                                 Prečítaná
-                                                <input class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)">
+                                                <input class="form-check-input" type="checkbox" checked v-on:change="markRead(bookmark.id)">
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -108,6 +148,21 @@
                         </draggable>
                     </div>
                 </div>
+                <div v-else class="card">
+                    <div class="card-body">
+                        <div v-for="bookmark in bookmarksNew" >
+                            <div class="row" v-if="isAdmin == 1 || bookmark.isVisible == 1">
+                                <div class="col-md-6">
+                                    <h3><a :href="bookmark.url" target="_blank">{{ bookmark.name }}</a></h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <router-link class="btn btn-info btn-sm pull-right" tag="button" :to="{ path:'/bookmark/'+bookmark.id }"><i class="material-icons">trending_flat</i></router-link>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -127,11 +182,17 @@
         data(){
             return{
                 auth: auth,
+                isAdmin: false,
+                userId: 999,
                 bookmarksNew: [],
                 bookmarks: [],
                 allBookmarks: [],
                 bookmarklist: [],
+                space: null,
                 name: null,
+                share: true,
+                email: null,
+                expand: false,
                 isVisible: this.isVisible,
                 id: null,
                 progress: 0,
@@ -139,15 +200,17 @@
                 message_edit_success: "",
                 message_add_error: "",
                 message_add_success: "",
+                share_message_success: "",
+                share_message_error: "",
                 selected: [],
             }
         },
         mounted(){
             this.getId();
+            this.getUserData();
             this.getBookmarkList(this.id);
             this.getAllBookmarks();
             this.getBookmarks(this.id);
-            console.log(this.isVisible);
         },
         computed: {
             sorted: function() {
@@ -168,6 +231,50 @@
                 if (a.order > b.order)
                     return 1;
                 return 0;
+            },
+            showForm(){
+                this.space = 1;
+                $('#bookmarkList-form').animate({height: "toggle", opacity: "toggle"}, "fast");
+                document.getElementById("btn-bookmark-list").style="display: none" ;
+            },
+            shareBookmarkList(){
+                var currentUrl = window.location.href;
+              axios
+                  .post('share-bookmark-list/'+this.id,
+                      {
+                          email: this.email,
+                          url: currentUrl,
+                      },
+                      {
+                          headers: {Authorization: "Bearer " + this.auth.getToken()}
+                      })
+                  .then(response => (
+                      this.share_message_error = "",
+                          this.share_message_success = "Zoznam záložiek bol poslaný na email "+this.email
+                  ))
+                  .catch(error => {
+                      console.log(error.response);
+                      this.share_message_success = "";
+                      this.share_message_error = error.response.data.message;
+                      this.errors = error.response.data.errors ? error.response.data.errors : [];
+                  });
+            },
+            getUserData(){
+
+                axios
+                    .get("/profile",
+                        {
+                            headers: {Authorization: "Bearer " + this.auth.getToken()}
+                        })
+                    .then(response => {
+                        this.isAdmin = response.data.isAdmin;
+                        this.userId = response.data.id;
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                        this.message = error.response.data.message;
+                        this.errors = error.response.data.errors ? error.response.data.errors : [];
+                    });
             },
             markRead(id){
                 axios
@@ -196,7 +303,7 @@
                         this.name = response.data.name;
                         if(response.data.isVisible == 1)this.isVisible = true;
                         else this.isVisible = false;
-                        console.log(this.isVisible);
+                        console.log(this.isAdmin+" "+this.userId+" "+this.bookmarklist.user_id);
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -248,7 +355,7 @@
                                 read++;
                             }
                         }
-                        this.progress = (read/count)*100;
+                        this.progress = Math.round((read/count)*100);
                     })
                     .catch(error => {
                         console.log(error.response);

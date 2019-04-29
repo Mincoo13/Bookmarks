@@ -2,6 +2,7 @@
     <div>
         <div class="login-page login-form" style="height:100% !important; min-height: 100vh !important;">
             <div class="form">
+                <!--<button type="button" v-on:click="reload()">Reload</button>-->
 
                 <form id="register-form" class="register-form" @submit.prevent="register()">
                     <div class="text-danger" v-if="message_reg">
@@ -176,6 +177,10 @@
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
                     });
             },
+            reload(){
+                location.reload();
+
+            },
             login() {
                 axios
                     .post("login", {
@@ -185,6 +190,7 @@
                     .then(response => {
                         auth.setToken(response.data.data.token);
                         this.$router.push("/");
+                        location.reload();
                     })
                     .catch(error => {
                         console.log(error.response);

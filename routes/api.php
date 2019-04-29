@@ -24,6 +24,7 @@ Route::middleware('jwt.auth')->group(function(){
     Route::delete('bookmarks/{id}','BookmarkController@deleteBookmark');
     Route::post('search-bookmarks','BookmarkController@searchBookmarks');
     Route::get('bookmarks/{id}/user', 'BookmarkController@getUserName');
+    Route::post('share-bookmark/{id}', 'BookmarkController@shareBookmark');
 
     Route::post('comments', 'CommentController@createComment');
     Route::get('comments/{id}/user', 'CommentController@getUserName');
@@ -40,8 +41,11 @@ Route::middleware('jwt.auth')->group(function(){
     Route::patch('bookmark-lists/{id}', 'BookmarkListController@deleteBookmark');
     Route::delete('bookmark-lists/{id}/delete', 'BookmarkListController@deleteBookmarkList');
     Route::get('bookmark-lists/{id}/content', 'BookmarkListController@getContent');
+    Route::post('search-bookmark-lists', 'BookmarkListController@searchBookmarkLists');
+    Route::post('share-bookmark-list/{id}', 'BookmarkListController@shareBookmarkList');
 
-        Route::get('users', 'UserController@getUsers')->middleware('admin');
+
+    Route::get('users', 'UserController@getUsers')->middleware('admin');
         Route::get('users/{id}', 'UserController@showUser')->middleware('admin');
         Route::delete('users/{id}', 'UserController@deleteUser')->middleware('admin');
         Route::patch('profile/{id}', 'UserController@editProfileAdmin')->middleware('admin');
