@@ -1,8 +1,8 @@
 <?php
-
 Route::post('login', 'API\AuthController@login');
 Route::post('forgotten-password', 'UserController@resetPassword');
 Route::post('register-user', 'UserController@registerUser');
+
 Route::middleware('jwt.auth')->group(function(){
 
     Route::get('logout', 'API\AuthController@logout');

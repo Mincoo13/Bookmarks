@@ -7,7 +7,6 @@ use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use JWTAuth;
-use Tests\Browser\Pages\Page;
 
 class CategoryController extends Controller
 {

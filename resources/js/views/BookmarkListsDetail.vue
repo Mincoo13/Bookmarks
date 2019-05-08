@@ -121,7 +121,7 @@
                                         <div v-if="bookmark.isRead" class="form-check" >
                                             <label class="form-check-label">
                                                 Prečítaná
-                                                <input class="form-check-input" type="checkbox" checked v-on:change="markRead(bookmark.id)">
+                                                <input  :id="bookmark.id" class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)" lazy>
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -131,7 +131,7 @@
                                         <div v-else class="form-check" >
                                             <label class="form-check-label">
                                                 Neprečítaná
-                                                <input class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)">
+                                                <input :id="bookmark.id" class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)" lazy>
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -440,8 +440,19 @@
                             {
                                 headers: {Authorization: "Bearer " + this.auth.getToken()}
                             });
-                })
-
+                });
+                var i;
+                var bookmarks = this.bookmarksNew;
+                for(i in bookmarks){
+                    console.log(bookmarks[i].id);
+                    if(bookmarks[i].isRead == true){
+                        document.getElementById(bookmarks[i].id).checked = true;
+                    }
+                    else{
+                        document.getElementById(bookmarks[i].id).checked = false;
+                    }
+                    console.log(document.getElementById(bookmarks[i].id).checked);
+                }
             }
         }
     }

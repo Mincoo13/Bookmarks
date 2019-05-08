@@ -97,6 +97,7 @@ class BookmarkListTest extends TestCase
            'Authorization' => 'Bearer' . $token,
        ])->json('POST', '/api/bookmark-lists/1', ['bookmark_id' => 7]);
        $response->assertStatus(200);
+
 //       Zmazanie pridanej zalozky kvoli buducim testom
        DB::table('bookmarklists_bookmarks')->where([
            ['bookmark_id', '=', 7],

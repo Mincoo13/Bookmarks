@@ -12,8 +12,6 @@
 
     <link href="assets/css/login.css" rel="stylesheet" />
 
-
-
     <title>Shared Bookmarks</title>
 
 </head>
@@ -26,16 +24,11 @@
 {{--<script src="vendor/select2/select2.min.js"></script>--}}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-
 
 <script src="{{ mix('js/app.js') }}"></script>
 
 <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
-
 
 <!--   Core JS Files   -->
 <script src="assets/js/core/jquery.min.js" type="text/javascript"></script>

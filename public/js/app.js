@@ -2467,11 +2467,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3269,6 +3264,20 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       });
+      var i;
+      var bookmarks = this.bookmarksNew;
+
+      for (i in bookmarks) {
+        console.log(bookmarks[i].id);
+
+        if (bookmarks[i].isRead == true) {
+          document.getElementById(bookmarks[i].id).checked = true;
+        } else {
+          document.getElementById(bookmarks[i].id).checked = false;
+        }
+
+        console.log(document.getElementById(bookmarks[i].id).checked);
+      }
     }
   }
 });
@@ -10966,11 +10975,13 @@ var render = function() {
                                       _c("input", {
                                         staticClass: "form-check-input",
                                         attrs: {
+                                          id: bookmark.id,
                                           type: "checkbox",
-                                          checked: ""
+                                          checked: "",
+                                          lazy: ""
                                         },
                                         on: {
-                                          change: function($event) {
+                                          click: function($event) {
                                             return _vm.markRead(bookmark.id)
                                           }
                                         }
@@ -10994,7 +11005,11 @@ var render = function() {
                                       ),
                                       _c("input", {
                                         staticClass: "form-check-input",
-                                        attrs: { type: "checkbox" },
+                                        attrs: {
+                                          id: bookmark.id,
+                                          type: "checkbox",
+                                          lazy: ""
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.markRead(bookmark.id)
