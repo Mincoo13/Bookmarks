@@ -81,7 +81,6 @@
                 var currentUrl = window.location.href;
                 var strings = currentUrl.split("/");
                 this.id = strings[5];
-                console.log(strings[5]);
         },
         mounted(){
             axios

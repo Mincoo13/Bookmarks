@@ -38,6 +38,6 @@ class BookmarkListsTableSeeder extends Seeder
             'isVisible' => 0,
 
         ]);
-        factory(App\BookmarkList::class, 15)->create();
+//        factory(App\BookmarkList::class, 15)->create();
     }
 }

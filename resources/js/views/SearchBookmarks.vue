@@ -253,7 +253,6 @@
                         this.results = null;
                         this.message = error.response.data.message;
                         this.errors = error.response.data.errors ? error.response.data.errors : [];
-                        console.log("error: "+this.message+" "+this.results);
                     });
             },
             searchBookmarks(){
@@ -277,7 +276,6 @@
                     .then(response => {
                         this.results = response.data;
                         this.message = null;
-                        console.log(this.text+" "+this.category_name+ " "+this.global+" "+this.read+" "+this.message);
 
                     })
                     .catch(error => {

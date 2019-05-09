@@ -179,13 +179,10 @@
                     });
 
                 if(this.isVisible == 1){
-                    console.log("1"+this.isVisible);
                     this.value = true;
                 }
                 else{
-                    console.log("0"+this.isVisible);
                     this.value = false;
-                    console.log("0"+this.value);
 
                 }
             },
@@ -242,11 +239,9 @@
             editBookmark(id){
                 var cat_id;
                 if(this.selected == null){
-                    console.log(this.selected);
                     cat_id = null;
                 }
                 else{
-                    console.log(this.selected);
                     cat_id = this.selected.id;
                 }
                 axios

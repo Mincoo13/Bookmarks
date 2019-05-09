@@ -2266,12 +2266,9 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       if (this.isVisible == 1) {
-        console.log("1" + this.isVisible);
         this.value = true;
       } else {
-        console.log("0" + this.isVisible);
         this.value = false;
-        console.log("0" + this.value);
       }
     },
     allCategories: function allCategories() {
@@ -2331,10 +2328,8 @@ __webpack_require__.r(__webpack_exports__);
       var cat_id;
 
       if (this.selected == null) {
-        console.log(this.selected);
         cat_id = null;
       } else {
-        console.log(this.selected);
         cat_id = this.selected.id;
       }
 
@@ -2372,11 +2367,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../auth/index.js */ "./resources/js/auth/index.js");
-//
-//
-//
-//
-//
 //
 //
 //
@@ -3129,7 +3119,6 @@ __webpack_require__.r(__webpack_exports__);
         _this4.bookmarklist = response.data;
         _this4.name = response.data.name;
         if (response.data.isVisible == 1) _this4.isVisible = true;else _this4.isVisible = false;
-        console.log(_this4.isAdmin + " " + _this4.userId + " " + _this4.bookmarklist.user_id);
       }).catch(function (error) {
         console.log(error.response);
         _this4.message = error.response.data.message;
@@ -3269,6 +3258,16 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       });
+      var i;
+      var bookmarks = this.bookmarksNew;
+
+      for (i in bookmarks) {
+        if (bookmarks[i].isRead == true) {
+          document.getElementById(bookmarks[i].id).checked = true;
+        } else {
+          document.getElementById(bookmarks[i].id).checked = false;
+        }
+      }
     }
   }
 });
@@ -3872,10 +3871,6 @@ __webpack_require__.r(__webpack_exports__);
     this.allBookmarks();
   },
   methods: {
-    scrollup: function scrollup() {
-      window.scrollTo(0, 0);
-      console.log("hore");
-    },
     showForm: function showForm() {
       this.space = 1;
       $('#bookmarkForm').animate({
@@ -4656,7 +4651,6 @@ __webpack_require__.r(__webpack_exports__);
         _this2.results = null;
         _this2.message = error.response.data.message;
         _this2.errors = error.response.data.errors ? error.response.data.errors : [];
-        console.log("error: " + _this2.message + " " + _this2.results);
       });
     },
     searchBookmarks: function searchBookmarks() {
@@ -4682,7 +4676,6 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this3.results = response.data;
         _this3.message = null;
-        console.log(_this3.text + " " + _this3.category_name + " " + _this3.global + " " + _this3.read + " " + _this3.message);
       }).catch(function (error) {
         console.log(error.response);
         _this3.results = null;
@@ -5005,7 +4998,6 @@ __webpack_require__.r(__webpack_exports__);
     var currentUrl = window.location.href;
     var strings = currentUrl.split("/");
     this.id = strings[5];
-    console.log(strings[5]);
   },
   mounted: function mounted() {
     var _this = this;
@@ -8894,15 +8886,25 @@ var render = function() {
               "form",
               [
                 _c("div", { staticClass: "row col-md-12" }, [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("b", [_vm._v("URL:")]),
-                    _c("br"),
-                    _c(
-                      "a",
-                      { attrs: { href: _vm.bookmark.url, target: "_blank" } },
-                      [_vm._v(_vm._s(_vm.bookmark.url))]
-                    )
-                  ])
+                  _c(
+                    "div",
+                    {
+                      staticClass: "form-group",
+                      staticStyle: {
+                        overflow: "hidden",
+                        "text-overeflow": "clip !important"
+                      }
+                    },
+                    [
+                      _c("b", [_vm._v("URL:")]),
+                      _c("br"),
+                      _c(
+                        "a",
+                        { attrs: { href: _vm.bookmark.url, target: "_blank" } },
+                        [_vm._v(_vm._s(_vm.bookmark.url))]
+                      )
+                    ]
+                  )
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
@@ -9290,7 +9292,10 @@ var staticRenderFns = [
       "button",
       {
         staticClass: "btn btn-info pull-left",
-        attrs: { onclick: "window.history.back()", type: "submit" }
+        attrs: {
+          onclick: "window.history.go(-1); return false;",
+          type: "submit"
+        }
       },
       [_c("i", { staticClass: "material-icons" }, [_vm._v("arrow_back")])]
     )
@@ -10966,11 +10971,12 @@ var render = function() {
                                       _c("input", {
                                         staticClass: "form-check-input",
                                         attrs: {
+                                          id: bookmark.id,
                                           type: "checkbox",
                                           checked: ""
                                         },
                                         on: {
-                                          change: function($event) {
+                                          click: function($event) {
                                             return _vm.markRead(bookmark.id)
                                           }
                                         }
@@ -10994,7 +11000,10 @@ var render = function() {
                                       ),
                                       _c("input", {
                                         staticClass: "form-check-input",
-                                        attrs: { type: "checkbox" },
+                                        attrs: {
+                                          id: bookmark.id,
+                                          type: "checkbox"
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.markRead(bookmark.id)

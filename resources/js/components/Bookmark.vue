@@ -11,9 +11,9 @@
                         </div>
                         <div class="card-body">
                             <form>
-                                <div class="row col-md-12">
-                                    <div class="form-group">
-                                        <b>URL:</b><br><a :href="bookmark.url" target="_blank">{{ bookmark.url }}</a>
+                                <div class="row col-md-12" >
+                                    <div class="form-group" style="overflow: hidden; text-overeflow: clip !important">
+                                        <b>URL:</b><br><a  :href="bookmark.url" target="_blank">{{ bookmark.url }}</a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button onclick="window.history.back()" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
+                                <button onclick="window.history.go(-1); return false;" type="submit" class="btn btn-info pull-left"><i class="material-icons">arrow_back</i></button>
                                 <button v-on:click="share = true" class="btn btn-primary pull-right">Zdieľať</button>
                                 <router-link :to="'/bookmark/'+id+'/edit'" v-if="isAdmin == 1 || bookmark.user_id == userId" tag="button" class="btn btn-primary pull-right"><i class="material-icons">edit</i></router-link>
 

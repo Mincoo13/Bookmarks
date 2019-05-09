@@ -37,7 +37,7 @@ class CommentsTableSeeder extends Seeder
             'text' => 'Cudzi komentar',
             'created_at' => Carbon::now(),
         ]);
-        factory(App\Comment::class, 50)->create();
+//        factory(App\Comment::class, 50)->create();
 
     }
 }
