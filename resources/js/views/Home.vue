@@ -188,10 +188,7 @@
             this.allBookmarks();
         },
         methods: {
-            scrollup(){
-                window.scrollTo(0, 0);
-                console.log("hore");
-            },
+
             showForm(){
                     this.space = 1;
                     $('#bookmarkForm').animate({height: "toggle", opacity: "toggle"}, "fast");

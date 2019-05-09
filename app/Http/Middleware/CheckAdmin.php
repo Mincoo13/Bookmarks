@@ -16,7 +16,7 @@ class checkAdmin
 
         if ($adminValue != 1) {
             return response()->json([
-                'message' => 'You dont have permission to do this'
+                'message' => 'Nemáte na toto povolenie.'
             ], 401);
         }
 

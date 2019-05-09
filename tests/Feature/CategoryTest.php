@@ -58,7 +58,7 @@ class CategoryTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/categories', ['name' => 'food']);
+        ])->json('POST', '/api/categories', ['name' => 'Škola']);
         $response->assertStatus(409);
     }
 
@@ -87,7 +87,7 @@ class CategoryTest extends TestCase
     }
 
     public function testInvalidEditCategory(){
-        $name = "nature";
+        $name = "Vývoj Webu";
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);

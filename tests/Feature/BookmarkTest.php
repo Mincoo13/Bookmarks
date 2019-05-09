@@ -67,7 +67,7 @@ class BookmarkTest extends TestCase
     public function testInvalidCreateBookmark(){
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
-        $name = 'Materna';
+        $name = 'Slack BP';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
         $response->assertStatus(200);
 
@@ -109,7 +109,7 @@ class BookmarkTest extends TestCase
 //        Zmena zalozky
         $name = $this->faker->word." ".$this->faker->word;
         $url = $this->faker->url;
-        $description = $this->faker->text;
+        $description = "Chat s konzultantom prostrecnítvom Slacku.";
         $email = 'sally.smith@example.com';
         $password = 'Sally123!';
         $response = $this->json('POST', '/api/login', ['email' => $email, 'password' => $password]);
@@ -127,7 +127,7 @@ class BookmarkTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('PATCH', '/api/bookmarks/1', ['name' => 'Materna', 'isRead' => 1, 'isVisible' => 1, 'url' => 'maternauni.slack.com', 'description' => $description, 'category_id' => 1]);
+        ])->json('PATCH', '/api/bookmarks/1', ['name' => 'Slack BP', 'isRead' => 1, 'isVisible' => 1, 'url' => 'https://maternauni.slack.com/messages/G9R46T7U5/details', 'description' => $description, 'category_id' => 1]);
         $response->assertStatus(200);
     }
 
@@ -276,14 +276,14 @@ class BookmarkTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/search-bookmarks',['text' => 'Materna', 'global' => 1, 'read'=> 1, 'category' => 'food']);
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Slack', 'global' => 1, 'read'=> 1, 'category' => 'Škola']);
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/search-bookmarks',['text' => 'Facebook', 'global' => 0, 'read'=> 1, 'category' => 'animals']);
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Facebook', 'global' => 0, 'read'=> 1]);
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
@@ -326,14 +326,14 @@ class BookmarkTest extends TestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/search-bookmarks',['text' => 'Materna', 'global' => 1, 'read'=> 0, 'category' => 'nature']);
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Škola', 'global' => 1, 'read'=> 0]);
         $response->assertStatus(409);
 
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer' . $token,
-        ])->json('POST', '/api/search-bookmarks',['text' => 'Google', 'global' => 0, 'read'=> 1, 'category' => 'animals']);
+        ])->json('POST', '/api/search-bookmarks',['text' => 'Google', 'global' => 0, 'read'=> 1]);
         $response->assertStatus(409);
     }
 }

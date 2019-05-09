@@ -112,7 +112,7 @@
                     <div class="card-body">
                         <p>tip: Kliknutím a presunutím záložky môžete meniť jednotlivé poradia v zozname</p>
 
-                        <draggable :list="bookmarksNew" :options="{animation:200}" @change="update">
+                        <draggable  :list="bookmarksNew" :options="{animation:200}" @change="update">
                             <div v-for="bookmark in bookmarksNew" >
                                 <div class="row">
                                     <div class="col-md-6">
@@ -121,7 +121,7 @@
                                         <div v-if="bookmark.isRead" class="form-check" >
                                             <label class="form-check-label">
                                                 Prečítaná
-                                                <input  :id="bookmark.id" class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)" lazy>
+                                                <input  :id="bookmark.id" class="form-check-input" type="checkbox" checked v-on:click="markRead(bookmark.id)">
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -131,7 +131,7 @@
                                         <div v-else class="form-check" >
                                             <label class="form-check-label">
                                                 Neprečítaná
-                                                <input :id="bookmark.id" class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)" lazy>
+                                                <input :id="bookmark.id" class="form-check-input" type="checkbox" v-on:click="markRead(bookmark.id)">
                                                 <span class="form-check-sign">
                                                 <span class="check"></span>
                                             </span>
@@ -303,7 +303,6 @@
                         this.name = response.data.name;
                         if(response.data.isVisible == 1)this.isVisible = true;
                         else this.isVisible = false;
-                        console.log(this.isAdmin+" "+this.userId+" "+this.bookmarklist.user_id);
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -444,14 +443,12 @@
                 var i;
                 var bookmarks = this.bookmarksNew;
                 for(i in bookmarks){
-                    console.log(bookmarks[i].id);
                     if(bookmarks[i].isRead == true){
                         document.getElementById(bookmarks[i].id).checked = true;
                     }
                     else{
                         document.getElementById(bookmarks[i].id).checked = false;
                     }
-                    console.log(document.getElementById(bookmarks[i].id).checked);
                 }
             }
         }

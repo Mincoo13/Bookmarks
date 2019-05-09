@@ -14,20 +14,20 @@ class CategoriesTableSeeder extends Seeder
     {
         DB::table('categories')->insert([
             'user_id' => 2,
-            'name' => 'food',
+            'name' => 'Škola',
         ]);
         DB::table('categories')->insert([
             'user_id' => 2,
-            'name' => 'animals',
+            'name' => 'Sociálne siete',
         ]);
         DB::table('categories')->insert([
             'user_id' => 2,
-            'name' => 'nature',
+            'name' => 'Vývoj Webu',
         ]);
         DB::table('categories')->insert([
             'user_id' => 1,
-            'name' => 'food',
+            'name' => 'Škola',
         ]);
-        factory(App\Category::class, 100)->create();
+//        factory(App\Category::class, 100)->create();
     }
 }
